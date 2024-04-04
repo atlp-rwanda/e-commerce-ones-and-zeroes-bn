@@ -1,0 +1,20 @@
+{
+  "name": "team-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "coverage": "nyc report --exclude=src/server.js --reporter=text-lcov | coveralls"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "nyc": "^15.1.0"
+  },
+  "devDependencies": {
+    "coverage": "^0.4.1",
+    "coveralls": "^3.1.1"
+  }
+}
