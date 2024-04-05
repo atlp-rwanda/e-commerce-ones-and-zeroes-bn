@@ -1,5 +1,5 @@
-/* eslint-disable esversion: 6 */
-import { DataTypes } from 'sequelize';
+/*esversion: 6 */
+const DataTypes= require('sequelize')
 export default (sequelize, Sequelize) => {
   const User = sequelize.define('user', {
     firstName: {
