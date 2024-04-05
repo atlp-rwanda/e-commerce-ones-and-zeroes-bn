@@ -1,0 +1,10 @@
+
+{
+  "development": {
+    "username": "postgres",
+    "password": "christian",
+    "database": "andelaEcommerce",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}
