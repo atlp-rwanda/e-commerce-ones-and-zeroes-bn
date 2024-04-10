@@ -1,2 +1,3 @@
-go:
+eslint:
   enabled: true
+  
