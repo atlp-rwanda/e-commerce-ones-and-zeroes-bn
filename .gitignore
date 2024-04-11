@@ -25,3 +25,7 @@ dist/
 /node_modules
 .env
 /package-lock.json
+
+
+#database Migrations
+src/database/migrations
