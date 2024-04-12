@@ -2,8 +2,8 @@ export const AdminsSeeders = [
     {
         firstName: "ISHIMWE",
         lastName: "Christian",
-        email: "christianinja3gmail.com",
-        telephone: "250788841091",
+        email: "christianingmail.com",
+        telephone: "25078884191",
         role: "administrator",
         password: "christianinja3gmail.com"
     }
