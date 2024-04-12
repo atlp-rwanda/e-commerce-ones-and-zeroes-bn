@@ -1,15 +1,11 @@
-
 import express, { Router, Request, Response } from 'express';
-import examplesRoute from './exampleRoutes'
 
 const router: Router = express.Router();
 
 router.get('/', (req: Request, res: Response) => {
-  res.send('Welcome to OnesAnd Ecommerce website');
+  res.status(200).json({
+    message: "sucess"
+  });
 });
-
-
-router.use('/examples', examplesRoute)
-
 
 export default router;
