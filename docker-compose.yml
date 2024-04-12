@@ -1,0 +1,19 @@
+version: '3'
+services:
+  postgresdb:
+    image: postgres
+    container_name: postgresdb
+    restart: always
+    env_file:
+      - .env
+
+  e-commerce-app:
+    build: .
+    container_name: e-commerce-app
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '${PORT}:7000'
+    depends_on:
+      - postgresdb
