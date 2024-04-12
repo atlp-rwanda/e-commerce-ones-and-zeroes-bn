@@ -27,5 +27,4 @@ dist/
 /package-lock.json
 
 
-#database Migrations
-src/database/migrations
+

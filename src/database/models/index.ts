@@ -13,9 +13,12 @@ let sequelize: any;
 if (config.use_env_variable) {
   // @ts-ignore
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else if (config.url) {
+  // @ts-ignore
+  sequelize = new Sequelize(config.url, config)
 } else {
   // @ts-ignore
-  sequelize = new Sequelize(config.database, config.username, `${config.password}`, config);
+  sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
 fs
