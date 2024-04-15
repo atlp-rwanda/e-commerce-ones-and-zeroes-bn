@@ -15,7 +15,11 @@ module.exports = {
           };
           firstName: { type: String; allowNull: false };
           lastName: { type: String; allowNull: false };
-          email: { type: String; unique: true };
+          email: { type: String; unique: true; allowNull: any };
+          password: { type: String; allowNull: any };
+          isverified: { type: boolean; allowNull: any; defaultValue: false };
+          isActive: { type: Boolean; allowNull: any; defaultValue: false };
+          isGoogle: { type: Boolean; allowNull: any; defaultValue: false };
           createdAt: { allowNull: boolean; type: any; defaultValue: any };
           updatedAt: { allowNull: boolean; type: any; defaultValue: any };
         },
@@ -26,6 +30,7 @@ module.exports = {
       UUIDV4: any;
       STRING: any;
       DATE: any;
+      BOOLEAN: any;
       literal: (arg0: string) => any;
     },
   ) {
@@ -47,6 +52,30 @@ module.exports = {
       email: {
         type: Sequelize.STRING,
         unique: true,
+        allowNull: false,
+      },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+
+      //isverify
+
+      isverified: {
+        allowNull: false,
+        defaultValue: false,
+        type: Sequelize.BOOLEAN,
+      },
+
+      isActive: {
+        allowNull: false,
+        defaultValue: false,
+        type: Sequelize.BOOLEAN,
+      },
+      isGoogle: {
+        allowNull: false,
+        defaultValue: false,
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,

@@ -1,43 +1,53 @@
 import { OpenAPIV3 } from 'openapi-types';
 
 const registerPath: OpenAPIV3.PathsObject = {
-  '/api/user/registerUser': {
+  '/api/user/isVerified/{token}': {
     post: {
-      // Changed method to 'post'
-      summary: 'User registration endpoint',
-      tags: ['Users Routes'],
-      description: 'This is the endpoint to register a new user',
+      // Corrected method to 'post'
+      summary: 'User verification',
+      tags: ['User Routes'],
+      description: 'Endpoint to verify a new user',
+
+      parameters: [
+        {
+          name: 'token',
+          in: 'path',
+          description: 'Token to verify user',
+          required: true,
+          schema: {
+            type: 'string',
+          },
+        },
+      ],
+
       requestBody: {
-        // Added request body schema
+        // Corrected request body structure
         required: true,
         content: {
           'application/json': {
             schema: {
               type: 'object',
               properties: {
-                firstName: { type: 'string' },
-                lastName: { type: 'string' },
-                email: { type: 'string' },
-                password: { type: 'string' },
+                token: {
+                  type: 'string',
+                  description: 'Verification token',
+                },
               },
-              required: ['firstName', 'lastName', 'email', 'password'], // Required properties
+              required: ['token'],
             },
           },
         },
       },
+
       responses: {
         '200': {
-          description: 'Account created successfully',
+          description: 'Successfully verified',
           content: {
             'application/json': {
               schema: {
                 type: 'object',
                 properties: {
-                  id: { type: 'number' },
-                  firstName: { type: 'string' },
-                  lastName: { type: 'string' },
-                  email: { type: 'string' },
-                  password: { type: 'string' },
+                  message: { type: 'string' },
                 },
               },
             },

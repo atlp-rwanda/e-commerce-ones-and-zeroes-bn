@@ -1,5 +1,5 @@
 [![HoundCI](https://img.shields.io/badge/reviewed%20by-Hound-%23a873d1.svg)](https://houndci.com)
-[![Coverage Status](https://coveralls.io/repos/github/atlp-rwanda/e-commerce-ones-and-zeroes-bn/badge.svg?branch=ch-run-codeclimate-and-test-coverage-%23187355045)](https://coveralls.io/github/atlp-rwanda/e-commerce-ones-and-zeroes-bn?branch=ch-run-codeclimate-and-test-coverage-%23187355045)
+[![Coverage Status](https://coveralls.io/repos/github/atlp-rwanda/e-commerce-ones-and-zeroes-bn/badge.svg?branch=ft-verify-account-email-187355094)](https://coveralls.io/github/atlp-rwanda/e-commerce-ones-and-zeroes-bn?branch=ft-verify-account-email-187355094)
 
 [![CircleCI](https://circleci.com/gh/atlp-rwanda/e-commerce-ones-and-zeroes-bn/tree/develop.svg?style=svg)](https://app.circleci.com/pipelines/github/atlp-rwanda/e-commerce-ones-and-zeroes-bn/?branch=develop)
 
