@@ -26,6 +26,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.listen(port, async () => {
   try {
     await sequelize.authenticate();
+    console.log('server started');
     console.log(`Database Connection status: Success\nRunning Port: ${port}`);
   } catch (e) {
     console.log(e);

@@ -26,6 +26,15 @@ const swaggerDefinition: OpenAPIV3.Document = {
     },
     ...servers,
   ],
+  components: {
+    securitySchemes: {
+      token: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+    },
+  },
   paths: allPaths, // Use the merged paths here
 };
 
