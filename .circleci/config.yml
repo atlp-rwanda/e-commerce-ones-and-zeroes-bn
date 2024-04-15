@@ -1,30 +1,37 @@
 version: 2.1
 
-orbs:
-  coveralls: coveralls/coveralls@2.2.1
-
 jobs:
-  build:
+  test:
     docker:
-      - image: circleci/node:14
+      - image: circleci/node:latest
+
+    environment:
+      CC_TEST_REPORTER_ID: fdfa0b480d0d698a6ac1e816548bbe5743da46202dd1ccfac8e154533f795b85
 
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: npm install
-          environment: 
-          COVERALLS_REPO_TOKEN : $COVERALLS_REPO_TOKEN
+
       - run:
-          name: Run tests
-          command: npm test
-      - run: 
-          name: code-coverage
-          command: npm run coverage
-      - coveralls/upload   
+          name: Run tests with coverage
+          command: npm run test
+
+      - run:
+          name: Run Code Climate Test Reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+            ./cc-test-reporter before-build
+            ./cc-test-reporter after-build --exit-code $?
+
+      - run:
+          name: send coverage data to coveralls
+          command: npm run coveralls
 
 workflows:
   version: 2
-  build:
+  test_and_deploy:
     jobs:
-      - build
+      - test

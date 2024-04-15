@@ -17,8 +17,8 @@ const swaggerDefinition: OpenAPIV3.Document = {
     contact: {
       name: 'OnesAndZeroes',
       email: 'onesandzeroes@email.com',
-      url: 'https//www.onesandzeroes.com'
-    }
+      url: 'https//www.onesandzeroes.com',
+    },
   },
   servers: [
     {
