@@ -3,7 +3,7 @@ bin-debug/
 bin-release/
 [Oo]bj/
 [Bb]in/
-
+coverage
 node_modules
 
 .env
@@ -25,7 +25,7 @@ dist/
 /node_modules
 .env
 /package-lock.json
-
+/coverage
 
 node_modules/
 *.env
