@@ -12,6 +12,7 @@ dist/
 
 # Other files and folders
 .settings/
+coverage/
 
 # Executables
 *.swf
@@ -25,6 +26,7 @@ dist/
 /node_modules
 .env
 /package-lock.json
+coveralls.env
 
 
 node_modules/

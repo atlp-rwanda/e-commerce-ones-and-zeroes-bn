@@ -2,7 +2,13 @@
 const { Model } = require('sequelize');
 module.exports = (
   sequelize: any,
-  DataTypes: { UUID: any; UUIDV4: any; STRING: any; DATE: any },
+  DataTypes: {
+    BOOLEAN: any;
+    UUID: any;
+    UUIDV4: any;
+    STRING: any;
+    DATE: any;
+  },
 ) => {
   class User extends Model {
     static associate(models: any) {
@@ -11,7 +17,7 @@ module.exports = (
   }
   User.init(
     {
-      userId: {
+      Id: {
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUID,
@@ -28,8 +34,29 @@ module.exports = (
       },
       email: {
         type: DataTypes.STRING,
-        unique: true,
+        unique: false,
       },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      isGoogle: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      isVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      passwordLastChanged: {
+        type: DataTypes.DATE,
+        defaultValue: Date.now(),
+      },
+
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,

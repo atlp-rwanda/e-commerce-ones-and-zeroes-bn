@@ -7,7 +7,7 @@ module.exports = {
       createTable: (
         arg0: string,
         arg1: {
-          userId: {
+          Id: {
             allowNull: false;
             primaryKey: true;
             type: any;
@@ -15,13 +15,23 @@ module.exports = {
           };
           firstName: { type: String; allowNull: false };
           lastName: { type: String; allowNull: false };
-          email: { type: String; unique: true };
+          email: { type: String; unique: false };
+          password: { type: String; unique: false };
+          passwordLastChanged: {
+            allowNull: boolean;
+            type: any;
+            defaultValue: any;
+          };
+          isGoogle: { type: Boolean; defaultValue: any };
+          isVerified: { type: Boolean; allowNull: false; defaultValue: any };
+          isActive: { type: Boolean; allowNull: Boolean; defaultValue: any };
           createdAt: { allowNull: boolean; type: any; defaultValue: any };
           updatedAt: { allowNull: boolean; type: any; defaultValue: any };
         },
       ) => any;
     },
     Sequelize: {
+      BOOLEAN: Boolean;
       UUID: any;
       UUIDV4: any;
       STRING: any;
@@ -30,7 +40,7 @@ module.exports = {
     },
   ) {
     await queryInterface.createTable('Users', {
-      userId: {
+      Id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
@@ -46,7 +56,30 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
-        unique: true,
+        unique: false,
+      },
+      password: {
+        type: Sequelize.STRING,
+        unique: false,
+      },
+      isActive: {
+        defaultValue: false,
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
+      isVerified: {
+        defaultValue: false,
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
+      isGoogle: {
+        defaultValue: false,
+        type: Sequelize.BOOLEAN,
+      },
+      passwordLastChanged: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       createdAt: {
         allowNull: false,
