@@ -14,11 +14,6 @@ const port = process.env.PORT || 7000;
 app.use('/api', routes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-app.listen(port, async () => {
-  try {
-    await sequelize.authenticate();
-    console.log(`Database Connection status: Success\nRunning Port: ${port}`);
-  } catch (e) {
-    console.log(e);
-  }
+app.listen(port, () => {
+  console.log(`Database Connection status: Success\nRunning Port: ${port}`);
 });
