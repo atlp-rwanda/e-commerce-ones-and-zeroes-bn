@@ -12,7 +12,12 @@
     "migrate": "npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate --env development",
     "unseed": "npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:seed:undo --env development",
     "undo-migrate": "npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate:undo:all --env development",
-    "migrate:all": "npm run undo-migrate && npm run migrate && npm run seed"
+    "migrate:all": "npm run undo-migrate && npm run migrate && npm run seed",
+    "lint": "eslint --fix .",
+    "format": "prettier --write .",
+    "prepare": "husky",
+    "_postinstall": "pinst --disable",
+    "prepublishOnly": "pinst --enable"
   },
   "author": "",
   "license": "ISC",
@@ -39,6 +44,19 @@
     "nodemon": "^3.1.0",
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "pinst": "^3.0.0",
+    "prettier": "^3.2.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm run format"
+    }
   }
 }
