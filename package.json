@@ -12,12 +12,7 @@
     "migrate": "npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate --env development",
     "unseed": "npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:seed:undo --env development",
     "undo-migrate": "npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate:undo:all --env development",
-    "migrate:all": "npm run undo-migrate && npm run migrate && npm run seed",
-    "lint": "eslint --fix .",
-    "format": "prettier --write .",
-    "prepare": "husky",
-    "_postinstall": "pinst --disable",
-    "prepublishOnly": "pinst --enable"
+    "migrate:all": "npm run undo-migrate && npm run migrate && npm run seed"
   },
   "author": "",
   "license": "ISC",
@@ -32,8 +27,14 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.3",
     "sequelize-cli": "^6.6.2",
+    "pg": "^8.11.5",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.3",
+    "sequelize-cli": "^6.6.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
+    "typescript": "^5.4.4",
+    "uuid": "^9.0.1"
     "typescript": "^5.4.4",
     "uuid": "^9.0.1"
   },
