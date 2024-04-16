@@ -1,34 +1,3 @@
-// import { z } from "zod";
-
-// const passwordStrength =
-//   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&^])[A-Za-z\d@.#$!%*?&]{8,15}$/;
-
-// const validation = z
-//   .object({
-//     firstName: z
-//       .string({ required_error: "FirstName is required" })
-//       .min(5, "Use atleast 5 characters for Firstname field")
-//       .max(20, "No more than 20 characters for firstname field")
-//       .regex(/[A-Za-z\s]$/, "Firstname should not contain a number"),
-//     lastName: z
-//       .string({ required_error: "LastName is required" })
-//       .min(5, "Use atleast 2 characters for Lastname field")
-//       .max(20, "No more than 20 characters for Lastname field")
-//       .regex(/[A-Za-z\s]$/, "Lastname should not contain a number"),
-//     email: z.string().email("Email field must be a valid email"),
-//     password: z
-//       .string()
-//       .min(8, "password should be atleast 8 characters length")
-//       .regex(passwordStrength, "Password should be alphanumeric ")
-//   })
-//   .strict();
-
-
-
-// export {validation };
-
-
-
 
 // VALIDATE EMAIL
 const validateEmail = (email: string): boolean => {
