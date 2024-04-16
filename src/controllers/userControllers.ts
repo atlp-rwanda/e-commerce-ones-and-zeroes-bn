@@ -1,61 +1,60 @@
 import { Request, Response } from 'express';
 import bcryptjs from 'bcrypt';
-import User from '../models/userModels';
 import { validateEmail, validatePassword } from '../validations/validations';
+import { db } from "../database/models";
 
-export const registerUser = async (req: Request, res: Response): Promise<Response> => {
-  try {
-      const { fullName,
-         email, 
-         PhoneNumber,
-         Adress,
-         Gender,
-         password } = req.body;
-      const existingUser:any = await User.findOne({ where: {email} });
-      if (existingUser) {
-          return res.json({ "Message": `User with this email ${email} already exists` });
-      }
+export default class UserController {
+    static async registerUser(req: Request, res: Response) {
+        try {
+            const { firstName, lastName, email, password } = req.body;
 
-      const hashedPassword = bcryptjs.hashSync(password, 10);
+            // Check if user with the given email already exists
+            const existingUser = await db.User.findOne({ where: { email: email } });
+            if (existingUser) {
+                return res.status(400).json({ message: "Email already exists" });
+            }
 
-      const validEmail = validateEmail(email);
-      const validPassword = validatePassword(password);
-      if (validEmail && validPassword){
-        const user = await User.create({
-          fullName,
-          email,
-          PhoneNumber,
-          Adress,
-          Gender,
-          password: hashedPassword
-        });
+            // Validate email and password
+            const validEmail = validateEmail(email);
+            const validPassword = validatePassword(password);
 
-        if(!validEmail && !validPassword){
-          return res.status(400).json({ message: "Invalid email or password" })
-          
+            if (!validEmail) {
+                return res.status(400).json({ message: 'Invalid email' });
+            }
+
+            if (!validPassword) {
+                return res.status(400).json({ message: 'password should be strong' });
+            }
+
+            // Hash the password
+            const hashedPassword = bcryptjs.hashSync(password, 10);
+
+            // Create new user
+            const newUser = await db.User.create({
+                firstName,
+                lastName,
+                email: email,
+                password: hashedPassword
+            });
+
+            // Create the user in the database
+            // Return success response
+            const { password: userPassword,...userDetails } = newUser.dataValues;
+            return res.status(200).json({ message: "Account created!", data: newUser });
+
+        } catch (error: any) {
+            console.log(error);
+            return res.status(500).json({ message: "Failed to register user" });
         }
-        
-      }
-      return res.status(201).json({ message: "Account created succesfully",  })
-      
+    };
 
-
-  } catch (error) {
-      console.log(error);
-      
-      return res.sendStatus(400);
-  }
-}
-
-export const getUsers = async(req: Request, res: Response)=>{
-    try{
-        const users = await User.findAll();
-        return res.status(200).json(users);
-
-       }catch(error){
-       console.log(error);
-       throw error;
-        
-    }
-    
+    static async getUsers(req: Request, res: Response) {
+        try {
+            const users = await db.User.findAll();
+            return res.status(200).json(users);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Failed to fetch users" });
+        }
+    };
 }
