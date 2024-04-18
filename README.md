@@ -3,4 +3,9 @@
 
 
  # e-commerce-ones-and-zeroes-bn
-Ones-and-Zeroes e-commerce backend 
+Ones-and-Zeroes e-commerce backend
+ # This is the app url
+ https://e-commerce-ones-and-zeroes-bn-8.onrender.com
+
+
+
