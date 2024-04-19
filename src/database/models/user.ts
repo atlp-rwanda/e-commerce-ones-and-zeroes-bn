@@ -28,6 +28,11 @@ module.exports = (sequelize: any, DataTypes: { UUID: any; UUIDV4: any; STRING: a
         type: DataTypes.STRING,
         unique: true
       },
+      passwordLastChanged: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: Date.now()
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,

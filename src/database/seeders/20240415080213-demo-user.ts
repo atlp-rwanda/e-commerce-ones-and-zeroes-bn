@@ -14,8 +14,17 @@ module.exports = {
         userId: uuid(),
         firstName: "celestin",
         lastName: "Nshuti",
-        email: "nshuticelestin@gmail.com"
-      }], {});
+        email: "nteziryayocelestin3@gmail.com"
+      },
+   
+   
+    {
+        userId: uuid(),
+        firstName: "NTEZIRYAYO",
+        lastName: "Celestin",
+        email: "nteziryayocelestin11@gmail.com"
+      },
+    ], {});
     
   },
 
