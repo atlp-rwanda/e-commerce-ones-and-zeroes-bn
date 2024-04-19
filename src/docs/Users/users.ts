@@ -5,7 +5,7 @@ const registerPath: OpenAPIV3.PathsObject = {
     post: {
       // Changed method to 'post'
       summary: 'User registration endpoint',
-      tags: ['Users Routes'],
+      tags: ['Users'],
       description: 'This is the endpoint to register a new user',
       requestBody: {
         // Added request body schema
@@ -90,6 +90,109 @@ const registerPath: OpenAPIV3.PathsObject = {
                 type: 'object',
                 properties: {
                   message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  '/api/users/login': {
+    post: {
+      summary: 'Log in a user',
+      tags: ['Users'],
+      description:
+        'This endpoint allows users to log in by providing their email and password.',
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                email: {
+                  type: 'string',
+                  description: "The user's email address.",
+                  example: 'user@example.com',
+                },
+                password: {
+                  type: 'string',
+                  description: "The user's password.",
+                  example: 'password123',
+                },
+              },
+            },
+          },
+        },
+      },
+      responses: {
+        '200': {
+          description: 'Login successful',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                    example: 'Login successful',
+                  },
+                  token: {
+                    type: 'string',
+                    description: 'A JWT token for the logged in user.',
+                    example:
+                      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+                  },
+                },
+              },
+            },
+          },
+        },
+        '400': {
+          description: 'Email and password are required',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                    example: 'Email and password are required',
+                  },
+                },
+              },
+            },
+          },
+        },
+        '401': {
+          description: 'Incorrect credentials',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                    example: 'Incorrect credentials',
+                  },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'User not found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                    example: 'User not found',
+                  },
                 },
               },
             },

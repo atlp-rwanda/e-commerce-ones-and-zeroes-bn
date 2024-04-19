@@ -28,7 +28,6 @@ coverage/
 /package-lock.json
 coveralls.env
 
-
 node_modules/
 *.env
 

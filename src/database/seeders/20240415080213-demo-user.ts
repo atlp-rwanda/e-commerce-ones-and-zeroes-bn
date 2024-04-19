@@ -14,6 +14,7 @@ module.exports = {
           lastName: string;
           email: string;
           password: any;
+          isVerified: boolean;
         }[],
         arg2: {},
       ) => any;
@@ -31,6 +32,7 @@ module.exports = {
           lastName: 'Ishimwe',
           email: 'christianinjoooa3@gmail.com',
           password: hashedPassword1,
+          isVerified: true,
         },
       ],
       {},
