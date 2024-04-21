@@ -1,34 +1,32 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-const JWT_SECRET = process.env.JWT_SECRET
+import { verifyToken } from '../helps/verifyToken';
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export function changePasswordIgnored(req: Request, res: Response, next: NextFunction) {
-    const lastPasswordChangeDate = new Date('2021-12-23');
     console.log(req.path);
     const token = req.headers.authorization;
 
-    if (token &&
-        (verifyToken(token) && 
-        ((Date.now() - lastPasswordChangeDate.getTime()) > (1 * 24 * 60 * 60 * 1000)) &&
-        req.path !== '/login')) {
-        console.log('Token is undefined or invalid');
-        res.redirect('https://onesandzeroes/users/update');
-    } else {
-        next();   
-    }
-}
+    if (token) {
+        const decoded = verifyToken(token);
+        console.log(decoded)
+        if (decoded) {
+            const lastPasswordChangeDate = new Date(decoded.passwordLastChanged * 1000);
+            const currentTime = new Date();
+            const oneDayInMillis = 24 * 60 * 60 * 1000;
 
+            if ((currentTime.getTime() - lastPasswordChangeDate.getTime()) > oneDayInMillis &&
+                req.path !== '/login') {
+                console.log('You are required to update your password');
+                console.log('You are now redirected to https://onesandzeroes/users/update');
 
-
-
-function verifyToken(token: string): boolean {
-    try {
-        if (!JWT_SECRET) {
-            return false;
+                return res.redirect('https://onesandzeroes/users/update');
+            }
         }
-        const decoded = jwt.verify(token, JWT_SECRET);
-        return true;
-    } catch (err) {
-        return false;
     }
+
+    console.log(token);
+    next();
 }
+
+

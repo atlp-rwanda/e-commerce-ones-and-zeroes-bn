@@ -20,7 +20,7 @@ app.listen(port,async () => {
   try{
     await sequelize.authenticate();
     console.log(`Database Connection status: Success\nRunning Port: ${port}`);
-    // startCronJob();
+    startCronJob();
 
   }catch(e){
     console.log(e)
