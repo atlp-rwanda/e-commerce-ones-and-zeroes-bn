@@ -9,6 +9,6 @@ router.post('/', UserController.registerUser);
 //get user by id
 router.get('/:id', UserController.getSingleUser)
 // updating user Profile
-router.patch('/:id',UserController.updateSingleUser)
+router.patch('/editUser/:id',UserController.updateSingleUser)
 
 export default router;
