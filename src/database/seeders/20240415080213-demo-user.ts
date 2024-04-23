@@ -8,14 +8,10 @@ module.exports = {
         userId: uuid(),
         firstName: "christian",
         lastName: "Ishimwe",
-        email: "christianinja3@gmail.com"
+        email: "christianinja3@gmail.com",
+        password: "passWORD123!"
       },
-    {
-        userId: uuid(),
-        firstName: "celestin",
-        lastName: "Nshuti",
-        email: "nshuticelestin@gmail.com"
-      }], {});
+    ], {});
     
   },
 
