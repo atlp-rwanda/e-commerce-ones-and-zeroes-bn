@@ -1,6 +1,5 @@
-
 import express, { Router, Request, Response } from 'express';
-import examplesRoute from './exampleRoutes'
+import examplesRoute from './exampleRoutes';
 
 const router: Router = express.Router();
 
@@ -8,8 +7,6 @@ router.get('/', (req: Request, res: Response) => {
   res.send('Welcome to OnesAnd Ecommerce website');
 });
 
-
-router.use('/examples', examplesRoute)
-
+router.use('/examples', examplesRoute);
 
 export default router;

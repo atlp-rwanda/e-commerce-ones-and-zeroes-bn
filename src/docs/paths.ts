@@ -1,7 +1,6 @@
 import { OpenAPIV3 } from 'openapi-types';
 import examples from './Examples/examples';
 
-
 const allPaths: OpenAPIV3.PathsObject = {
   ...examples,
 
