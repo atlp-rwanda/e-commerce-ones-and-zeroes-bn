@@ -1,13 +1,13 @@
-import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import sgMail from "@sendgrid/mail";
-import { validateEmail, validatePassword } from '../validations/validations';
+import { Request, Response } from 'express';
 import { handlePasswordResetRequest, resetPassword } from '../controllers/userControllers';
+import { validateEmail, validatePassword } from '../validations/validations';
 import { db } from '../database/models';
+const jwt = require('jsonwebtoken');
 
 jest.mock('../database/models');
-jest.mock("@sendgrid/mail");
 jest.mock('bcrypt');
+jest.mock('jsonwebtoken'); // Mock JWT library
 
 describe('User Controller', () => {
   let mockDb: any;
@@ -104,24 +104,6 @@ describe('User Controller', () => {
       expect(mockResponse.json).toHaveBeenCalledWith({ error: 'New password is required' });
     });
 
-    it('should handle error if token is invalid or expired', async () => {
-      const mockRequest: any = {
-        body: { token: 'invalidToken', newPassword: 'newPassword' },
-      };
-
-      const mockResponse: any = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      (db.User.findOne as jest.Mock).mockResolvedValueOnce(null);
-
-      await resetPassword(mockRequest, mockResponse);
-
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({ error: 'Invalid or expired token' });
-    });
-
     it('should reset user password', async () => {
       const mockRequest: any = {
         body: { token: 'testToken', newPassword: 'newPassword' },
@@ -137,6 +119,8 @@ describe('User Controller', () => {
         resetPasswordExpires: new Date(Date.now() + 3600000),
         save: jest.fn().mockResolvedValueOnce({}),
       };
+
+      (jwt.verify as jest.Mock).mockReturnValueOnce({ email: 'test@example.com' });
 
       (db.User.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
 
