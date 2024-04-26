@@ -34,6 +34,14 @@ module.exports = {
           password: hashedPassword1,
           isVerified: true,
         },
+        {
+          userId: uuid(),
+          firstName: 'celse',
+          lastName: 'Nshuti',
+          email: 'nshuticelestin@gmail.com',
+          password: hashedPassword1,
+          isVerified: false,
+        },
       ],
       {},
     );

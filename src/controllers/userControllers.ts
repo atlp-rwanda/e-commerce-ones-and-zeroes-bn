@@ -6,6 +6,8 @@ import {
   registerMessageTemplate,
   nodeMail,
   successfullyverifiedTemplate,
+  successfullyDisabledAccountTemplate,
+  successfullyRestoredAccountTemplate,
 } from '../utils/emails';
 import { db } from '../database/models';
 import passport from '../config/google.auth';
@@ -67,16 +69,15 @@ export default class UserController {
 
       await nodeMail(
         email,
-        firstName,
         'Welcome to One and Zero E-commerce',
-        registerMessageTemplate,
-        token,
+        registerMessageTemplate(firstName, token),
       );
 
       return res
         .status(200)
         .json({ message: 'Account created!', data: newUser });
     } catch (error: any) {
+      console.log(error);
       return res.status(500).json({ message: 'Failed to register user' });
     }
   }
@@ -139,7 +140,6 @@ export default class UserController {
       // Find the user by email
       const user = await db.User.findOne({ where: { email } });
 
-
       if (!user) {
         return res.status(404).send({ message: 'User not found' });
       }
@@ -172,6 +172,74 @@ export default class UserController {
         .json({ message: 'Failed to login', error: error.message });
     }
   }
+  static async disableUser(req: Request, res: Response) {
+    try {
+      const { reason } = req.body;
+      const existingUser = await db.User.findOne({
+        where: { userId: req.params.id },
+      });
+      const user = (req as any).user;
+      if (!existingUser) {
+        return res.status(404).json({ message: 'No such User found' });
+      }
+      if (existingUser.dataValues.userId === user.userId) {
+        return res.status(403).json({ message: 'User cannot self-disable' });
+      }
+
+      if (!existingUser.dataValues.isActive) {
+        await db.User.update(
+          { isActive: true },
+          {
+            where: {
+              userId: req.params.id,
+            },
+          },
+        );
+        const restoredMessage: string = successfullyRestoredAccountTemplate(
+          existingUser.dataValues.firstName,
+        );
+        await nodeMail(
+          existingUser.dataValues.email,
+          'Your account was restored',
+          restoredMessage,
+        );
+        return res
+          .status(200)
+          .json({ message: 'User account was successfully restored' });
+      }
+      if (!reason) {
+        return res
+          .status(400)
+          .json({ message: 'Missing reason for disabling account' });
+      }
+      await db.User.update(
+        { isActive: false },
+        {
+          where: {
+            userId: req.params.id,
+          },
+        },
+      );
+      const disabledMessage: string = successfullyDisabledAccountTemplate(
+        existingUser.dataValues.firstName,
+        reason,
+      );
+
+      await nodeMail(
+        existingUser.dataValues.email,
+        'Your account was disabled',
+        disabledMessage,
+      );
+      return res
+        .status(200)
+        .json({ message: 'User account was successfully disabled' });
+    } catch (err) {
+      console.log(err);
+      return res
+        .status(500)
+        .json({ message: 'Failed to disable user account' });
+    }
+  }
 
   static async isVerified(req: Request, res: Response) {
     try {
@@ -197,10 +265,8 @@ export default class UserController {
 
       await nodeMail(
         email,
-        name,
         'Welcome to One and Zero E-commerce',
-        successfullyverifiedTemplate,
-        token,
+        successfullyverifiedTemplate(name),
       );
 
       res.status(200).json({ message: 'Email successfully verified' });

@@ -1,5 +1,4 @@
 'use strict';
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(
@@ -15,13 +14,19 @@ module.exports = {
           };
           firstName: { type: String; allowNull: false };
           lastName: { type: String; allowNull: false };
-          email: { type: String; unique: true; allowNull: any };
+          email: { type: String; unique: true; allowNull: false };
           password: { type: String; allowNull: any };
-          isVerified: { type: boolean; allowNull: any; defaultValue: false };
+          role: { type: String; allowNull: false; defaultValue: any };
           isActive: { type: Boolean; allowNull: any; defaultValue: false };
+          isVerified: { type: Boolean; allowNull: false; defaultValue: false };
           isGoogle: { type: Boolean; allowNull: any; defaultValue: false };
           createdAt: { allowNull: boolean; type: any; defaultValue: any };
           updatedAt: { allowNull: boolean; type: any; defaultValue: any };
+          passwordLastChanged: {
+            allowNull: boolean;
+            type: any;
+            defaultValue: any;
+          };
         },
       ) => any;
     },
@@ -31,6 +36,7 @@ module.exports = {
       STRING: any;
       DATE: any;
       BOOLEAN: any;
+      ENUM: any;
       literal: (arg0: string) => any;
     },
   ) {
@@ -58,24 +64,30 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-
-      //isverify
-
-      isVerified: {
-        allowNull: false,
-        defaultValue: false,
-        type: Sequelize.BOOLEAN,
-      },
-
       isActive: {
-        allowNull: false,
-        defaultValue: false,
         type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
+      role: {
+        type: Sequelize.ENUM('seller', 'buyer', 'admin'),
+        allowNull: false,
+        defaultValue: 'buyer',
       },
       isGoogle: {
-        allowNull: false,
-        defaultValue: false,
         type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: true,
+      },
+      isVerified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
+      passwordLastChanged: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

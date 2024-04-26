@@ -1,9 +1,7 @@
 'use strict';
-const { Model } = require('sequelize');
-module.exports = (
-  sequelize: any,
-  DataTypes: { UUID: any; UUIDV4: any; STRING: any; DATE: any; BOOLEAN: any },
-) => {
+import { DataTypes, Model } from 'sequelize';
+
+module.exports = (sequelize: any, DataTypes: any) => {
   class User extends Model {
     static associate(models: any) {
       // define association here
@@ -35,20 +33,30 @@ module.exports = (
         type: DataTypes.STRING,
         allowNull: false,
       },
+      isGoogle: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
       isVerified: {
         allowNull: false,
-        defaultValue: false,
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
       isActive: {
         allowNull: false,
-        defaultValue: false,
         type: DataTypes.BOOLEAN,
+        defaultValue: true,
       },
-      isGoogle: {
+      role: {
         allowNull: false,
-        defaultValue: false,
-        type: DataTypes.BOOLEAN,
+        type: DataTypes.ENUM('buyer', 'seller', 'admin'),
+        defaultValue: 'buyer',
+      },
+      passwordLastChanged: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: Date.now(),
       },
       createdAt: {
         allowNull: false,

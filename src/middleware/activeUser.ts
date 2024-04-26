@@ -9,7 +9,7 @@ const isActive = async (req: Request, res: Response, next: NextFunction) => {
     // GET EMAIL FROM REQUEST BODY
     const { email } = req.body;
     const userExist = await user.findOne({
-      where: { email },
+      where: { email: email },
     });
     // IF USER DOES NOT EXISTS
     if (!userExist) {
@@ -17,8 +17,13 @@ const isActive = async (req: Request, res: Response, next: NextFunction) => {
         message: 'User does not exist',
       });
     }
+    if (!userExist.dataValues.isActive) {
+      return res.status(404).json({
+        message:
+          'User is not active, please contact administrators to activate this account',
+      });
+    }
     // Passing the userId in the body for create or getProducts of logged user
-    res.locals = { email };
     next();
   } catch (error: any) {
     res.status(500).json({

@@ -8,7 +8,7 @@ export const generateToken = (
   firstName: string,
   lastName: string,
 ): string => {
-  const secret = process.env.USER_SECRET;
+  const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error('JWT secret not defined');
   }
