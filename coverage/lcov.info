@@ -15,7 +15,6 @@ FNDA:2,resetPassword
 FNDA:0,(anonymous_4)
 FNDA:0,(anonymous_5)
 DA:3,1
-DA:10,1
 DA:12,1
 DA:13,0
 DA:16,1
@@ -82,8 +81,8 @@ DA:168,0
 DA:169,0
 DA:171,0
 DA:172,0
-LF:68
-LH:39
+LF:67
+LH:38
 BRDA:12,0,0,0
 BRDA:12,0,1,1
 BRDA:46,1,0,1
