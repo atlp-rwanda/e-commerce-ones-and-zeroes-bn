@@ -414,7 +414,10 @@ import { Op } from 'sequelize';
 &nbsp;
 &nbsp;
 &nbsp;
-sgMail.setApiKey("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");
+const sg = `${process.env.SENDGRID_API_KEY}`
+
+
+sgMail.setApiKey(sg);
 &nbsp;
 &nbsp;
 function <span class="fstat-no" title="function not covered" >generateToken(</span>): string {

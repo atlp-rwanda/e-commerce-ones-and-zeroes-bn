@@ -9,7 +9,6 @@ import { Op } from 'sequelize';
 
 const sg = `${process.env.SENDGRID_API_KEY}`
 
-console.log(sg);
 
 sgMail.setApiKey(sg);
 
