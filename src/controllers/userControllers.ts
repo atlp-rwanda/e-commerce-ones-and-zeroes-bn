@@ -7,10 +7,14 @@ import sgMail from "@sendgrid/mail";
 import crypto from "crypto";
 import { Op } from 'sequelize';
 
-const sg = `${process.env.SENDGRID_API_KEY}`
+const apiKey = process.env.SENDGRID_API_KEY;
 
+if (!apiKey) {
+  throw new Error('SENDGRID_API_KEY environment variable is not defined');
+}
 
-sgMail.setApiKey(sg);
+sgMail.setApiKey(apiKey);
+
 
 const JWT_SECRET = process.env.JWT_SECRET; 
 
