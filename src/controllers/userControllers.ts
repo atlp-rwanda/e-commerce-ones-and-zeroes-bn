@@ -91,7 +91,7 @@ export async function resetPassword(
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Verify the token and decode the payload
-    const decodedToken = jwt.verify(token, JWT_SECRET) as {  email: string };
+    const decodedToken = jwt.verify(token, JWT_SECRET) as { email: string };
 
     // Find user by decoded email from token
     const user = await db.User.findOne({
