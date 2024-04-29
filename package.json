@@ -10,7 +10,7 @@
     "dev": "nodemon --exec ts-node src/server.ts",
     "test": "jest --watchAll --verbose",
     "seed": " ts-node ./node_modules/sequelize-cli/lib/sequelize db:seed:all --env development",
-    "migrate": "npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate --env development",
+    "migrate": "npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate --env production",
     "unseed": " ts-node ./node_modules/sequelize-cli/lib/sequelize db:seed:undo --env development",
     "undo-migrate": " npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate:undo --env development",
     "undo-migrate:all": " ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate:undo:all --env development",
@@ -50,4 +50,5 @@
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2"
   }
+ 
 }

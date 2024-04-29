@@ -1,9 +1,8 @@
+// .sequelizerc
 const path = require('path');
-const env = process.env.NODE_ENV || 'development';
-const configFile = env === 'development' ? 'config.ts' : 'config.js';
 
 module.exports = {
-  'config': path.resolve('./dist/database/config', configFile),
+  'config': path.resolve('./dist/database/config', 'config.js'),
   'models-path': path.resolve('./src/database/models'),
   'migrations-path': path.resolve('./src/database/migrations'),
   'seeders-path': path.resolve('./src/database/seeders')

@@ -5,7 +5,7 @@ import userRoute from './userRoutes';
 
 const router: Router = express.Router();
 
-router.get('/', (req: Request, res: Response) => {
+router.get('/user', (req: Request, res: Response) => {
   res.send('Welcome to OnesAnd Ecommerce website');
 });
 

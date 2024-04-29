@@ -1,3 +1,5 @@
 {
-    "circleci.persistedProjectSelection": []
+    "circleci.persistedProjectSelection": [
+        "gh/atlp-rwanda/e-commerce-ones-and-zeroes-bn"
+    ]
 }
