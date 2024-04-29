@@ -5,7 +5,7 @@
       "outDir": "./dist",
       "strict": true,
       "esModuleInterop": true,
-      "types": ["openapi-types"]
+      "types": ["openapi-types","node"]
     },
     "include": ["./src/**/*.ts", "src/routes/index.ts"],
     "exclude": ["node_modules"]
