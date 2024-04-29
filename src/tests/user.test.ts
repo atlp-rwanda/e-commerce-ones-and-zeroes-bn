@@ -82,8 +82,8 @@ describe('User Controller', () => {
 
       await handlePasswordResetRequest(mockRequest, mockResponse);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(500);
-      // expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Password reset email sent successfully' });
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Password reset email sent successfully' });
     });
   });
 
