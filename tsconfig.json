@@ -4,7 +4,8 @@
       "module": "NodeNext",
       "outDir": "./dist",
       "strict": true,
-      "esModuleInterop": true
+      "esModuleInterop": true,
+      "types": ["openapi-types"]
     },
     "include": ["./src/**/*.ts", "src/routes/index.ts"],
     "exclude": ["node_modules"]
