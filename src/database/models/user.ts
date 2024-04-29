@@ -43,7 +43,18 @@ const {
         allowNull: false,
         defaultValue: false,
         type: DataTypes.BOOLEAN
+      },isAdmin:{
+        allowNull: false,
+        defaultValue: false,
+        type: DataTypes.BOOLEAN
       },
+      role:{
+        allowNull:false,
+        defaultValue:"guest",
+        type: DataTypes.STRING
+
+      }
+      ,
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,

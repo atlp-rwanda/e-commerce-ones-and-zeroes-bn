@@ -22,13 +22,23 @@ const swaggerDefinition: OpenAPIV3.Document = {
   },
   servers: [
     {
-      url: `http://localhost:${PORT}`, // Use the port from environment variable
+      url: `http://localhost:${PORT}`,
     },
     ...servers,
   ],
-  paths: allPaths, // Use the merged paths here
-};
+  paths: allPaths, 
+  components: {
+    securitySchemes: {
+      token: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
 
+      }
+    }
+}
+  
+}
 const options = {
   swaggerDefinition,
   apis: ['../routes/*.ts', '../routes/*.js'],

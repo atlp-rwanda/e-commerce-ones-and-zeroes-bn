@@ -8,7 +8,7 @@ import {db, sequelize} from './database/models/index';
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 const port = process.env.PORT || 7000;
 
 app.use(express.json())
@@ -25,5 +25,3 @@ app.listen(port,async () => {
   }
 }
 )
-
-module.exports = app;
