@@ -1,9 +1,9 @@
 import { OpenAPIV3 } from 'openapi-types';
-import examples from './Examples/examples';
+import { examplesPath, userPath } from './Examples/examples';
 
 
 const allPaths: OpenAPIV3.PathsObject = {
-  ...examples,
+  ...examplesPath, ...userPath
 
   // Add more imports and spread their paths if you have more files
 };

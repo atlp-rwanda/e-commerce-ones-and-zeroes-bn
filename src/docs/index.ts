@@ -5,8 +5,11 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import { OpenAPIV3 } from 'openapi-types';
 import servers from './servers';
 import allPaths from './paths'; // Import the merged paths from the index file
+import { JWT } from '../helps/jwt';
 
 const PORT = process.env.PORT || 3000; // Set the port from environment variable or default to 3000
+
+
 
 const swaggerDefinition: OpenAPIV3.Document = {
   openapi: '3.0.0',
@@ -20,6 +23,8 @@ const swaggerDefinition: OpenAPIV3.Document = {
       url: 'https//www.onesandzeroes.com'
     }
   },
+
+  
   servers: [
     {
       url: `http://localhost:${PORT}`, // Use the port from environment variable
@@ -27,6 +32,15 @@ const swaggerDefinition: OpenAPIV3.Document = {
     ...servers,
   ],
   paths: allPaths, // Use the merged paths here
+  components: {
+    securitySchemes: {
+      bearerAuth : {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT"
+      }
+    }
+  }
 };
 
 const options = {

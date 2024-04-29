@@ -158,7 +158,9 @@ export default class userControllers {
                 where: {email : newEmail}
             })
 
-            if(!isUserExist){
+            console.log(isUserExist)
+
+            if(isUserExist == null){
                 return res.status(404).json({
                     status: "fail",
                     message: "User not found",
@@ -167,7 +169,8 @@ export default class userControllers {
 
             const isValidPassword = bcrypt.compareSync(password, isUserExist.password)
             if(!isValidPassword){
-                res.status(400).json({
+                
+                return res.status(400).json({
                     status : "fail",
                     message: "Wrong credentials"
                 })
@@ -193,7 +196,7 @@ export default class userControllers {
         }catch(e){
             console.error(e)
             return res.status(500).json({
-                status: "fail",
+                status: "fail: something went wrong",
                 message: e
             })
         }
@@ -226,7 +229,7 @@ export default class userControllers {
       const validCheckPassword = bcrypt.compareSync(password, currentHash);
 
       if(!validCheckPassword){
-        return res.status(400).json({
+        return res.status(401).json({
             status: "fail",
             message : "Wrong credentials"
         })        
@@ -257,7 +260,7 @@ export default class userControllers {
         })
     }
 
-    return res.status(400).json({
+    return res.status(501).json({
         status: "fail",
         message : "Failed to update password"
     })
