@@ -1,107 +1,21 @@
-version: 2
-orbs:
-  coveralls: coveralls/coveralls@1.0.6
-version: 2
-orbs:
-  coveralls: coveralls/coveralls@1.0.6
+version: 2.1
+
 jobs:
   build:
 
     # Primary container image where all commands run
     docker:
-      - image: cimg/node:18.17.0
-    working_directory: ~/repo
-      - image: cimg/node:18.17.0
+      - image: cimg/node:18.20.0
         environment:
           TEST_DATABASE_URL: postgresql://postgres@localhost/circle_test
+
+    # Service container image
       - image: cimg/postgres:14.0
         environment:
           POSTGRES_USER: postgres
-    
-    working_directory: ~/repo
+
     steps:
-      - setup_remote_docker:
-          version: 20.10.7
-      - setup_remote_docker:
-          version: 20.10.7
       - checkout
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
-            - v1-dependencies-
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
-      - run:
-          name: Run tests
-          command: npm test
-          when: always
-      - run:
-          name: Run coverage
-          command: npm run test
-          when: always
-      - run:
-          name: Upload coverage to Coveralls
-          command: npx coveralls < coverage/lcov.info
-      - run:
-          name: Setup Code Climate test-reporter
-          command: |
-            # download test reporter as a static binary
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-            ./cc-test-reporter before-build
-          when: always
-      - run:
-          name: Send coverage report to Code Climate
-          command: ./cc-test-reporter after-build -t lcov
-          when: always
-      - store_artifacts:
-          path: ./coverage/lcov.info
-          prefix: tests
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
-            - v1-dependencies-
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
-      - run:
-          name: Run tests
-          command: npm test
-          when: always
-      - run:
-          name: Run coverage
-          command: npm run test
-          when: always
-      - run:
-          name: Upload coverage to Coveralls
-          command: npx coveralls < coverage/lcov.info
-      - run:
-          name: Setup Code Climate test-reporter
-          command: |
-            # download test reporter as a static binary
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-            ./cc-test-reporter before-build
-          when: always
-      - run:
-          name: Send coverage report to Code Climate
-          command: ./cc-test-reporter after-build -t lcov
-          when: always
-      - store_artifacts:
-          path: ./coverage/lcov.info
-          prefix: tests
+      - run: sudo apt-get update
+      - run: sudo apt-get install postgresql-client
+      - run: npm run test
