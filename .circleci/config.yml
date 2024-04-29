@@ -1,31 +1,33 @@
 version: 2.1
 
-# orbs:
-  # coveralls: coveralls/coveralls@2.2.1
-
 jobs:
   build:
     docker:
       - image: circleci/node:14
     environment:
-      PROD_DATABASE_URL: postgres://db1_eijm_user:CZxRZB3vP0vITgtwxw6rRCVVgHpNFitP@dpg-cop001e3e1ms73bk5j4g-a/db1_eijm     
+      # Replace with your actual database name
+      TEST_DATABASE_NAME: circle_test
+      # Replace with actual password and mark as secret in CircleCI
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    services:
+      - postgres:latest  # Using the latest Postgres image
 
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: npm install
-          # COVERALLS_REPO_TOKEN:xn8gurcoyZzAAFZxglDnesNmn9ziMmi6J;
       - run:
           name: Run tests
           command: npm test
+          environment:
+            TEST_DATABASE_URL: postgresql://postgres:$POSTGRES_PASSWORD@localhost:5432/$TEST_DATABASE_NAME
       # - run: 
       #     name: code-coverage
       #     command: npm run coverage
-      # - coveralls/upload   
+      # - coveralls/upload  
 
 workflows:
-  version: 2
   build:
     jobs:
       - build
