@@ -1,21 +1,19 @@
-function add(a: number, b: number): number {
-    return a + b;
-}
+import express, { Router, Request, Response } from 'express';
+import request from 'supertest'; // Import the request function from supertest
 
-describe('add function', () => {
-    it('should add two positive numbers correctly', () => {
-        expect(add(1, 2)).toBe(3);
-    });
+const app = express();
+const router = Router(); // Create a new Router instance
 
-    it('should add two negative numbers correctly', () => {
-        expect(add(-1, -2)).toBe(-3);
-    });
+// Define your routes
+router.get('/', (req: Request, res: Response) => {
+  res.status(200).json({ message: 'success' });
+});
 
-    it('should add a positive and a negative number correctly', () => {
-        expect(add(1, -2)).toBe(-1);
-    });
+app.use('/', router);
 
-    it('should add zero to zero correctly', () => {
-        expect(add(0, 0)).toBe(0);
-    });
+test('GET / should return status 200 and a JSON response', async () => {
+  const response = await request(app).get('/');
+  
+  expect(response.status).toBe(200);
+  expect(response.body).toEqual({ message: 'success' });
 });
