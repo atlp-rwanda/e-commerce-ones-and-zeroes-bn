@@ -21,6 +21,7 @@ jobs:
       - run:
           name: code-coverage
           command: npm run coverage
+      - coveralls/upload
 
 workflows:
   version: 2
