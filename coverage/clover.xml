@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1714502560784" clover="3.2.0">
-  <project timestamp="1714502560784" name="All files">
-    <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0" elements="0" coveredelements="0" complexity="0" loc="0" ncloc="0" packages="0" files="0" classes="0"/>
+<coverage generated="1714502806671" clover="3.2.0">
+  <project timestamp="1714502806671" name="All files">
+    <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1" elements="6" coveredelements="6" complexity="0" loc="5" ncloc="5" packages="1" files="1" classes="1"/>
+    <file name="exampleRoutes.ts" path="/Users/igorihimbazwe/Desktop/e-commerce-ones-and-zeroes-bn/src/routes/exampleRoutes.ts">
+      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="5" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="11" count="1" type="stmt"/>
+    </file>
   </project>
 </coverage>
