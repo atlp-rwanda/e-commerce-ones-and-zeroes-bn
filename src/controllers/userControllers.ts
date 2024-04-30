@@ -1,19 +1,19 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 const jwt = require('jsonwebtoken');
-import { validateEmail, validatePassword } from '../validations/validations';
 import { db } from "../database/models";
-import sgMail from "@sendgrid/mail";
-import crypto from "crypto";
-import { Op } from 'sequelize';
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 
 
-if (!process.env.SENDGRID_API_KEY) {
-  throw new Error('SENDGRID_API_KEY environment variable is not defined');
-}
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+// if (!process.env.SENDGRID_API_KEY) {
+// throw new Error('SENDGRID_API_KEY environment variable is not defined');
+// }
+
+
 
 
 const JWT_SECRET = process.env.JWT_SECRET; 
@@ -74,7 +74,6 @@ export async function handlePasswordResetRequest(
     res.status(500).json({ error: "Internal server error" });
   }
 }
-
 export async function resetPassword(
   req: Request,
   res: Response
@@ -105,8 +104,6 @@ export async function resetPassword(
       res.status(400).json({ error: "Invalid token or user not found" });
       return;
     }
-
-    // Update user fields
     user.password = hashedPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
@@ -118,58 +115,4 @@ export async function resetPassword(
     console.error("Error occurred while resetting password:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
-
-export default class UserController {
-  static async registerUser(req: Request, res: Response) {
-    try {
-      const { firstName, lastName, email, password } = req.body;
-
-      // Check if user with the given email already exists
-      const existingUser = await db.User.findOne({ where: { email: email } });
-      if (existingUser) {
-        return res.status(400).json({ message: "Email already exists" });
-      }
-
-      // Validate email and password
-      const validEmail = validateEmail(email);
-      const validPassword = validatePassword(password);
-
-      if (!validEmail) {
-        return res.status(400).json({ message: 'Invalid email' });
-      }
-
-      if (!validPassword) {
-        return res.status(400).json({ message: 'password should be strong' });
-      }
-
-      // Hash the password
-      const hashedPassword = bcrypt.hashSync(password, 10);
-
-      // Create new user
-      const newUser = await db.User.create({
-        firstName,
-        lastName,
-        email: email,
-        password: hashedPassword
-      });
-
-      const { password: userPassword, ...userDetails } = newUser.dataValues;
-      return res.status(200).json({ message: "Account created!", data: userDetails });
-
-    } catch (error: any) {
-      console.log(error);
-      return res.status(500).json({ message: "Failed to register user" });
-    }
-  };
-
-  static async getUsers(req: Request, res: Response) {
-    try {
-      const users = await db.User.findAll();
-      return res.status(200).json(users);
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Failed to fetch users" });
-    }
-  };
 }
