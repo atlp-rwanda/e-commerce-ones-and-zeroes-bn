@@ -3,18 +3,9 @@ import bcrypt from 'bcrypt';
 const jwt = require('jsonwebtoken');
 import { db } from "../database/models";
 const sgMail = require('@sendgrid/mail')
+
+
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-
-
-
-
-
-// if (!process.env.SENDGRID_API_KEY) {
-// throw new Error('SENDGRID_API_KEY environment variable is not defined');
-// }
-
-
-
 
 const JWT_SECRET = process.env.JWT_SECRET; 
 
