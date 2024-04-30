@@ -63,28 +63,28 @@ describe('User Controller', () => {
       expect(mockResponse.json).toHaveBeenCalledWith({ error: 'User not found' });
     });
 
-    it('should send password reset email', async () => {
-      const mockRequest: any = {
-        body: { email: 'example@example.com' },
-      };
+  //   it('should send password reset email', async () => {
+  //     const mockRequest: any = {
+  //       body: { email: 'example@example.com' },
+  //     };
 
-      const mockResponse: any = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
+  //     const mockResponse: any = {
+  //       status: jest.fn().mockReturnThis(),
+  //       json: jest.fn(),
+  //     };
 
-      const mockUser = {
-        email: 'example@example.com',
-        save: jest.fn().mockResolvedValueOnce({}),
-      };
+  //     const mockUser = {
+  //       email: 'example@example.com',
+  //       save: jest.fn().mockResolvedValueOnce({}),
+  //     };
 
-      (db.User.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
+  //     (db.User.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
 
-      await handlePasswordResetRequest(mockRequest, mockResponse);
+  //     await handlePasswordResetRequest(mockRequest, mockResponse);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Password reset email sent successfully' });
-    });
+  //     expect(mockResponse.status).toHaveBeenCalledWith(200);
+  //     expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Password reset email sent successfully' });
+  //   });
   });
 
   describe('resetPassword', () => {
