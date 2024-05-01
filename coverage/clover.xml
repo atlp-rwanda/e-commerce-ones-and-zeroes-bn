@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1714564506435" clover="3.2.0">
-  <project timestamp="1714564506435" name="All files">
-    <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1" elements="6" coveredelements="6" complexity="0" loc="5" ncloc="5" packages="1" files="1" classes="1"/>
-    <file name="exampleRoutes.ts" path="/Users/igorihimbazwe/Desktop/ANDELA/e-commerce-ones-and-zeroes-bn/src/routes/exampleRoutes.ts">
+<coverage generated="1714565596149" clover="3.2.0">
+  <project timestamp="1714565596149" name="All files">
+    <metrics statements="13" coveredstatements="13" conditionals="7" coveredconditionals="6" methods="3" coveredmethods="3" elements="23" coveredelements="22" complexity="0" loc="13" ncloc="13" packages="2" files="2" classes="2"/>
+    <package name="dist.routes">
+      <metrics statements="8" coveredstatements="8" conditionals="7" coveredconditionals="6" methods="2" coveredmethods="2"/>
+      <file name="exampleRoutes.js" path="/Users/igorihimbazwe/Desktop/ANDELA/e-commerce-ones-and-zeroes-bn/dist/routes/exampleRoutes.js">
+        <metrics statements="8" coveredstatements="8" conditionals="7" coveredconditionals="6" methods="2" coveredmethods="2"/>
+        <line num="2" count="1" type="cond" truecount="3" falsecount="0"/>
+        <line num="3" count="1" type="cond" truecount="3" falsecount="1"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.routes">
       <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <line num="1" count="1" type="stmt"/>
-      <line num="3" count="1" type="stmt"/>
-      <line num="5" count="1" type="stmt"/>
-      <line num="6" count="1" type="stmt"/>
-      <line num="11" count="1" type="stmt"/>
-    </file>
+      <file name="exampleRoutes.ts" path="/Users/igorihimbazwe/Desktop/ANDELA/e-commerce-ones-and-zeroes-bn/src/routes/exampleRoutes.ts">
+        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+      </file>
+    </package>
   </project>
 </coverage>
