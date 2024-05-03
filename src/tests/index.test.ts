@@ -15,6 +15,8 @@ test('GET / should return status 200 and a JSON response', async () => {
   
   expect(response.status).toBe(200);
   expect(response.body).toEqual({ message: 'sucess' });
+}),
+
 
 
 

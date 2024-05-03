@@ -4,9 +4,7 @@
   "description": "This is backend part of e-commerce-ones-and-zeroes",
   "main": "server.js",
   
-  "jest": {
-    "preset": "ts-jest"
-  },
+ 
 
   "scripts": {
     "build": "tsc",
