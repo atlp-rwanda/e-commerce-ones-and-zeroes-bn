@@ -2,32 +2,30 @@ version: 2.1
 
 jobs:
   build:
+
+    # Primary container image where all commands run
     docker:
-      - image: circleci/node:14
-    environment:
-      # Replace with your actual database name
-      TEST_DATABASE_NAME: circle_test
-      # Replace with actual password and mark as secret in CircleCI
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-    services:
-      - postgres:latest  # Using the latest Postgres image
+      - image: cimg/node:22.1.0
+        environment:
+          TEST_DATABASE_URL: postgresql://postgres@localhost/circle_test
+
+    # Service container image
+      - image: cimg/postgres:14.0
+        environment:
+          POSTGRES_USER: postgres
 
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: npm install
-      - run:
-          name: Run tests
-          command: npm test
-          environment:
-            TEST_DATABASE_URL: postgresql://postgres:$POSTGRES_PASSWORD@localhost:5432/$TEST_DATABASE_NAME
-      # - run: 
-      #     name: code-coverage
-      #     command: npm run coverage
-      # - coveralls/upload  
+      - run: sudo apt-get update
+      - run: sudo apt-get install postgresql-client
+      - run:  node --version
+      - run: whoami
+      - run: |
+          psql \
+          -d $TEST_DATABASE_URL \
+          -c "CREATE TABLE test (name char(25));"
+      - run: |
+          psql \
+          -d $TEST_DATABASE_URL \
+          -c "INSERT INTO test VALUES ('John'), ('Joanna'), ('Jennifer');"
 
-workflows:
-  build:
-    jobs:
-      - build
