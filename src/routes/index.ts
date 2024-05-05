@@ -5,6 +5,7 @@ import productsRoutes from './productRoutes';
 import wishlistRoutes from './wishlistRoute';
 import cartRoute from '../routes/cartRoutes';
 import chatRoutes from '../routes/chatsRoutes';
+import productReview from './productReviewRoutes';
 
 const router: Router = express.Router();
 
@@ -22,5 +23,8 @@ router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+router.use('/product', productReview);
+router.use('/products', productsRoutes);
 
 export default router;

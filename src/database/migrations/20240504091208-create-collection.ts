@@ -1,9 +1,8 @@
 'use strict';
-import { QueryInterface } from 'sequelize';
 import { DataTypes, Sequelize } from 'sequelize';
 
 module.exports = {
-  async up(queryInterface: QueryInterface, Sequelize: Sequelize) {
+  async up(queryInterface: any, Sequelize: any) {
     await queryInterface.createTable('Collections', {
       id: {
         allowNull: false,
@@ -37,7 +36,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface: QueryInterface, Sequelize: Sequelize) {
+  async down(queryInterface: any, Sequelize: any) {
     await queryInterface.dropTable('Collections');
   },
 };
