@@ -39,9 +39,7 @@ describe('AuthMiddlware', () => {
 
       try {
         await authMiddleware.isAuthenticated(req, res, next);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
@@ -64,9 +62,7 @@ describe('AuthMiddlware', () => {
 
       try {
         await authMiddleware.isAuthenticated(req, res, next);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
@@ -81,6 +77,8 @@ describe('AuthMiddlware', () => {
         'christian',
         'Ishimwe',
         passwordLastChanged,
+        'seller',
+        true,
       );
       const req = {
         headers: {
@@ -116,6 +114,8 @@ describe('AuthMiddlware', () => {
         'christian',
         'Ishimwe',
         passwordLastChanged,
+        'seller',
+        true,
       );
 
       const req = {
@@ -144,9 +144,7 @@ describe('AuthMiddlware', () => {
 
       try {
         await authMiddleware.isAuthenticated(req, res, next);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       expect(next).toHaveBeenCalled();
     });

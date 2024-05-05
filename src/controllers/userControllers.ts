@@ -5,6 +5,7 @@ import { validateEmail, validatePassword } from '../validations/validations';
 import {
   registerMessageTemplate,
   nodeMail,
+  resetPasswordEmail,
   successfullyverifiedTemplate,
   successfullyDisabledAccountTemplate,
   successfullyRestoredAccountTemplate,
@@ -23,6 +24,8 @@ interface User {
   lastName: string;
   email: string;
   password: string;
+  role: string;
+  isVerified: boolean;
 }
 
 export default class UserController {
@@ -71,10 +74,16 @@ export default class UserController {
 
       const token = generateToken(
         newUser.userId,
+
         email,
+
         firstName,
+
         lastName,
         newUser.passwordLastChanged,
+
+        newUser?.role,
+        newUser?.isVerified,
       );
 
       await nodeMail(
@@ -85,9 +94,8 @@ export default class UserController {
 
       return res
         .status(200)
-        .json({ message: 'Account created!', data: newUser });
+        .json({ message: 'Account created!', data: newUser, token });
     } catch (error: any) {
-      console.log(error);
       return res.status(500).json({ message: 'Failed to register user' });
     }
   }
@@ -218,7 +226,6 @@ export default class UserController {
         userId: createdUser.userId,
       });
     } catch (err) {
-      console.log(err);
       return res.status(500).json({ message: 'Internal Serveral error!' });
     }
   }
@@ -265,6 +272,8 @@ export default class UserController {
         user.firstName,
         user.lastName,
         user.passwordLastChanged,
+        user.role,
+        user?.isVerified,
       );
 
       // Send a response indicating that the login was successful, along with the token
@@ -387,11 +396,6 @@ export default class UserController {
 }
 
 dotenv.config();
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-dotenv.config();
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -410,9 +414,7 @@ export async function sendPasswordResetEmail(
     subject: 'Password Reset Request',
     html: `<p>To reset your password, click <a href="${resetLink}">here</a>.</p>`,
   };
-  await sgMail.send(msg);
 }
-
 export async function handlePasswordResetRequest(
   req: Request,
   res: Response,
@@ -431,11 +433,15 @@ export async function handlePasswordResetRequest(
       return;
     }
 
-    const tokenPayload = {
-      email: user.email,
-    };
-
-    const token = generatetoken(tokenPayload);
+    const token = generateToken(
+      user.userId,
+      user.email,
+      user.firstName,
+      user.lastName,
+      user.role,
+      user.passwordLastChanged,
+      user.isVerified,
+    );
 
     // Store the token in the user's record
     user.resetPasswordToken = token;
@@ -443,7 +449,7 @@ export async function handlePasswordResetRequest(
 
     await user.save();
 
-    await sendPasswordResetEmail(email, token);
+    await nodeMail(email, 'Reset password request', resetPasswordEmail(token));
 
     res.status(200).json({ message: 'Password reset email sent successfully' });
   } catch (error) {
@@ -487,7 +493,6 @@ export async function resetPassword(
 
     res.status(200).json({ message: 'Password reset successfully' });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 }

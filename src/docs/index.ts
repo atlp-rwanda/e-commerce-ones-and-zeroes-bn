@@ -1,12 +1,19 @@
 import dotenv from 'dotenv';
-dotenv.config(); // Load environment variables from .env file
+dotenv.config();
 
 import swaggerJsdoc from 'swagger-jsdoc';
 import { OpenAPIV3 } from 'openapi-types';
-import servers from './servers';
-import allPaths from './paths'; // Import the merged paths from the index file
+import allPaths from './paths';
 
-const PORT = process.env.PORT || 3000; // Set the port from environment variable or default to 3000
+const PORT = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === 'production';
+
+let serverUrl: string;
+if (isProduction) {
+  serverUrl = process.env.BACKEND_URI!;
+} else {
+  serverUrl = `http://localhost:${PORT}`;
+}
 
 const swaggerDefinition: OpenAPIV3.Document = {
   openapi: '3.0.0',
@@ -17,14 +24,13 @@ const swaggerDefinition: OpenAPIV3.Document = {
     contact: {
       name: 'OnesAndZeroes',
       email: 'onesandzeroes@email.com',
-      url: 'https//www.onesandzeroes.com',
+      url: 'https://www.onesandzeroes.com',
     },
   },
   servers: [
     {
-      url: `http://localhost:${PORT}`, // Use the port from environment variable
+      url: serverUrl,
     },
-    ...servers,
   ],
   components: {
     securitySchemes: {
@@ -35,12 +41,8 @@ const swaggerDefinition: OpenAPIV3.Document = {
       },
     },
   },
-  security: [
-    {
-      bearerAuth: [],
-    },
-  ],
-  paths: allPaths, // Use the merged paths here
+  security: [],
+  paths: allPaths,
 };
 
 const options = {

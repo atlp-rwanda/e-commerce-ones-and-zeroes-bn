@@ -132,8 +132,6 @@ describe('UserController', () => {
 
       try {
         await UserController.registerUser(req, res);
-
-        console.log('Registration successful!');
       } catch (error) {
         console.error(error);
       }

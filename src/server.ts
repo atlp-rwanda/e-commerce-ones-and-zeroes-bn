@@ -38,7 +38,6 @@ app.use(passport.initialize());
 //Use body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use('/api', routes);
 app.use('/api', changePasswordIgnored, routes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/auth', AuthRouters);

@@ -42,6 +42,11 @@ Dear ${firstName},
 your account has been restored.
 `;
 
+const resetPasswordEmail = (token: string): string => `
+Dear User,
+Click here to reset password ${host}/api/users/reset-password/${token}.
+`;
+
 const nodeMail = async (
   email: string,
   subject: string,
@@ -75,4 +80,5 @@ export {
   successfullyverifiedTemplate,
   successfullyDisabledAccountTemplate,
   successfullyRestoredAccountTemplate,
+  resetPasswordEmail,
 };
