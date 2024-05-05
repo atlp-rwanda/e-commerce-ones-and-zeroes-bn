@@ -1,5 +1,5 @@
 'use strict';
-require('dotenv').config();
+const dotenv = require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
@@ -19,6 +19,7 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.url, config);
 } else {
   // @ts-ignore
+
   sequelize = new Sequelize(
     config.database,
     config.username,

@@ -118,7 +118,100 @@ const productPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
-
+  '/api/products': {
+    post: {
+      summary: 'Create a new collection',
+      tags: ['Collections'],
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                name: {
+                  type: 'string',
+                },
+              },
+              required: ['name'],
+            },
+          },
+        },
+      },
+      responses: {
+        '201': {
+          description: 'Collection created successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                    format: 'uuid',
+                  },
+                  name: {
+                    type: 'string',
+                  },
+                },
+                required: ['id', 'name'],
+              },
+            },
+          },
+        },
+        '400': {
+          description: 'Bad request',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'Not found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   '/api/products/{collectionId}/': {
     post: {
       summary: 'Add a product to a collection',

@@ -41,8 +41,12 @@ const swaggerDefinition: OpenAPIV3.Document = {
       },
     },
   },
-  security: [],
-  paths: allPaths,
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+  paths: allPaths, // Use the merged paths here
 };
 
 const options = {

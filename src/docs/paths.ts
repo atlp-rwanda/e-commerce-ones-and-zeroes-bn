@@ -9,7 +9,7 @@ import updateUserPath from './Users/updateUser';
 import productPaths from './product/product';
 import updtProductPath from './product/updtproduct';
 import chatPaths from './chats/chatsPath';
-
+import productReviewPaths from './product/productReview';
 const allPaths: OpenAPIV3.PathsObject = {
   ...examples,
   ...googlePaths,
@@ -22,6 +22,7 @@ const allPaths: OpenAPIV3.PathsObject = {
   ...productPaths,
   ...updtProductPath,
   ...chatPaths,
+  ...productReviewPaths,
 };
 
 export default allPaths;
