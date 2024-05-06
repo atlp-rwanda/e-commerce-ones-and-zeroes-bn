@@ -30,7 +30,6 @@ jobs:
           name: send coverage data to coveralls
           command: npm run coveralls
 
-
 workflows:
   version: 2
   test_and_deploy:
