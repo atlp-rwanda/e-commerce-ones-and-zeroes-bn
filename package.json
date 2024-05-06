@@ -14,7 +14,6 @@
     "unseed": "npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:seed:undo --env development",
     "undo-migrate": "npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate:undo:all --env development",
     "migrate:all": "npm run undo-migrate && npm run migrate && npm run seed"
-    
   },
   "author": "",
   "license": "ISC",
@@ -37,7 +36,7 @@
     "sequelize-cli": "^6.6.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
-    "typescript": "^5.4.4",
+    "typescript": "^5.4.5",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
