@@ -3,7 +3,7 @@ bin-debug/
 bin-release/
 [Oo]bj/
 [Bb]in/
-
+.vscode/
 node_modules
 
 .env
@@ -29,3 +29,5 @@ dist/
 
 node_modules/
 *.env
+
+coverage/
