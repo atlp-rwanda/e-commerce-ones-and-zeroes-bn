@@ -1,13 +1,12 @@
 {
-    "compilerOptions": {
-      "target": "es6",
-      "module": "NodeNext",
-      "outDir": "./dist",
-      "strict": true,
-      "esModuleInterop": true,
-      "types": ["openapi-types","node","jest"]
-    },
-    "include": ["./src/**/*.ts", "src/routes/index.ts"],
-    "exclude": ["node_modules","dist"]
-  }
-  
+  "compilerOptions": {
+    "target": "es6",
+    "module": "NodeNext",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "types": ["openapi-types","node","jest"]
+  },
+  "include": ["./src/**/*.ts", "src/routes/index.ts"],
+  "exclude": ["node_modules","dist"]
+}

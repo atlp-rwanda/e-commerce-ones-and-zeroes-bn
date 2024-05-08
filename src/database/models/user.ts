@@ -2,11 +2,10 @@
 const {
   Model
 } = require('sequelize');
- module.exports = (sequelize: any, DataTypes: { UUID: any; UUIDV4: any; STRING: any; DATE: any; BOOLEAN:any }) => {
+module.exports = (sequelize: any, DataTypes: { UUID: any; UUIDV4: any; STRING: any; DATE: any; BOOLEAN: any }) => {
   class User extends Model {
     static associate(models: any) {
       // define association here
-     
     }
   }
   User.init({
@@ -34,27 +33,35 @@ const {
         type: DataTypes.STRING,
         allowNull: false
       },
-      isActive:{
+      isActive: {
         allowNull: false,
         defaultValue: false,
         type: DataTypes.BOOLEAN
       },
-      isGoogle:{
-        allowNull: false,
-        defaultValue: false,
-        type: DataTypes.BOOLEAN
-      },isAdmin:{
+      isGoogle: {
         allowNull: false,
         defaultValue: false,
         type: DataTypes.BOOLEAN
       },
-      role:{
-        allowNull:false,
-        defaultValue:"guest",
+      isAdmin: {
+        allowNull: false,
+        defaultValue: false,
+        type: DataTypes.BOOLEAN
+      },
+      role: {
+        allowNull: false,
+        defaultValue: "guest",
         type: DataTypes.STRING
-
-      }
-      ,
+      },
+      secret: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      use2FA: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+  
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
@@ -71,4 +78,3 @@ const {
   });
   return User;
 };
-

@@ -10,7 +10,7 @@ export default class UserController {
     static async registerUser(req: Request, res: Response) {
         try {
             const { firstName, lastName, email, password,role ,isAdmin} = req.body;
-            console.log(isAdmin)
+          
 
             // Check if user with the given email already exists
             const existingUser = await db.User.findOne({ where: { email: email } });

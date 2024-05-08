@@ -18,9 +18,11 @@ module.exports = {
           email: { type: String; unique: true; allowNull: any };
           password: { type: String; allowNull: any };
           isActive: { type: Boolean; allowNull: any; defaultValue: false };
+          use2FA: { type: Boolean; allowNull: any; defaultValue: false };
           isGoogle: { type: Boolean; allowNull: any; defaultValue: false };
           createdAt: { allowNull: boolean; type: any; defaultValue: any };
           updatedAt: { allowNull: boolean; type: any; defaultValue: any };
+          secret: { type: String; allowNull: true };
         }
       ) => any;
     },
@@ -77,6 +79,15 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
+      secret: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      use2FA: {
+        allowNull: false,
+        defaultValue: false,
+        type: Sequelize.BOOLEAN,
+         }
     });
   },
 
@@ -87,3 +98,12 @@ module.exports = {
     await queryInterface.dropTable("Users");
   },
 };
+
+
+
+
+
+// const userType = await db.UserType.findOne({ where: { userId: user.id, type: 'seller' } });
+// if (!userType) {
+//   return res.status(403).json({ message: 'You are not authorized to perform this action' });
+// }
