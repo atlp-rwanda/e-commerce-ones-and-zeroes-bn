@@ -2,14 +2,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { PORT } = process.env;
+const { PORT, BACKEND_URL } = process.env;
 const servers = [
   {
     url: `http://localhost:${PORT}/`,
     description: 'Development server',
   },
   {
-    url: 'backend uri',
+    url: `${BACKEND_URL}`,
     description: 'Production server',
   },
 ];

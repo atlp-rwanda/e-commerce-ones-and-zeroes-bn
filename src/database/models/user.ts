@@ -34,11 +34,11 @@ module.exports = (
       },
       email: {
         type: DataTypes.STRING,
-        unique: false,
+        unique: true,
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       isActive: {
         type: DataTypes.BOOLEAN,
