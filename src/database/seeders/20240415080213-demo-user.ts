@@ -1,28 +1,10 @@
 'use strict';
-const bcrypt = require('bcrypt');
+import dotenv from 'dotenv';
+dotenv.config();
 const { v4: uuid } = require('uuid');
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(
-    queryInterface: {
-      bulkInsert: (
-        arg0: string,
-        arg1: {
-          userId: any;
-          firstName: string;
-          lastName: string;
-          email: string;
-          password: any;
-          isVerified: boolean;
-        }[],
-        arg2: {},
-      ) => any;
-    },
-    Sequelize: any,
-  ) {
-    const hashedPassword1 = await bcrypt.hash('Password1239@', 10);
-
+  async up(queryInterface: any, Sequelize: any) {
     await queryInterface.bulkInsert(
       'Users',
       [
@@ -30,27 +12,31 @@ module.exports = {
           userId: uuid(),
           firstName: 'christian',
           lastName: 'Ishimwe',
-          email: 'nteziryayocelestin11@gmailsdd.com',
-          password: hashedPassword1,
-          isVerified: true,
+          email: 'christianinja3@gmail.com',
+          password: process.env.password,
+          role: 'seller',
+          isVerified: false,
         },
         {
           userId: uuid(),
           firstName: 'celse',
           lastName: 'Nshuti',
-          email: 'nshuticelestdxin@gmail.com',
-          password: hashedPassword1,
+          email: 'nshuticelestin@gmail.com',
+          password: process.env.password,
           isVerified: false,
+          role: 'seller',
         },
       ],
       {},
     );
   },
 
-  async down(
-    queryInterface: { bulkDelete: (arg0: string, arg1: null, arg2: {}) => any },
-    Sequelize: any,
-  ) {
+  async down(queryInterface: any, Sequelize: any) {
+    /**
+     * Add commands to revert seed here.
+     *
+     * Example:
+     */
     await queryInterface.bulkDelete('Users', null, {});
   },
 };

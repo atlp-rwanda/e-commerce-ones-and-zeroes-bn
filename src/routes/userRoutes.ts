@@ -1,5 +1,6 @@
 import express, { Router } from 'express';
 import UserController from '../controllers/userControllers';
+import AuthMiddleware from '../middleware/authMiddleware';
 import {
   handlePasswordResetRequest,
   resetPassword,
@@ -14,6 +15,13 @@ router.get('/', UserController.getUsers);
 router.post('/registerUser', UserController.registerUser);
 router.get('/isVerified/:token', UserController.isVerified);
 router.post('/login', UserController.login);
+router.put(
+  '/setUserRole/:id',
+  AuthMiddleware.verifyToken,
+  AuthMiddleware.isAuthenticated,
+  AuthMiddleware.checkRole('admin'),
+  UserController.setUserRoles,
+);
 router.post('/forgot-password', handlePasswordResetRequest);
 router.post('/reset-password/:token', resetPassword);
 

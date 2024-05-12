@@ -26,6 +26,7 @@ interface User {
   password: string;
   role: string;
   isVerified: boolean;
+  isSeller?: boolean;
 }
 
 export default class UserController {
@@ -65,12 +66,16 @@ export default class UserController {
 
       const hashedPassword = bcrypt.hashSync(password, 10);
 
+      const isSeller: boolean = req.body.isSeller;
+
       const newUser = await db.User.create({
         firstName,
         lastName,
         email,
+        role: isSeller ? 'seller' : 'buyer',
         password: hashedPassword,
       });
+      console.log(newUser);
 
       const token = generateToken(
         newUser.userId,
@@ -452,6 +457,34 @@ export default class UserController {
       res.status(500).json({
         status: 'fail',
         message: 'something went wrong: ' + e,
+      });
+    }
+  }
+
+  static async setUserRoles(req: Request, res: Response) {
+    try {
+      const { role } = req.body;
+      if (!role)
+        return res.status(400).json({
+          message: 'role can not be empty',
+        });
+      const user = await db.User.findOne({ where: { userId: req.params.id } });
+      if (!user)
+        return res.status(404).json({
+          message: 'user not found',
+        });
+
+      const updatedUser = await db.User.update(
+        { role: role },
+        { where: { userId: req.params.id } },
+      );
+      return res.status(200).json({
+        message: 'user role updated',
+      });
+    } catch (error: any) {
+      return res.status(500).json({
+        status: 'error',
+        message: error.message,
       });
     }
   }
