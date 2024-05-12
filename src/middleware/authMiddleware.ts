@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { db } from '../database/models';
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 export default class authMiddleware {
   static verifyToken = async (
@@ -9,22 +9,25 @@ export default class authMiddleware {
     next: NextFunction,
   ) => {
     try {
-      const authorization: string | undefined = req.headers['authorization'];
+      const authorization = req.headers['authorization'];
       if (!authorization) {
         (req as any).user = null;
         return next();
       }
-      const token: string = authorization.split(' ')[1];
+
+      const token = authorization.split(' ')[1];
       if (!token) {
         (req as any).user = null;
         return next();
       }
-      const payload: any = await jwt.verify(token, process.env.JWT_SECRET);
+
+      const payload: any = jwt.verify(token, process.env.JWT_SECRET!);
       const existingUser = await db.User.findOne({
         where: {
           userId: payload.userId,
         },
       });
+
       if (!existingUser) {
         (req as any).user = null;
         return next();

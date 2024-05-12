@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+import speakeasy from 'speakeasy';
 import { generateToken } from '../helps/generateToken';
 import { validateEmail, validatePassword } from '../validations/validations';
 import {
@@ -8,6 +9,7 @@ import {
   successfullyverifiedTemplate,
   successfullyDisabledAccountTemplate,
   successfullyRestoredAccountTemplate,
+  twoFAMessageTemplate,
   resetPasswordEmail,
 } from '../utils/emails';
 import { db } from '../database/models';
@@ -75,7 +77,6 @@ export default class UserController {
         role: isSeller ? 'seller' : 'buyer',
         password: hashedPassword,
       });
-      console.log(newUser);
 
       const token = generateToken(
         newUser.userId,
@@ -96,6 +97,7 @@ export default class UserController {
         'You are required to Verify your email',
         registerMessageTemplate(firstName, token),
       );
+      console.log(registerMessageTemplate);
 
       return res
         .status(200)
@@ -249,47 +251,77 @@ export default class UserController {
       if (!email || !password) {
         return res
           .status(400)
-          .send({ message: 'Email and password are required' });
+          .json({ message: 'Email and password are required' });
       }
 
-      // Find the user by email
       const user = await db.User.findOne({ where: { email } });
-
       if (!user) {
-        return res.status(404).send({ message: 'User not found' });
+        return res.status(404).json({ message: 'User not found' });
       }
 
-      // Check if the provided password matches the password in db
       const isPasswordMatch = await bcrypt.compare(password, user.password);
       if (!isPasswordMatch) {
-        return res.status(401).send({ message: 'Incorrect credentials' });
+        return res.status(401).json({ message: 'Incorrect credentials' });
       }
 
-      // Check if the user's email is verified
       if (!user.isVerified) {
         return res.status(401).send({ message: 'Email not verified' });
       }
 
-      // Generate a JWT token
-      const token = generateToken(
-        user.userId,
-        user.email,
-        user.firstName,
-        user.lastName,
-        user.passwordLastChanged,
-        user.role,
-        user?.isVerified,
-      );
+      if (user.role === 'seller') {
+        if (!user.use2FA) {
+          // If 2FA is not enabled, return a JWT token without 2FA verification
+          const token = generateToken(
+            user.userId,
+            user.email,
+            user.firstName,
+            user.lastName,
+            user.role,
+            user.passwordLastChanged,
+            user.isVerified,
+          );
+          return res
+            .status(200)
+            .json({ message: 'User authenticated without 2FA', token });
+        }
 
-      // Send a response indicating that the login was successful, along with the token
-      return res.status(200).send({ message: 'Login successful', token });
+        // If use2FA is true, proceed with sending the 2FA token
+        const token = speakeasy.totp({
+          secret: user.secret,
+          encoding: 'base32',
+          step: 120, // Token is valid for 2 minutes
+        });
+
+        // Send the email with the token
+        const name = user.name;
+        await nodeMail(
+          email,
+          '2FA Token for One and Zero E-commerce',
+          twoFAMessageTemplate(token),
+        );
+
+        // Send response with message to check email for the 2FA token
+        return res
+          .status(200)
+          .json({ message: 'Check your email for the 2FA token', id: user.id });
+      } else {
+        // Generate JWT token without 2FA
+        const token = generateToken(
+          user.userId,
+          user.email,
+          user.firstName,
+          user.lastName,
+          user.role,
+          user.passwordLastChanged,
+          user.isVerified,
+        );
+        res.status(200).json({ message: 'User authenticated', token });
+      }
     } catch (error: any) {
-      // console.error(error);
-      return res
-        .status(500)
-        .json({ message: 'Failed to login', error: error.message });
+      res.status(500).json({ message: 'Error during login' });
     }
   }
+
   static async disableUser(req: Request, res: Response) {
     try {
       const { reason } = req.body;

@@ -7,8 +7,8 @@ export const generateToken = (
   email: string,
   firstName: string,
   lastName: string,
-  passwordLastChanged: string,
   role: string,
+  passwordLastChanged: string,
   isVerified: boolean,
 ): string => {
   const secret = process.env.JWT_SECRET;
@@ -21,8 +21,8 @@ export const generateToken = (
       email,
       firstName,
       lastName,
-      passwordLastChanged,
       role,
+      passwordLastChanged,
       isVerified,
     },
 

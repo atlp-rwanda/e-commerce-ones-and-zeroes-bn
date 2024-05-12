@@ -8,6 +8,7 @@ import {
 import authMiddleware from '../middleware/authMiddleware';
 import { validations } from '../validations/validations';
 import updatePasswordMiddleWare from '../middleware/updatePasswordMiddleware';
+import sellerController from '../controllers/sellerController';
 
 const router: Router = express.Router();
 
@@ -56,6 +57,15 @@ router.patch(
   authMiddleware.verifyToken,
   authMiddleware.isAuthenticated,
   UserController.updateSingleUser,
+);
+
+router.post('/2fa-verify/:userId', sellerController.twoFAController);
+router.post(
+  '/toggle2FA',
+  authMiddleware.verifyToken,
+  AuthMiddleware.isAuthenticated,
+  authMiddleware.checkRole('seller'),
+  sellerController.toggle2FA,
 );
 
 export default router;

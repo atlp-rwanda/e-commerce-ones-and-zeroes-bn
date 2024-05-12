@@ -7,6 +7,14 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { generateToken } from '../helps/generateToken';
 
+const mockResponse = () => {
+  const res = {} as any;
+  res.status = jest.fn().mockReturnValue(res);
+  res.json = jest.fn().mockReturnValue(res);
+  res.send = jest.fn().mockReturnValue(res);
+  return res;
+};
+
 dotenv.config();
 
 jest.mock('../database/models', () => ({
@@ -32,19 +40,14 @@ describe('UserController', () => {
   describe('login', () => {
     it('should return 400 if email or password is not provided', async () => {
       const req = {
-        body: {
-          // email or password is not provided
-        },
+        body: {},
       } as Request;
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        send: jest.fn(),
-      } as unknown as Response;
+      const res = mockResponse();
 
       await UserController.login(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.send).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith({
         message: 'Email and password are required',
       });
     });
@@ -56,17 +59,13 @@ describe('UserController', () => {
           password: 'password',
         },
       } as Request;
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        send: jest.fn(),
-      } as unknown as Response;
-
+      const res = mockResponse();
       (db.User.findOne as jest.Mock).mockResolvedValueOnce(null);
 
       await UserController.login(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.send).toHaveBeenCalledWith({ message: 'User not found' });
+      expect(res.json).toHaveBeenCalledWith({ message: 'User not found' });
     });
 
     it('should return 401 if password is incorrect', async () => {
@@ -97,7 +96,7 @@ describe('UserController', () => {
       await UserController.login(req, res);
 
       expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.send).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith({
         message: 'Incorrect credentials',
       });
     });
@@ -157,22 +156,8 @@ describe('UserController', () => {
           '$2b$10$z5yV9gdX3OrxuJdPBiUa7eBv27u9mEVWmq2SvXW4oqyZC3tYy0A3u',
         isVerified: true,
       };
-
-      // Mock the database query to return the user with correct credentials
       (db.User.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
-
-      // Mock bcrypt.compare to return true
       (bcrypt.compare as jest.Mock).mockResolvedValueOnce(true);
-
-      // Mock token generation
-      // const expectedToken = 'helloworld';
-      // jest.spyOn(jwt, 'sign').mockImplementation((payload, secret, options) => {
-      //   if (secret !== process.env.USER_SECRET) {
-      //     throw new Error('USER SECRET not defined');
-      //   }
-      //   return 'mockToken';
-      // });
-
       await UserController.login(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
@@ -185,11 +170,7 @@ describe('UserController', () => {
           password: 'correctPassword',
         },
       } as Request;
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        send: jest.fn(),
-        json: jest.fn(),
-      } as unknown as Response;
+      const res = mockResponse();
 
       const errorMessage = 'Database error';
       (db.User.findOne as jest.Mock).mockRejectedValueOnce(
@@ -200,8 +181,7 @@ describe('UserController', () => {
 
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
-        message: 'Failed to login',
-        error: errorMessage,
+        message: 'Error during login',
       });
     });
   });

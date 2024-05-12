@@ -57,9 +57,7 @@ describe('UserController', () => {
 
       try {
         await UserController.disableUser(req, res);
-      } catch (error) {
-        console.error(error);
-      }
+      } catch (error) {}
 
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({ message: 'No such User found' });
@@ -107,9 +105,7 @@ describe('UserController', () => {
 
       try {
         await UserController.disableUser(req, res);
-      } catch (error) {
-        console.error(error);
-      }
+      } catch (error) {}
 
       expect(res.status).toHaveBeenCalledWith(403);
       expect(res.json).toHaveBeenCalledWith({
@@ -155,9 +151,7 @@ describe('UserController', () => {
 
       try {
         await UserController.disableUser(req, res);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         message: 'Missing reason for disabling account',
@@ -206,12 +200,9 @@ describe('UserController', () => {
 
       try {
         await UserController.disableUser(req, res);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       const firstName: string = 'celestin';
-      console.log(firstName);
       const message: string = mailHelpers.successfullyDisabledAccountTemplate(
         firstName,
         'Harrasment of other users of the application',
@@ -270,9 +261,7 @@ describe('UserController', () => {
 
       try {
         await UserController.disableUser(req, res);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       const message: string =
         mailHelpers.successfullyRestoredAccountTemplate('celestin');
@@ -323,9 +312,7 @@ describe('UserController', () => {
 
       try {
         await UserController.disableUser(req, res);
-      } catch (error) {
-        console.error(error);
-      }
+      } catch (error) {}
 
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
