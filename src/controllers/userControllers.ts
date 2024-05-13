@@ -29,7 +29,11 @@ export default class UserController {
   static async getUsers(req: Request, res: Response): Promise<Response> {
     try {
       const users = await db.User.findAll();
-      return res.status(200).json(users);
+      return res.status(200).json({
+        status: 'success',
+
+        data: users,
+      });
     } catch (error) {
       return res.status(500).json({ message: 'Failed to fetch users' });
     }
@@ -79,6 +83,99 @@ export default class UserController {
     } catch (error: any) {
       console.log(error);
       return res.status(500).json({ message: 'Failed to register user' });
+    }
+  }
+
+  // get single profile/user controller
+  static async getSingleUser(req: Request, res: Response) {
+    try {
+      const singleUser = await db.User.findOne({
+        where: {
+          userId: req.params.id,
+        },
+      });
+      if (singleUser) {
+        return res.status(200).json({
+          status: 'User Profile',
+          data: singleUser,
+          billing: singleUser.billingAddress,
+        });
+      }
+    } catch (error: any) {
+      return res.status(500).json({
+        message: "provided ID doen't exist!",
+        error: error.message,
+      });
+    }
+  }
+  //update single profile/user
+  static async updateSingleUser(req: Request, res: Response) {
+    try {
+      const singleUser = await db.User.findOne({
+        where: {
+          userId: req.params.id,
+        },
+      });
+
+      if (!singleUser) {
+        return res.status(404).json({
+          status: 'Not Found',
+          error: 'User not found',
+        });
+      }
+
+      const {
+        firstName,
+        lastName,
+        gender,
+        birthdate,
+        preferredLanguage,
+        preferredCurrency,
+        billingAddress,
+      } = req.body;
+
+      if (firstName) {
+        singleUser.firstName = firstName;
+      }
+      if (lastName) {
+        singleUser.lastName = lastName;
+      }
+      if (gender) {
+        singleUser.gender = gender;
+      }
+      if (birthdate) {
+        singleUser.birthdate = birthdate;
+      }
+      if (preferredLanguage) {
+        singleUser.preferredLanguage = preferredLanguage;
+      }
+      if (preferredCurrency) {
+        singleUser.preferredCurrency = preferredCurrency;
+      }
+      if (billingAddress) {
+        singleUser.billingAddress = billingAddress;
+      }
+
+      singleUser.updatedAt = new Date();
+
+      if (req.body.email) {
+        return res.status(400).json({
+          status: 'Bad Request',
+          error: 'Email cannot be updated',
+        });
+      }
+
+      await singleUser.save();
+
+      return res.status(200).json({
+        status: 'Profile updated successfully',
+        data: singleUser,
+      });
+    } catch (err: any) {
+      return res.status(500).json({
+        status: 'Internal Server Error',
+        error: err.message,
+      });
     }
   }
 

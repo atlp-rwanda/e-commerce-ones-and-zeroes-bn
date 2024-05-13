@@ -192,7 +192,11 @@ describe('UserController', () => {
       await UserController.getUsers(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(users);
+      expect(res.json).toHaveBeenCalledWith({
+        status: 'success',
+
+        data: users,
+      });
     });
 
     it('should return 500 if a database error occurs', async () => {

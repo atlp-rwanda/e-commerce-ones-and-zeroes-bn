@@ -21,5 +21,21 @@ router.put(
   authMiddleware.checkRole,
   UserController.disableUser,
 );
+router.get(
+  '/',
+  authMiddleware.isAuthenticated,
+  authMiddleware.checkRole,
+  UserController.getUsers,
+);
+router.get(
+  '/:id',
+  authMiddleware.isAuthenticated,
+  UserController.getSingleUser,
+);
+router.patch(
+  '/:id',
+  authMiddleware.isAuthenticated,
+  UserController.updateSingleUser,
+);
 
 export default router;
