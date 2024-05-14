@@ -9,7 +9,7 @@ router.get('/', (req: Request, res: Response) => {
 });
 
 // Use userRoute for paths starting with '/users'
-router.use('/users', userRoute);
+router.use('/user', userRoute);
 
 // Error handling middleware
 router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
