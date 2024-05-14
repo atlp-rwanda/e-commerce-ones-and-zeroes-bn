@@ -6,6 +6,6 @@
     "strict": true,
     "esModuleInterop": true
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*.ts", "src/routes/index.ts"],
   "exclude": ["node_modules"]
 }
