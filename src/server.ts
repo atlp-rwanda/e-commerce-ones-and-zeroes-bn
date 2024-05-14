@@ -16,6 +16,7 @@ app.use(express.json());
 
 const port = process.env.PORT || 7000;
 app.use(cors());
+app.use(express.json());
 
 //Use body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -26,6 +27,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.listen(port, async () => {
   try {
     await sequelize.authenticate();
+    console.log('server started');
     console.log(`Database Connection status: Success\nRunning Port: ${port}`);
   } catch (e) {
     console.log(e);

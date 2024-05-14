@@ -9,7 +9,7 @@ module.exports = {
       bulkInsert: (
         arg0: string,
         arg1: {
-          Id: any;
+          userId: any;
           firstName: string;
           lastName: string;
           email: string;
@@ -27,10 +27,10 @@ module.exports = {
       'Users',
       [
         {
-          Id: uuid(),
+          userId: uuid(),
           firstName: 'christian',
           lastName: 'Ishimwe',
-          email: 'christianinjoooa3@gmail.com',
+          email: 'iigore2061@gmail.com',
           password: hashedPassword1,
           isVerified: true,
         },

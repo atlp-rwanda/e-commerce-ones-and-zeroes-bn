@@ -1,50 +1,188 @@
-import { Request, Response, NextFunction } from 'express';
-import bcrypt from 'bcrypt';
+import express, { Express, Request, Response } from 'express';
+
+import UserController from '../controllers/userControllers';
 import { db } from '../database/models';
-import { generateToken } from '../helps/generateToken';
+import 'dotenv/config';
 
-export default class UserController {
-  static async login(req: Request, res: Response) {
-    try {
-      const { email, password } = req.body;
-      if (!email || !password) {
-        return res
-          .status(400)
-          .send({ message: 'Email and password are required' });
+jest.mock('../database/models', () => ({
+  db: {
+    User: {
+      findOne: jest.fn(),
+      findAll: jest.fn(),
+      create: jest.fn(),
+      save: jest.fn(),
+    },
+  },
+}));
+
+describe('UserController', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('registerUser', () => {
+    it('should return 400 if email already exists', async () => {
+      const req = {
+        body: {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john123@example.com',
+          password: 'Pass@123',
+        },
+      } as Request;
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+
+      (db.User.findOne as jest.Mock).mockResolvedValueOnce({
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'hashedPassword',
+      });
+
+      await UserController.registerUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Email already exists',
+      });
+    });
+    it('should return 400 if password is not strong enough', async () => {
+      const req = {
+        body: {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john@example.com',
+          password: 'weak',
+        },
+      } as Request;
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+
+      (db.User.findOne as jest.Mock).mockResolvedValueOnce(null);
+
+      await UserController.registerUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'password should be strong',
+      });
+    });
+    it('should return 400 if email is not valid', async () => {
+      const req = {
+        body: {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'invalid-email',
+          password: 'password123',
+        },
+      } as Request;
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+
+      (db.User.findOne as jest.Mock).mockResolvedValueOnce(null);
+
+      await UserController.registerUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Invalid email' });
+    });
+    it('should return 400 if password is not strong enough', async () => {
+      const req = {
+        body: {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john@example.com',
+          password: 'weak',
+        },
+      } as Request;
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+
+      (db.User.findOne as jest.Mock).mockResolvedValueOnce(null);
+
+      await UserController.registerUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'password should be strong',
+      });
+    });
+
+    it('should register a new user', async () => {
+      const req = {
+        body: {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john123@example.com',
+          password: process.env.password,
+        },
+      } as unknown as Request;
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+
+      (db.User.findOne as jest.Mock).mockResolvedValueOnce(null);
+
+      (db.User.create as jest.Mock).mockResolvedValueOnce({
+        id: 1,
+        ...req.body,
+      });
+
+      try {
+        await UserController.registerUser(req, res);
+
+        console.log('Registration successful!');
+      } catch (error) {
+        console.error(error);
       }
 
-      // Find the user by email
-      const user = await db.User.findOne({ where: { email } });
-      if (!user) {
-        return res.status(404).send({ message: 'User not found' });
-      }
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Account created!',
+        data: {
+          id: 1,
+          ...req.body,
+        },
+      });
+    });
 
-      // Check if the provided password matches the password in db
-      const isPasswordMatch = await bcrypt.compare(password, user.password);
-      if (!isPasswordMatch) {
-        return res.status(401).send({ message: 'Incorrect credentials' });
-      }
+    it('should return 500 if registration fails due to an error', async () => {
+      // Mock request and response objects
+      const req = {
+        body: {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john@example.com',
+        },
+      } as unknown as Request;
 
-      // Check if the user's email is verified
-      if (!user.isverified) {
-        return res.status(401).send({ message: 'Email not verified' });
-      }
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
 
-      // Generate a JWT token
-      const token = generateToken(
-        user.userId,
-        user.email,
-        user.firstName,
-        user.lastName,
-      );
+      jest.spyOn(db.User, 'findOne').mockImplementationOnce(async () => {
+        throw new Error('Database error');
+      });
 
-      // Send a response indicating that the login was successful, along with the token
-      return res.status(200).send({ message: 'Login successful', token });
-    } catch (error: any) {
-      // console.error(error);
-      return res
-        .status(500)
-        .json({ message: 'Failed to login', error: error.message });
-    }
-  }
-}
+      await UserController.registerUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Failed to register user',
+      });
+    });
+  });
+});

@@ -167,8 +167,8 @@ describe('UserController', () => {
       // Mock token generation
       const expectedToken = 'helloworld';
       jest.spyOn(jwt, 'sign').mockImplementation((payload, secret, options) => {
-        if (secret !== process.env.JWT_SECRET) {
-          throw new Error('JWT secret not defined');
+        if (secret !== process.env.USER_SECRET) {
+          throw new Error('USER SECRET not defined');
         }
         return 'mockToken';
       });
@@ -221,17 +221,17 @@ describe('UserController', () => {
 
     it('should throw an error if JWT secret is not defined', () => {
       // Save the original value
-      const originalSecret = process.env.JWT_SECRET;
+      const originalSecret = process.env.USER_SECRET;
 
       // Make JWT_SECRET undefined
-      delete process.env.JWT_SECRET;
+      delete process.env.USER_SECRET;
 
       expect(() =>
         generateToken('123', 'test@example.com', 'John', 'Doe'),
       ).toThrowError('JWT secret not defined');
 
       // Restore the original value
-      process.env.JWT_SECRET = originalSecret;
+      process.env.USER_SECRET = originalSecret;
     });
   });
 });

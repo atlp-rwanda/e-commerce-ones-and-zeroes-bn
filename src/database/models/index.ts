@@ -1,13 +1,12 @@
 'use strict';
-
-const fs = require('fs');
 const dotenv = require('dotenv').config();
+const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const configSuffix = process.env.NODE_ENV === 'development' ? '.ts' : '.js';
+const configSuffix = env == 'development' ? '.ts' : '.js';
 const config = require(__dirname + `/../config/config${configSuffix}`)[env];
 const db: any = {};
 
