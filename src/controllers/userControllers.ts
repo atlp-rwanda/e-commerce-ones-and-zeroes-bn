@@ -8,6 +8,8 @@ import {
   successfullyverifiedTemplate,
 } from '../utils/emails';
 import { db } from '../database/models';
+import passport from '../config/google.auth';
+import { registerToken } from '../config/jwt.token';
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const dotenv = require('dotenv');
@@ -22,6 +24,15 @@ interface User {
 }
 
 export default class UserController {
+  static async getUsers(req: Request, res: Response): Promise<Response> {
+    try {
+      const users = await db.User.findAll();
+      return res.status(200).json(users);
+    } catch (error) {
+      return res.status(500).json({ message: 'Failed to fetch users' });
+    }
+  }
+
   static async registerUser(req: Request, res: Response): Promise<Response> {
     try {
       const { firstName, lastName, email, password } = req.body as User;
@@ -70,58 +81,50 @@ export default class UserController {
     }
   }
 
-  static async getUsers(req: Request, res: Response): Promise<Response> {
+  static async registerUserGoogle(req: any, res: any) {
+    const data = req.user._json;
+    let firstName = data.given_name;
+    let lastName = data.family_name;
+    let email = data.email;
+    const newUser = {
+      firstName,
+      lastName,
+      email,
+      isActive: true,
+      isGoogle: true,
+      password: 'google',
+    };
     try {
-      const users = await db.User.findAll();
-      return res.status(200).json(users);
-    } catch (error) {
-      return res.status(500).json({ message: 'Failed to fetch users' });
+      const alreadyRegistered = await db.User.findOne({
+        where: { email: email, isGoogle: true },
+      });
+      if (alreadyRegistered) {
+        const payLoad = {
+          userId: alreadyRegistered.userId,
+          firstName: alreadyRegistered.firstName,
+          lastName: alreadyRegistered.lastName,
+          role: alreadyRegistered.role,
+        };
+        const userToken = await registerToken(payLoad);
+        return res.status(201).json({ message: 'User signed in!', userToken });
+      }
+      const createdUser = await db.User.create(newUser);
+      return res.status(201).json({
+        message: 'User registered Successful, Please Sign in!',
+        userId: createdUser.userId,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: 'Internal Serveral error!' });
     }
   }
 
-  static async isVerified(req: Request, res: Response) {
-    try {
-      const token = req.params.token;
-      if (!token) {
-        return res.status(400).json({ error: 'No token provided' });
-      }
+  static async loginUserPage(req: any, res: any) {
+    return res.send('User login <a href="/auth/google">google</a>');
+  }
 
-      let decoded: any;
-      decoded = jwt.verify(token, secret!);
-      console.log('Decoded token:', decoded);
-      const { userId } = decoded;
-      console.log(userId);
-
-      const [updated] = await db.User.update(
-        { isVerified: true },
-        { where: { userId } },
-      );
-
-      if (updated === 0) {
-        throw new Error('No user updated');
-      }
-
-      const email = decoded.email;
-      const name = decoded.name;
-
-      await nodeMail(
-        email,
-        name,
-        'Welcome to One and Zero E-commerce',
-        successfullyverifiedTemplate,
-        token,
-      );
-
-      res.status(200).json({ message: 'Email successfully verified' });
-    } catch (error) {
-      if (error instanceof jwt.JsonWebTokenError) {
-        return res.status(400).json({ error: 'Invalid token content' });
-      } else {
-        return res
-          .status(500)
-          .json({ error: 'An error occurred during email verification' });
-      }
-    }
+  static async googleAuth(req: any, res: any) {
+    passport.authenticate('google', { scope: ['profile', 'email'] });
   }
 
   static async login(req: Request, res: Response) {
@@ -135,6 +138,7 @@ export default class UserController {
 
       // Find the user by email
       const user = await db.User.findOne({ where: { email } });
+
 
       if (!user) {
         return res.status(404).send({ message: 'User not found' });
@@ -168,7 +172,52 @@ export default class UserController {
         .json({ message: 'Failed to login', error: error.message });
     }
   }
+
+  static async isVerified(req: Request, res: Response) {
+    try {
+      const token = req.params.token;
+      if (!token) {
+        return res.status(400).json({ error: 'No token provided' });
+      }
+
+      let decoded: any;
+      decoded = jwt.verify(token, secret!);
+      const { userId } = decoded;
+      const [updated] = await db.User.update(
+        { isVerified: true },
+        { where: { userId } },
+      );
+
+      if (updated === 0) {
+        throw new Error('No user updated');
+      }
+
+      const email = decoded.email;
+      const name = decoded.name;
+
+      await nodeMail(
+        email,
+        name,
+        'Welcome to One and Zero E-commerce',
+        successfullyverifiedTemplate,
+        token,
+      );
+
+      res.status(200).json({ message: 'Email successfully verified' });
+    } catch (error) {
+      if (error instanceof jwt.JsonWebTokenError) {
+        return res.status(400).json({ error: 'Invalid token content' });
+      } else {
+        return res
+          .status(500)
+          .json({ error: 'An error occurred during email verification' });
+      }
+    }
+  }
 }
+
+dotenv.config();
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 dotenv.config();
 
