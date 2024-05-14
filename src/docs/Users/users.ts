@@ -338,11 +338,11 @@ const userPaths: OpenAPIV3.PathsObject = {
     },
   },
 
-  '/api/users/isVerified/{token}': {
+  '/api/user/isVerified/{token}': {
     post: {
       // Corrected method to 'post'
       summary: 'User verification',
-      tags: ['User Routes'],
+      tags: ['User'],
       description: 'Endpoint to verify a new user',
 
       parameters: [
