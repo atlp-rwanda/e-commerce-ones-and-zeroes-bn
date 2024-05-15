@@ -30,7 +30,7 @@ module.exports = {
           userId: uuid(),
           firstName: 'christian',
           lastName: 'Ishimwe',
-          email: 'iigore2061@gmail.com',
+          email: 'nteziryayocelestin11@gmail.com',
           password: hashedPassword1,
           isVerified: true,
         },

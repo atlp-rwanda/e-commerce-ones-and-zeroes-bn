@@ -74,11 +74,13 @@ describe('AuthMiddlware', () => {
       });
     });
     it('returns 404 when user is not found', async () => {
+      const passwordLastChanged = new Date().toISOString();
       const token = generateToken(
         'a91da155-2829-41c5-a4de-95f91b25e9b2',
         'christianinjoooa3@gmail.com',
         'christian',
         'Ishimwe',
+        passwordLastChanged,
       );
       const req = {
         headers: {
@@ -107,11 +109,13 @@ describe('AuthMiddlware', () => {
       });
     });
     it('returns 200 when user is authenticated', async () => {
+      const passwordLastChanged = new Date().toISOString();
       const token = generateToken(
         'a91da155-2829-41c5-a4de-95f91b25e9b2',
         'christianinjoooa3@gmail.com',
         'christian',
         'Ishimwe',
+        passwordLastChanged,
       );
 
       const req = {

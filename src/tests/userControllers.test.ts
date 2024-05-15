@@ -213,8 +213,15 @@ describe('UserController', () => {
       const email = 'test@example.com';
       const firstName = 'John';
       const lastName = 'Doe';
+      const passwordLastChanged = new Date().toISOString();
 
-      const token = generateToken(userId, email, firstName, lastName);
+      const token = generateToken(
+        userId,
+        email,
+        firstName,
+        lastName,
+        passwordLastChanged,
+      );
 
       expect(typeof token).toBe('string');
       expect(token.length).toBeGreaterThan(0);
@@ -223,13 +230,19 @@ describe('UserController', () => {
     it('should throw an error if JWT secret is not defined', () => {
       // Save the original value
       const originalSecret = process.env.JWT_SECRET;
-
+      const passwordLastChanged = new Date().toISOString();
       // Make JWT_SECRET undefined
       delete process.env.JWT_SECRET;
       console.log(process.env.JWT_SECRET);
 
       expect(() =>
-        generateToken('123', 'test@example.com', 'John', 'Doe'),
+        generateToken(
+          '123',
+          'test@example.com',
+          'John',
+          'Doe',
+          passwordLastChanged,
+        ),
       ).toThrowError('JWT secret not defined');
 
       // Restore the original value

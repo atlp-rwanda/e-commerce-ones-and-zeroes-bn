@@ -5,6 +5,9 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
 import specs from './docs';
+import startCronJob from './cronJob/password.cron.job';
+import { changePasswordIgnored } from './middleware/changePasswordIgnored';
+
 import passport from './config/google.auth';
 import { db, sequelize } from './database/models/index';
 import AuthRouters from './routes/Auth';
@@ -36,6 +39,7 @@ app.use(passport.initialize());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/api', routes);
+app.use('/api', changePasswordIgnored, routes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/auth', AuthRouters);
 
@@ -44,6 +48,7 @@ app.listen(port, async () => {
     await sequelize.authenticate();
     console.log('server started');
     console.log(`Database Connection status: Success\nRunning Port: ${port}`);
+    startCronJob();
   } catch (e) {
     console.log(e);
   }
