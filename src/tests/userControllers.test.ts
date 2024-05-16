@@ -152,7 +152,6 @@ describe('UserController', () => {
         userId: 1,
         firstName: 'John',
         lastName: 'Doe',
-        role: 'admin',
         email: 'existing@example.com',
         password:
           '$2b$10$z5yV9gdX3OrxuJdPBiUa7eBv27u9mEVWmq2SvXW4oqyZC3tYy0A3u',
