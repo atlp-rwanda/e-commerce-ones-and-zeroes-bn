@@ -373,6 +373,106 @@ const productPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+  '/api/products/{id}': {
+    delete: {
+      summary: 'Delete product',
+      tags: ['Products'],
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      description: 'This is the endpoint for deleting a product by its ID',
+      parameters: [
+        {
+          in: 'path',
+          name: 'id',
+          required: true,
+          schema: {
+            type: 'string',
+          },
+          description: 'The ID of the product to delete',
+        },
+      ],
+      responses: {
+        '200': {
+          description: 'Product deleted successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+        '400': {
+          description: 'Bad Request',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+        '401': {
+          description: 'Unauthorized',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'Product not found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 };
 
 export default productPaths;

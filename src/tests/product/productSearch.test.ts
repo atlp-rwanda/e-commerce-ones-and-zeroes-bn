@@ -40,7 +40,9 @@ describe('SearchController', () => {
       { name: 'Test Product', category: 'TestCategory', price: 100 },
     ]);
 
-    const response = await request(app).get('/search').query({ searchKeyword: 'Test' });
+    const response = await request(app)
+      .get('/search')
+      .query({ searchKeyword: 'Test' });
 
     expect(response.status).toBe(200);
     expect(response.body.data).toEqual([
@@ -65,11 +67,12 @@ describe('SearchController', () => {
     ]);
   });
 
-
   it('should return 500 if there is an internal server error', async () => {
     db.Product.findAll.mockRejectedValue(new Error('Database error'));
 
-    const response = await request(app).get('/search').query({ searchKeyword: 'Test' });
+    const response = await request(app)
+      .get('/search')
+      .query({ searchKeyword: 'Test' });
 
     expect(response.status).toBe(500);
     expect(response.body).toEqual({
@@ -78,7 +81,6 @@ describe('SearchController', () => {
     });
   });
 
- 
   it('should not return expired products', async () => {
     db.Product.findAll.mockResolvedValue([
       { name: 'Product1', expired: false, price: 100 },

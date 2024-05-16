@@ -6,7 +6,7 @@ import {
 } from '../../controllers/productController';
 import { db } from '../../database/models';
 import cloudinary from '../../helps/cloudinaryConfig';
-import { CustomRequest, User } from '../../controllers/productController';
+import { CustomRequest } from '../../controllers/productController';
 // interface User {
 //   role: string;
 //   userId: string;

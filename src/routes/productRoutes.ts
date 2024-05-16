@@ -6,7 +6,7 @@ import {
 } from '../controllers/productController';
 import upload from '../middleware/multerConfig';
 import isAuthenticated from '../middleware/isAuthMiddleware';
-import ProductController from '../controllers/productController';
+import { ProductController } from '../controllers/productController';
 import { SearchController } from '../controllers/productSearch';
 import multer from 'multer';
 import authMiddleware from '../middleware/authMiddleware';
@@ -65,5 +65,7 @@ router.post(
   checkPermission('seller'),
   ProductController.removeProductImage,
 );
+
+router.delete('/:id', isAuthenticated, ProductController.deleteProduct);
 
 export default router;
