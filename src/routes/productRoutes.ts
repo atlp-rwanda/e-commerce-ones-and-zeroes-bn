@@ -7,6 +7,7 @@ import {
 import isAuthenticated from '../middleware/isAuthMiddleware';
 import checkPermission from '../middleware/checkPermissionMiddleware';
 import upload from '../middleware/multerConfig';
+import { productController } from '../controllers/productStatusController';
 
 const router = express.Router();
 router.get('/', getProducts);
@@ -17,6 +18,26 @@ router.post(
   checkPermission('seller'),
   upload.array('images'),
   createProduct,
+);
+
+router.get('/', isAuthenticated, checkPermission('seller'), getProducts);
+router.get(
+  '/available',
+  isAuthenticated,
+  checkPermission('seller'),
+  productController.getAvailableProduct,
+);
+router.get(
+  '/:id',
+  isAuthenticated,
+  checkPermission('seller'),
+  productController.getSingleProduct,
+);
+router.put(
+  '/:productId',
+  isAuthenticated,
+  checkPermission('seller'),
+  productController.updateSingleProduct,
 );
 
 export default router;

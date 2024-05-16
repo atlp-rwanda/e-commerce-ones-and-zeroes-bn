@@ -7,9 +7,9 @@ module.exports = (
     UUIDV4: any;
     STRING: any;
     DECIMAL: any;
+    BOOLEAN: any;
     ARRAY: any;
     DATE: any;
-    BOOLEAN: any;
     INTEGER: any;
   },
 ) => {
@@ -63,6 +63,11 @@ module.exports = (
       },
       images: {
         type: DataTypes.ARRAY(DataTypes.STRING),
+      },
+      isAvailable: {
+        allowNull: false,
+        defaultValue: false,
+        type: DataTypes.BOOLEAN,
       },
       createdAt: {
         allowNull: false,

@@ -45,4 +45,15 @@ export default class authMiddleware {
     }
     next();
   };
+  static checkSellerRole = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    let user = (req as any).user;
+    if (user.role !== 'seller') {
+      return res.status(401).json({ message: 'User is not authorized' });
+    }
+    next();
+  };
 }

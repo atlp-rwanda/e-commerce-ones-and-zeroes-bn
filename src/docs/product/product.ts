@@ -5,6 +5,11 @@ const productPaths: OpenAPIV3.PathsObject = {
     get: {
       summary: 'Get all Products',
       tags: ['Products'],
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
       responses: {
         '200': {
           description: 'Find products in Store',

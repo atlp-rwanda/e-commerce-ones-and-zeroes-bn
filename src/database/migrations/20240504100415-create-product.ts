@@ -50,6 +50,11 @@ module.exports = {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      isAvailable: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
