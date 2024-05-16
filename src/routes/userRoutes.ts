@@ -17,23 +17,27 @@ router.post('/reset-password/:token', resetPassword);
 
 router.put(
   '/disable/:id',
+  authMiddleware.verifyToken,
   authMiddleware.isAuthenticated,
-  authMiddleware.checkRole,
+  authMiddleware.checkRole('admin'),
   UserController.disableUser,
 );
 router.get(
   '/',
+  authMiddleware.verifyToken,
   authMiddleware.isAuthenticated,
-  authMiddleware.checkRole,
+  authMiddleware.checkRole('admin'),
   UserController.getUsers,
 );
 router.get(
   '/:id',
+  authMiddleware.verifyToken,
   authMiddleware.isAuthenticated,
   UserController.getSingleUser,
 );
 router.patch(
   '/:id',
+  authMiddleware.verifyToken,
   authMiddleware.isAuthenticated,
   UserController.updateSingleUser,
 );

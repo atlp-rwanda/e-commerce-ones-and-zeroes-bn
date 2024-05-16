@@ -14,7 +14,12 @@ import uploads from '../middleware/multer';
 import cloudinary from '../helps/cloudinaryConfig';
 
 const router = express.Router();
-router.get('/', isAuthenticated, authMiddleware.checkRole, getProducts);
+router.get(
+  '/',
+  isAuthenticated,
+  authMiddleware.checkRole('admin'),
+  getProducts,
+);
 router.post('/', isAuthenticated, checkPermission('seller'), createCollection);
 router.post(
   '/:collectionId',

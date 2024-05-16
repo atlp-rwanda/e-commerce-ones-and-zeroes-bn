@@ -3,6 +3,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 import specs from './docs';
 import startCronJob from './cronJob/password.cron.job';
@@ -13,6 +14,8 @@ import { db, sequelize } from './database/models/index';
 import AuthRouters from './routes/Auth';
 import routes from './routes';
 const { productExpireTask } = require('./cronJob/productsCron');
+
+import { cartExpiryJob } from './cronJob/cartExpiry.job';
 
 dotenv.config();
 productExpireTask.start();
@@ -40,6 +43,7 @@ app.use(passport.initialize());
 //Use body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use('/api', changePasswordIgnored, routes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/auth', AuthRouters);
@@ -50,6 +54,7 @@ app.listen(port, async () => {
     console.log('server started');
     console.log(`Database Connection status: Success\nRunning Port: ${port}`);
     startCronJob();
+    cartExpiryJob.start();
   } catch (e) {
     console.log(e);
   }

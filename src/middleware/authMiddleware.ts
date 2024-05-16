@@ -3,7 +3,7 @@ import { db } from '../database/models';
 const jwt = require('jsonwebtoken');
 
 export default class authMiddleware {
-  static isAuthenticated = async (
+  static verifyToken = async (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -11,15 +11,13 @@ export default class authMiddleware {
     try {
       const authorization: string | undefined = req.headers['authorization'];
       if (!authorization) {
-        return res
-          .status(401)
-          .json({ message: 'Missing authorization header' });
+        (req as any).user = null;
+        return next();
       }
       const token: string = authorization.split(' ')[1];
       if (!token) {
-        return res
-          .status(401)
-          .json({ message: 'Invalid authorization header' });
+        (req as any).user = null;
+        return next();
       }
       const payload: any = await jwt.verify(token, process.env.JWT_SECRET);
       const existingUser = await db.User.findOne({
@@ -28,32 +26,32 @@ export default class authMiddleware {
         },
       });
       if (!existingUser) {
-        return res.status(404).json({ message: 'No such user found' });
+        (req as any).user = null;
+        return next();
       }
-      (req as any).user = existingUser;
+      (req as any).user = existingUser.dataValues;
       next();
     } catch (error: any) {
       console.log(error);
-      res.status(500).json({ message: 'Failed to verify user authentication' });
+      (req as any).user = null;
+      return next();
     }
   };
 
-  static checkRole = (req: Request, res: Response, next: NextFunction) => {
-    let user = (req as any).user;
-    if (user.role !== 'admin') {
-      return res.status(401).json({ message: 'User is not authorized' });
+  static isAuthenticated(req: Request, res: Response, next: NextFunction) {
+    if (!(req as any).user) {
+      return res.status(401).json({ message: 'User is not authenticated' });
     }
     next();
-  };
-  static checkSellerRole = (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    let user = (req as any).user;
-    if (user.role !== 'seller') {
-      return res.status(401).json({ message: 'User is not authorized' });
-    }
-    next();
-  };
+  }
+
+  static checkRole(role: string) {
+    return (req: Request, res: Response, next: NextFunction) => {
+      let user = (req as any).user;
+      if (user.role !== role) {
+        return res.status(401).json({ message: 'User is not authorized' });
+      }
+      next();
+    };
+  }
 }
