@@ -5,13 +5,19 @@ const productStatusPath: OpenAPIV3.PathsObject = {
     get: {
       summary: 'Product endpoints',
       tags: ['Products'],
-      security: [
-        {
-          bearerAuth: [],
-        },
-      ],
       description:
         'This is the end point for getting available products in our store',
+      parameters: [
+        {
+          in: 'query',
+          name: 'page',
+          required: false,
+          schema: {
+            type: 'string',
+          },
+          description: 'page number',
+        },
+      ],
       responses: {
         '200': {
           description: 'A successful response',

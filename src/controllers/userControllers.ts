@@ -102,6 +102,7 @@ export default class UserController {
         .status(200)
         .json({ message: 'Account created!', data: newUser, token });
     } catch (error: any) {
+      console.log(error);
       return res.status(500).json({ message: 'Failed to register user' });
     }
   }
