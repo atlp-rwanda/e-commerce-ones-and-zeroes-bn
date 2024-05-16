@@ -48,7 +48,6 @@ class OrderController {
 
       return res.status(200).json({ order });
     } catch (error: any) {
-      console.log(error);
       return res.status(500).json({ message: 'Failed to create order' });
     }
   }
@@ -75,7 +74,6 @@ class OrderController {
       }
       return res.status(200).json({ order });
     } catch (error: any) {
-      console.log(error);
       return res.status(500).json({ message: 'Failed to get orders' });
     }
   }
@@ -134,7 +132,6 @@ class OrderController {
 
       return res.status(200).json({ message: 'Order was successfully paid' });
     } catch (error: any) {
-      console.log(error);
       return res.status(500).json({ message: 'Failed to confirm payment' });
     }
   }

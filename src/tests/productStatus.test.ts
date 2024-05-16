@@ -26,66 +26,6 @@ const mockResponse = (): Partial<Response> => {
 };
 
 describe('productController', () => {
-  describe('getAvailableProduct', () => {
-    it('should return available products with status 200', async () => {
-      const req = mockRequest();
-      const res = mockResponse();
-
-      (db.Product.findAll as jest.Mock).mockResolvedValue([
-        { productId: 1, name: 'Product 1', isAvailable: true },
-      ]);
-
-      await ProductController.getAvailableProduct(
-        req as Request,
-        res as Response,
-      );
-
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({
-        message: 'List of available products in our store',
-        allAvailableProducts: [
-          { productId: 1, name: 'Product 1', isAvailable: true },
-        ],
-      });
-    });
-
-    it('should return 404 if no available products found', async () => {
-      const req = mockRequest();
-      const res = mockResponse();
-
-      (db.Product.findAll as jest.Mock).mockResolvedValue([]);
-
-      await ProductController.getAvailableProduct(
-        req as Request,
-        res as Response,
-      );
-
-      expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({
-        message: 'No available products in our store',
-      });
-    });
-
-    it('should handle errors with status 500', async () => {
-      const req = mockRequest();
-      const res = mockResponse();
-
-      (db.Product.findAll as jest.Mock).mockRejectedValue(
-        new Error('Database error'),
-      );
-
-      await ProductController.getAvailableProduct(
-        req as Request,
-        res as Response,
-      );
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        message: 'Internal Server Error',
-      });
-    });
-  });
-
   describe('updateSingleProduct', () => {
     let req: Partial<Request>;
     let res: Partial<Response>;

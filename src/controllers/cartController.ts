@@ -63,7 +63,6 @@ export default class CartController {
 
       return res.status(200).json({ data: cart, total });
     } catch (error: any) {
-      console.log(error);
       return res.status(500).json({ message: 'Failed to get cart products' });
     }
   }
@@ -155,7 +154,6 @@ export default class CartController {
         .status(200)
         .json({ message: 'Product added to cart successfully', data });
     } catch (error: any) {
-      console.log(error);
       res.status(500).json({ message: 'Failed to add product to cart' });
     }
   }
@@ -240,7 +238,6 @@ export default class CartController {
         .status(200)
         .json({ message: 'Cart Product was successfully updated' });
     } catch (error: any) {
-      console.log(error);
       return res.status(500).json({ message: 'Failed to update product' });
     }
   }
@@ -295,7 +292,6 @@ export default class CartController {
         .status(200)
         .json({ message: 'Successfully removed product from cart' });
     } catch (error: any) {
-      console.log(error);
       return res
         .status(500)
         .json({ message: 'failed to remove product from cart' });
@@ -343,7 +339,6 @@ export default class CartController {
       });
       return res.status(200).json({ message: 'Cart was cleared successfully' });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ message: 'Failed to clear cart' });
     }
   }
@@ -414,7 +409,6 @@ export default class CartController {
         paymentIntent,
       });
     } catch (error: any) {
-      console.log(error);
       return res
         .status(500)
         .json({ message: 'Failed to checkout cart products' });

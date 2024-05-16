@@ -144,19 +144,45 @@ export async function getProducts(req: any, res: Response) {
 export class ProductController {
   static async getAvailableProduct(req: Request, res: Response) {
     try {
-      const allAvailableProducts = await db.Product.findAll({
-        where: {
-          isAvailable: true,
-        },
-      });
+      const page = parseInt(req.query.page as string, 10) || 1;
+      const productPerPage = 10;
+      const offset = (page - 1) * productPerPage;
+
+      const { count, rows: allAvailableProducts } =
+        await db.Product.findAndCountAll({
+          where: {
+            isAvailable: true,
+          },
+          limit: productPerPage,
+          offset: offset,
+        });
+
       if (!allAvailableProducts.length) {
         return res
           .status(404)
           .json({ message: 'No available products in our store' });
       }
+
+      const totalPages = Math.ceil(count / productPerPage);
+
+      const nextPage = page < totalPages ? page + 1 : null;
+      const prevPage = page > 1 ? page - 1 : null;
+
       res.status(200).json({
         message: 'List of available products in our store',
-        allAvailableProducts,
+        data: allAvailableProducts,
+        pagination: {
+          totalProducts: count,
+          totalPages,
+          productPerPage,
+          currentPage: page,
+          nextPage: nextPage
+            ? `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}?page=${nextPage}`
+            : null,
+          prevPage: prevPage
+            ? `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}?page=${prevPage}`
+            : null,
+        },
       });
     } catch (error) {
       return res.status(500).json({ message: 'Internal Server Error' });
