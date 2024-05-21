@@ -25,15 +25,29 @@ below is the link to our platform .please login with you email and password:
 ${host}/api/users/login
 `;
 
+const successfullyDisabledAccountTemplate = (
+  firstName: string,
+  reason: string,
+): string => `
+Dear ${firstName},
+your account has been disabled for the following reasons.
+        
+Reason: ${reason}
+        
+Please contact us to appeal this action, Thanks.
+`;
+
+const successfullyRestoredAccountTemplate = (firstName: string): string => `
+Dear ${firstName},
+your account has been restored.
+`;
+
 const nodeMail = async (
   email: string,
-  name: string,
-  heading: string,
-  messageTemplate: (firstName: string, token: string) => string,
-  token: string,
+  subject: string,
+  message: string,
 ): Promise<any> => {
   try {
-    const message = messageTemplate(name, token);
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -44,7 +58,7 @@ const nodeMail = async (
     const mailOptions = {
       from: `E-COMMERCE-ONES-AND-ZEROES <${NODEMAILER_EMAIL_USERNAME}>`,
       to: email,
-      subject: heading,
+      subject: subject,
       text: message,
     };
     // SEND EMAIL
@@ -55,4 +69,10 @@ const nodeMail = async (
   }
 };
 
-export { registerMessageTemplate, nodeMail, successfullyverifiedTemplate };
+export {
+  registerMessageTemplate,
+  nodeMail,
+  successfullyverifiedTemplate,
+  successfullyDisabledAccountTemplate,
+  successfullyRestoredAccountTemplate,
+};
