@@ -6,6 +6,9 @@
     "strict": true,
     "esModuleInterop": true
   },
-  "include": ["./src/**/*.ts", "src/database/migrations/20240514103927-create-product.ts"],
+  "include": [
+    "./src/**/*.ts",
+    "src/database/migrations/20240514103927-create-product.ts"
+  ],
   "exclude": ["node_modules"]
 }

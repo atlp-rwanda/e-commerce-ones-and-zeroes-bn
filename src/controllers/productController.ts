@@ -7,61 +7,61 @@ class ProductController {
   static async getAllProducts(req: Request, res: Response) {
     try {
       const allProducts = await db.Product.findAll();
-      return res.status(200).json({ message: 'Products Retrieved', data: allProducts });
-    } catch (error:any) {
+      return res
+        .status(200)
+        .json({ message: 'Products Retrieved', data: allProducts });
+    } catch (error: any) {
       // Handle errors appropriately
       console.error('Error fetching products:', error);
-      return res.status(500).json({ message: 'Failed to retrieve products', error: error.message });
+      return res
+        .status(500)
+        .json({ message: 'Failed to retrieve products', error: error.message });
     }
   }
-  static async getSingleProduct(req:Request, res: Response){
+  static async getSingleProduct(req: Request, res: Response) {
     try {
       const singleProduct = await db.Product.findOne({
-        where:{
-          product_id:req.params.id
-        }
-      })
-        return res.status(200).json(
-        {
-          status:"success",
-          message:"Retreived Product",
-          data: singleProduct
-        }
-      )
-      
+        where: {
+          product_id: req.params.id,
+        },
+      });
+      return res.status(200).json({
+        status: 'success',
+        message: 'Retreived Product',
+        data: singleProduct,
+      });
     } catch (error) {
-      return res.status(500).json(
-        {status:"fail",
-          message:"Internal server error"})
+      return res
+        .status(500)
+        .json({ status: 'fail', message: 'Internal server error' });
     }
   }
-  static async updateProduct(req:Request, res:Response){
+  static async updateProduct(req: Request, res: Response) {
     try {
-      const singleProduct= await db.Product.findOne(
-        {
-          where:{
-            product_id:req.params.id
-          }
-        }
-      )
-      const {name,description,price,quantity,discount,expiry_date} = req.body
-      if(name){
-        singleProduct.name=name
+      const singleProduct = await db.Product.findOne({
+        where: {
+          product_id: req.params.id,
+        },
+      });
+      const { name, description, price, quantity, discount, expiry_date } =
+        req.body;
+      if (name) {
+        singleProduct.name = name;
       }
-      if(description){
-        singleProduct.description=description
+      if (description) {
+        singleProduct.description = description;
       }
-      if(price){
-        singleProduct.price=price
+      if (price) {
+        singleProduct.price = price;
       }
-      if(quantity){
-        singleProduct.quantity=quantity
+      if (quantity) {
+        singleProduct.quantity = quantity;
       }
-      if(discount){
-        singleProduct.discount=discount
+      if (discount) {
+        singleProduct.discount = discount;
       }
-      if(expiry_date){
-        singleProduct.expiry_date=expiry_date
+      if (expiry_date) {
+        singleProduct.expiry_date = expiry_date;
       }
       singleProduct.updatedAt = new Date();
 
@@ -100,8 +100,9 @@ class ProductController {
       }
 
       // Remove the image URL
-      const updatedImages = product.image_url.filter((url: string) =>
-        url.trim().toLowerCase() !== image_url.trim().toLowerCase()
+      const updatedImages = product.image_url.filter(
+        (url: string) =>
+          url.trim().toLowerCase() !== image_url.trim().toLowerCase(),
       );
 
       // Check if any image was removed
@@ -126,30 +127,30 @@ class ProductController {
         error: err.message,
       });
     }
-}
-// static async uploadMultipleImages(req:Request, res:Response){
-//   try {
-//     // Handle the uploaded files
-//   const files = req.files;
+  }
+  // static async uploadMultipleImages(req:Request, res:Response){
+  //   try {
+  //     // Handle the uploaded files
+  //   const files = req.files;
 
-//   // Process and store the files as required
-//   // For example, save the files to a specific directory using fs module
-//   files.forEach((file: { filename: any; path: any; }) => {
-//     const filePath = `uploads/${file.filename}`;
-//     fs.rename(file.path, filePath, (err: any) => {
-//       if (err) {
-//         // Handle error appropriately and send an error response
-//         return res.status(500).json({ error: 'Failed to store the file' });
-//       }
-//     });
-//   });
+  //   // Process and store the files as required
+  //   // For example, save the files to a specific directory using fs module
+  //   files.forEach((file: { filename: any; path: any; }) => {
+  //     const filePath = `uploads/${file.filename}`;
+  //     fs.rename(file.path, filePath, (err: any) => {
+  //       if (err) {
+  //         // Handle error appropriately and send an error response
+  //         return res.status(500).json({ error: 'Failed to store the file' });
+  //       }
+  //     });
+  //   });
 
-//   // Send an appropriate response to the client
-//   res.status(200).json({ message: 'File upload successful' });
-//   } catch (error) {
-    
-//   }
-// }
+  //   // Send an appropriate response to the client
+  //   res.status(200).json({ message: 'File upload successful' });
+  //   } catch (error) {
+
+  //   }
+  // }
 }
 
 export default ProductController;

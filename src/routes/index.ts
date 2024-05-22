@@ -1,6 +1,6 @@
 import express, { Router, Request, Response } from 'express';
 import userRoute from '../routes/userRoutes';
-import productRouter from '../routes/productRoutes'
+import productRouter from '../routes/productRoutes';
 import examplesRoute from './exampleRoutes';
 
 const router: Router = express.Router();
@@ -10,7 +10,7 @@ router.get('/', (req: Request, res: Response) => {
 });
 
 router.use('/users', userRoute);
-router.use('/products', productRouter)
+router.use('/products', productRouter);
 router.use('/examples', examplesRoute);
 
 export default router;
