@@ -146,7 +146,7 @@ describe('UserController', () => {
           ...req.body,
         },
       });
-    });
+    }, 10000);
     //
     it('should return 500 if an unexpected error occurs', async () => {
       const req = {

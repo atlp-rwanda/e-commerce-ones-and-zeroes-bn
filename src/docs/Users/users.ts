@@ -432,29 +432,30 @@ const userPaths: OpenAPIV3.PathsObject = {
       summary: 'Change user password',
       tags: ['Users'],
       description: 'Authenticated users can change their password',
-      security: [{
-        token: []
-      }],
+      security: [
+        {
+          token: [],
+        },
+      ],
       requestBody: {
         required: true,
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
+              type: 'object',
               properties: {
                 password: {
-                  type: "string",
+                  type: 'string',
                 },
                 newPassword: {
-                  type: "string"
+                  type: 'string',
                 },
                 verifyNewPassword: {
-                  type: "string"
-                }
+                  type: 'string',
+                },
               },
-              "required": ["password", "newPassword", "verifyNewPassword"]
+              required: ['password', 'newPassword', 'verifyNewPassword'],
             },
-
           },
         },
       },
@@ -468,16 +469,15 @@ const userPaths: OpenAPIV3.PathsObject = {
                 type: 'object',
                 properties: {
                   data: {
-                    type: "string",
+                    type: 'string',
                   },
                   message: {
-                    type: "string",
+                    type: 'string',
                   },
-
                 },
               },
             },
-          }
+          },
         },
         '404': {
           description: 'User not found',
@@ -487,11 +487,11 @@ const userPaths: OpenAPIV3.PathsObject = {
                 type: 'object',
                 properties: {
                   status: {
-                    type: "string"
+                    type: 'string',
                   },
                   message: {
-                    type: "string"
-                  }
+                    type: 'string',
+                  },
                 },
               },
             },
@@ -505,11 +505,11 @@ const userPaths: OpenAPIV3.PathsObject = {
                 type: 'object',
                 properties: {
                   status: {
-                    type: "string",
+                    type: 'string',
                   },
                   message: {
-                    type: "string"
-                  }
+                    type: 'string',
+                  },
                 },
               },
             },
@@ -524,11 +524,11 @@ const userPaths: OpenAPIV3.PathsObject = {
                 type: 'object',
                 properties: {
                   status: {
-                    type: "string"
+                    type: 'string',
                   },
                   message: {
-                    type: "string"
-                  }
+                    type: 'string',
+                  },
                 },
               },
             },
@@ -542,11 +542,11 @@ const userPaths: OpenAPIV3.PathsObject = {
                 type: 'object',
                 properties: {
                   status: {
-                    type: "string"
+                    type: 'string',
                   },
                   message: {
-                    type: "string"
-                  }
+                    type: 'string',
+                  },
                 },
               },
             },
@@ -560,19 +560,18 @@ const userPaths: OpenAPIV3.PathsObject = {
                 type: 'object',
                 properties: {
                   status: {
-                    type: "string"
+                    type: 'string',
                   },
                   message: {
-                    type: "string"
-                  }
+                    type: 'string',
+                  },
                 },
               },
             },
           },
         },
-
-      }
-    }
+      },
+    },
   },
 };
 

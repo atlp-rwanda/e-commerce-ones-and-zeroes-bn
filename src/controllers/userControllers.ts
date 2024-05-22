@@ -139,7 +139,6 @@ export default class UserController {
       // Find the user by email
       const user = await db.User.findOne({ where: { email } });
 
-
       if (!user) {
         return res.status(404).send({ message: 'User not found' });
       }
@@ -220,32 +219,30 @@ export default class UserController {
     const { password, newPassword, verifyNewPassword } = req.body;
 
     try {
-
-      const getDecodedToken = jwt.verify(token, secret)
-      const userId = getDecodedToken.userId
-      console.log(getDecodedToken)
+      const getDecodedToken = jwt.verify(token, secret);
+      const userId = getDecodedToken.userId;
+      console.log(getDecodedToken);
       const userData = await db.User.findOne({
-        where: { userId: userId }
-      })
+        where: { userId: userId },
+      });
 
       if (!userData) {
         return res.status(404).json({
-          status: "fail",
-          message: "User not found"
-        })
+          status: 'fail',
+          message: 'User not found',
+        });
       }
 
       //extract Hash Password from user detail
       const currentHash = userData.dataValues.password;
 
       try {
-        const result = await bcrypt.compare(password, currentHash)
+        const result = await bcrypt.compare(password, currentHash);
         if (result == false) {
           return res.status(401).json({
-            status: "fail",
-            message: "Wrong credentials",
-
-          })
+            status: 'fail',
+            message: 'Wrong credentials',
+          });
         }
 
         //hashNewPassword
@@ -255,30 +252,26 @@ export default class UserController {
 
         const [updatePassword] = await db.User.update(
           { password: newHashPassword },
-          { where: { userId: userId } }
-
-        )
+          { where: { userId: userId } },
+        );
 
         if (updatePassword > 0) {
           return res.status(200).json({
-            status: "OK",
-            message: "Password updated successfully"
-          })
+            status: 'OK',
+            message: 'Password updated successfully',
+          });
         }
       } catch (e) {
         return res.status(500).json({
-          status: "error",
-          message: "Server error"
-        })
+          status: 'error',
+          message: 'Server error',
+        });
       }
-
-
-
     } catch (e) {
       res.status(500).json({
-        status: "fail",
-        message: "something went wrong: " + e
-      })
+        status: 'fail',
+        message: 'something went wrong: ' + e,
+      });
     }
   }
 }

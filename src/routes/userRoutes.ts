@@ -7,8 +7,6 @@ import {
 import { validations } from '../validations/validations';
 import authMiddleWares from '../middleware/authMiddleware';
 
-
-
 const router = express.Router();
 
 router.get('/', UserController.getUsers);
@@ -17,6 +15,11 @@ router.post('/isVerified/:token', UserController.isVerified);
 router.post('/login', UserController.login);
 router.post('/forgot-password', handlePasswordResetRequest);
 router.post('/reset-password', resetPassword);
-router.put('/changepassword', validations.validateUpdatePassword, authMiddleWares.isAuthenticated, UserController.updatePassword)
+router.put(
+  '/changepassword',
+  validations.validateUpdatePassword,
+  authMiddleWares.isAuthenticated,
+  UserController.updatePassword,
+);
 
 export default router;
