@@ -5,6 +5,8 @@ import {
   resetPassword,
 } from '../controllers/userControllers';
 import authMiddleware from '../middleware/authMiddleware';
+import { validations } from '../validations/validations';
+import updatePasswordMiddleWare from '../middleware/updatePasswordMiddleware';
 
 const router: Router = express.Router();
 
@@ -21,6 +23,12 @@ router.put(
   authMiddleware.isAuthenticated,
   authMiddleware.checkRole('admin'),
   UserController.disableUser,
+);
+router.put(
+  '/changepassword',
+  validations.validateUpdatePassword,
+  updatePasswordMiddleWare.isAuthenticated,
+  UserController.updatePassword,
 );
 router.get(
   '/',
