@@ -426,6 +426,154 @@ const userPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+
+  '/api/user/changepassword': {
+    put: {
+      summary: 'Change user password',
+      tags: ['Users'],
+      description: 'Authenticated users can change their password',
+      security: [{
+        token: []
+      }],
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                password: {
+                  type: "string",
+                },
+                newPassword: {
+                  type: "string"
+                },
+                verifyNewPassword: {
+                  type: "string"
+                }
+              },
+              "required": ["password", "newPassword", "verifyNewPassword"]
+            },
+
+          },
+        },
+      },
+
+      responses: {
+        '200': {
+          description: 'Password updated successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  data: {
+                    type: "string",
+                  },
+                  message: {
+                    type: "string",
+                  },
+
+                },
+              },
+            },
+          }
+        },
+        '404': {
+          description: 'User not found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: "string"
+                  },
+                  message: {
+                    type: "string"
+                  }
+                },
+              },
+            },
+          },
+        },
+        '401': {
+          description: 'Wrong credentials',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: "string",
+                  },
+                  message: {
+                    type: "string"
+                  }
+                },
+              },
+            },
+          },
+        },
+
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: "string"
+                  },
+                  message: {
+                    type: "string"
+                  }
+                },
+              },
+            },
+          },
+        },
+        '422': {
+          description: 'Joi Validation Error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: "string"
+                  },
+                  message: {
+                    type: "string"
+                  }
+                },
+              },
+            },
+          },
+        },
+        '403': {
+          description: 'FORBIDEN: No Authorization / Token',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: "string"
+                  },
+                  message: {
+                    type: "string"
+                  }
+                },
+              },
+            },
+          },
+        },
+
+      }
+    }
+  },
 };
 
 export default userPaths;
