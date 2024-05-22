@@ -1,15 +1,11 @@
 'use strict';
 
+import { QueryInterface } from 'sequelize';
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (
-    queryInterface: {
-      addColumn: (
-        arg0: string,
-        arg1: string,
-        arg2: { type: any; allowNull: boolean },
-      ) => any;
-    },
+    queryInterface: QueryInterface,
     Sequelize: { STRING: any; DATE: any },
   ) => {
     await Promise.all([

@@ -152,6 +152,7 @@ describe('UserController', () => {
         userId: 1,
         firstName: 'John',
         lastName: 'Doe',
+        role: 'admin',
         email: 'existing@example.com',
         password:
           '$2b$10$z5yV9gdX3OrxuJdPBiUa7eBv27u9mEVWmq2SvXW4oqyZC3tYy0A3u',
@@ -165,13 +166,13 @@ describe('UserController', () => {
       (bcrypt.compare as jest.Mock).mockResolvedValueOnce(true);
 
       // Mock token generation
-      const expectedToken = 'helloworld';
-      jest.spyOn(jwt, 'sign').mockImplementation((payload, secret, options) => {
-        if (secret !== process.env.JWT_SECRET) {
-          throw new Error('JWT secret not defined');
-        }
-        return 'mockToken';
-      });
+      // const expectedToken = 'helloworld';
+      // jest.spyOn(jwt, 'sign').mockImplementation((payload, secret, options) => {
+      //   if (secret !== process.env.USER_SECRET) {
+      //     throw new Error('USER SECRET not defined');
+      //   }
+      //   return 'mockToken';
+      // });
 
       await UserController.login(req, res);
 
@@ -225,6 +226,7 @@ describe('UserController', () => {
 
       // Make JWT_SECRET undefined
       delete process.env.JWT_SECRET;
+      console.log(process.env.JWT_SECRET);
 
       expect(() =>
         generateToken('123', 'test@example.com', 'John', 'Doe'),

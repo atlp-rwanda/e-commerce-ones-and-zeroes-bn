@@ -31,4 +31,6 @@ coveralls.env
 node_modules/
 *.env
 
+coverage/sendgrid.env
+sendgrid.env
 coverage/

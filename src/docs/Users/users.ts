@@ -1,14 +1,12 @@
 import { OpenAPIV3 } from 'openapi-types';
 
-const registerPath: OpenAPIV3.PathsObject = {
+const userPaths: OpenAPIV3.PathsObject = {
   '/api/users/registerUser': {
     post: {
-      // Changed method to 'post'
       summary: 'User registration endpoint',
       tags: ['Users'],
       description: 'This is the endpoint to register a new user',
       requestBody: {
-        // Added request body schema
         required: true,
         content: {
           'application/json': {
@@ -20,7 +18,7 @@ const registerPath: OpenAPIV3.PathsObject = {
                 email: { type: 'string' },
                 password: { type: 'string' },
               },
-              required: ['firstName', 'lastName', 'email', 'password'], // Required properties
+              required: ['firstName', 'lastName', 'email', 'password'],
             },
           },
         },
@@ -98,7 +96,145 @@ const registerPath: OpenAPIV3.PathsObject = {
       },
     },
   },
-
+  '/api/users/forgot-password': {
+    post: {
+      summary: 'Send password reset email',
+      tags: ['Users'],
+      description: 'This endpoint sends a password reset email to the user',
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                email: { type: 'string' },
+              },
+              required: ['email'],
+            },
+          },
+        },
+      },
+      responses: {
+        '200': {
+          description: 'Password reset email sent successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '400': {
+          description: 'Bad Request',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'User not found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  '/api/users/reset-password': {
+    post: {
+      summary: 'Reset user password',
+      tags: ['Users'],
+      description:
+        'This endpoint resets the user password using the provided token',
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                token: { type: 'string' },
+                newPassword: { type: 'string' },
+              },
+              required: ['token', 'newPassword'],
+            },
+          },
+        },
+      },
+      responses: {
+        '200': {
+          description: 'Password reset successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '400': {
+          description: 'Bad Request',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   '/api/users/login': {
     post: {
       summary: 'Log in a user',
@@ -201,6 +337,194 @@ const registerPath: OpenAPIV3.PathsObject = {
       },
     },
   },
+
+  '/api/users/isVerified/{token}': {
+    post: {
+      // Corrected method to 'post'
+      summary: 'User verification',
+      tags: ['Users'],
+      description: 'Endpoint to verify a new user',
+
+      parameters: [
+        {
+          name: 'token',
+          in: 'path',
+          description: 'Token to verify user',
+          required: true,
+          schema: {
+            type: 'string',
+          },
+        },
+      ],
+
+      responses: {
+        '200': {
+          description: 'Successfully verified',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '400': {
+          description: 'Bad Request',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '401': {
+          description: 'Unauthorized',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'Resource not found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  '/api/users/disable/{id}': {
+    put: {
+      summary: 'Disable user account',
+      tags: ['Users'],
+      description: 'Disable a user account',
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          description: 'UserId of user account',
+          schema: {
+            type: 'string',
+            minimum: 1,
+          },
+        },
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                reason: { type: 'string' },
+              },
+            },
+          },
+        },
+      },
+      responses: {
+        '200': {
+          description: 'A successful response',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '400': {
+          description: 'Bad request',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '401': {
+          description: 'Unauthorized',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'Resource not found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 };
 
-export default registerPath;
+export default userPaths;

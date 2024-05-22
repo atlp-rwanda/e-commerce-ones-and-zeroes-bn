@@ -1,16 +1,19 @@
-import express, { Router, Request, Response } from 'express';
+import express, { Router, Request, Response, NextFunction } from 'express';
 import userRoute from '../routes/userRoutes';
 import productRouter from '../routes/productRoutes';
-import examplesRoute from './exampleRoutes';
-
 const router: Router = express.Router();
 
 router.get('/', (req: Request, res: Response) => {
   res.send('Welcome to OnesAnd Ecommerce website');
 });
 
+// Use userRoute for paths starting with '/users'
 router.use('/users', userRoute);
 router.use('/products', productRouter);
-router.use('/examples', examplesRoute);
+// Error handling middleware
+router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 export default router;

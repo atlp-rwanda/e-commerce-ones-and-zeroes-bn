@@ -8,7 +8,8 @@
   },
   "include": [
     "./src/**/*.ts",
-    "src/database/migrations/20240514103927-create-product.ts"
+    "src/database/migrations/20240514103927-create-product.ts",
+    "src/routes/index.ts"
   ],
   "exclude": ["node_modules"]
 }
