@@ -79,6 +79,7 @@ describe('AuthMiddlware', () => {
         'christianinjoooa3@gmail.com',
         'christian',
         'Ishimwe',
+        'buyer',
       );
       const req = {
         headers: {
@@ -112,6 +113,7 @@ describe('AuthMiddlware', () => {
         'christianinjoooa3@gmail.com',
         'christian',
         'Ishimwe',
+        'buyer',
       );
 
       const req = {

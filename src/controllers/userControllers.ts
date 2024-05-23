@@ -65,7 +65,13 @@ export default class UserController {
         password: hashedPassword,
       });
 
-      const token = generateToken(newUser.userId, email, firstName, lastName);
+      const token = generateToken(
+        newUser.userId,
+        email,
+        firstName,
+        lastName,
+        newUser.role,
+      );
 
       await nodeMail(
         email,
@@ -161,6 +167,7 @@ export default class UserController {
         user.email,
         user.firstName,
         user.lastName,
+        user.role,
       );
 
       // Send a response indicating that the login was successful, along with the token

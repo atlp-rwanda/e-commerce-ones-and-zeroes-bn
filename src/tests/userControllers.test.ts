@@ -213,8 +213,9 @@ describe('UserController', () => {
       const email = 'test@example.com';
       const firstName = 'John';
       const lastName = 'Doe';
+      const role = 'buyer';
 
-      const token = generateToken(userId, email, firstName, lastName);
+      const token = generateToken(userId, email, firstName, lastName, role);
 
       expect(typeof token).toBe('string');
       expect(token.length).toBeGreaterThan(0);
@@ -229,7 +230,7 @@ describe('UserController', () => {
       console.log(process.env.JWT_SECRET);
 
       expect(() =>
-        generateToken('123', 'test@example.com', 'John', 'Doe'),
+        generateToken('123', 'test@example.com', 'John', 'Doe', 'buyer'),
       ).toThrowError('JWT secret not defined');
 
       // Restore the original value

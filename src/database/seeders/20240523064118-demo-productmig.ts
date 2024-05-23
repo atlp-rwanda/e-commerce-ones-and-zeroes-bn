@@ -64,6 +64,6 @@ module.exports = {
     queryInterface: { bulkDelete: (arg0: string, arg1: null, arg2: {}) => any },
     Sequelize: any,
   ) => {
-    await queryInterface.bulkDelete('ProductMigs', null, {});
+    await queryInterface.bulkDelete('Products', null, {});
   },
 };

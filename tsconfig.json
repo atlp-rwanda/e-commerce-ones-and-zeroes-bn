@@ -6,6 +6,11 @@
     "strict": true,
     "esModuleInterop": true
   },
-  "include": ["./src/**/*.ts", "src/routes/index.ts"],
+  "include": [
+    "./src/**/*.ts",
+    "src/routes/index.ts",
+    "src/utils/cloudinary.js",
+    "src/middleware/multer.ts"
+  ],
   "exclude": ["node_modules"]
 }
