@@ -9,7 +9,10 @@ import passport from './config/google.auth';
 import { db, sequelize } from './database/models/index';
 import AuthRouters from './routes/Auth';
 import routes from './routes';
+
 dotenv.config();
+
+
 
 const app = express();
 app.use(cors());
