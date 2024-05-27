@@ -38,6 +38,26 @@ module.exports = (sequelize: any, DataTypes: any) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      gender: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      birthdate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      preferredLanguage: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      preferredCurrency: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      billingAddress: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       isVerified: {
         allowNull: false,
         type: DataTypes.BOOLEAN,
