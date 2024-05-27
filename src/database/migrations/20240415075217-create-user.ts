@@ -20,6 +20,7 @@ module.exports = {
           isActive: { type: Boolean; allowNull: any; defaultValue: false };
           isVerified: { type: Boolean; allowNull: false; defaultValue: false };
           isGoogle: { type: Boolean; allowNull: any; defaultValue: false };
+
           createdAt: { allowNull: boolean; type: any; defaultValue: any };
           updatedAt: { allowNull: boolean; type: any; defaultValue: any };
           passwordLastChanged: {
@@ -89,6 +90,7 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         allowNull: false,
       },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -7,12 +7,17 @@ export const generateToken = (
   email: string,
   firstName: string,
   lastName: string,
+  passwordLastChanged: string,
 ): string => {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error('JWT secret not defined');
   }
-  return jwt.sign({ userId, email, firstName, lastName }, secret, {
-    expiresIn: '1d',
-  });
+  return jwt.sign(
+    { userId, email, firstName, lastName, passwordLastChanged },
+    secret,
+    {
+      expiresIn: '1d',
+    },
+  );
 };
