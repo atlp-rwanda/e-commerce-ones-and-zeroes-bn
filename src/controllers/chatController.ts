@@ -1,4 +1,4 @@
-import { db } from "../database/models";
+import { db } from '../database/models';
 
 interface IChat {
   user: string;
@@ -14,7 +14,6 @@ interface IRoom {
 interface IError {
   message: string;
 }
-
 
 async function createChat(room: string): Promise<IRoom> {
   const newRoom = await db.Chat.create({ room, chats: [] });
@@ -37,7 +36,7 @@ async function addChat(room: string, chat: IChat): Promise<[number, IRoom[]]> {
       chats.chats.push(chat);
       const updatedChat = await db.Chat.update(
         { chats: chats.chats },
-        { where: { room } }
+        { where: { room } },
       );
       return updatedChat;
     } else {
@@ -45,7 +44,7 @@ async function addChat(room: string, chat: IChat): Promise<[number, IRoom[]]> {
     }
   } catch (error) {
     const err: IError = {
-      message: (error as Error).message
+      message: (error as Error).message,
     };
     throw new Error(err.message);
   }

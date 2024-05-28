@@ -1,13 +1,13 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface:any, Sequelize:any) => {
+  up: async (queryInterface: any, Sequelize: any) => {
     await queryInterface.createTable('Chats', {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4
+        defaultValue: Sequelize.UUIDV4,
       },
       room: {
         type: Sequelize.STRING,
@@ -24,10 +24,10 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-      }
+      },
     });
   },
-  down: async (queryInterface:any, Sequelize:any) => {
+  down: async (queryInterface: any, Sequelize: any) => {
     await queryInterface.dropTable('Chats');
-  }
+  },
 };

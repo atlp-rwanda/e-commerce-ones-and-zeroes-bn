@@ -1,12 +1,11 @@
-import  chatServices  from '../controllers/chatController';
+import chatServices from '../controllers/chatController';
+import { verifyToken } from '../helps/verifyToken';
 
-import { decodeToken } from '../utils';
-
-async function isValidAuthToken(token) {
+async function isValidAuthToken(token: string) {
   try {
     let user = null;
     if (token) {
-      user = decodeToken(token);
+      user = verifyToken(token);
       return user;
     }
     return false;
@@ -15,7 +14,7 @@ async function isValidAuthToken(token) {
   }
 }
 
-const join = async (socket) => {
+const join = async (socket: any) => {
   const authToken2 = socket.handshake.query.authToken;
   const user = await isValidAuthToken(authToken2);
   if (!authToken2 || !user) {
@@ -30,7 +29,7 @@ const join = async (socket) => {
 
   socket.emit('joined', { id: userId, username: name });
   await chatServices.findChats('public').then((data) => {
-    data.chats.forEach((chat) => {
+    data?.chats.forEach((chat) => {
       socket.emit('message', chat);
     });
   });
@@ -39,14 +38,15 @@ const join = async (socket) => {
     socket.broadcast.emit('userJoined', `${name} has joined the chat`);
   }
 };
-const disconnect = (socket) => {
+
+const disconnect = (socket: any) => {
   if (socket.username) {
     socket.broadcast.emit('userLeft', `${socket.username} has left the chat`);
   }
 };
 
-const chats = (io) => {
-  io.on('connection', async (socket) => {
+const chats = (io: any) => {
+  io.on('connection', async (socket: any) => {
     const authToken2 = socket.handshake.query.authToken;
     const user = await isValidAuthToken(authToken2);
     if (!authToken2 || !user) {
@@ -57,17 +57,16 @@ const chats = (io) => {
     socket.id = user.id;
     socket.username = user.username;
     socket.on('join', () => join(socket));
-    socket.on('message', async (message) => {
-      const messageObj = {
-        userId: user.id,
-        username: user.username,
+    socket.on('message', async (message: any) => {
+      const messageObj: IChat = {
+        user: user.username,
         message,
-        date: new Date(),
+        timestamp: new Date(),
       };
       io.emit('message', messageObj);
-      chatServices.addChat('public', messageObj);
+      await chatServices.addChat('public', messageObj);
     });
-    socket.on('typing', (message) => {
+    socket.on('typing', (message: any) => {
       socket.broadcast.emit('typing', message);
     });
 
@@ -76,3 +75,9 @@ const chats = (io) => {
 };
 
 export default { chats, isValidAuthToken, join, disconnect };
+
+interface IChat {
+  user: string;
+  message: string;
+  timestamp: Date;
+}
