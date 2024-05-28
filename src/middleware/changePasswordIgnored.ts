@@ -8,12 +8,10 @@ export function changePasswordIgnored(
   res: Response,
   next: NextFunction,
 ) {
-  console.log(req.path);
   const token = req.headers.authorization;
 
   if (token) {
     const decoded = verifyToken(token);
-    console.log(decoded);
     if (decoded) {
       const lastPasswordChangeDate = new Date(
         decoded.passwordLastChanged * 1000,
@@ -26,16 +24,10 @@ export function changePasswordIgnored(
           oneDayInMillis &&
         req.path !== '/login'
       ) {
-        console.log('You are required to update your password');
-        console.log(
-          'You are now redirected to https://onesandzeroes/users/update',
-        );
-
         return res.redirect('https://onesandzeroes/users/update');
       }
     }
   }
 
-  console.log(token);
   next();
 }
