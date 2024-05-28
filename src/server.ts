@@ -5,6 +5,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
+import http from 'http';
+import { Server } from 'socket.io';
 import specs from './docs';
 import startCronJob from './cronJob/password.cron.job';
 import { changePasswordIgnored } from './middleware/changePasswordIgnored';
@@ -14,18 +16,28 @@ import { db, sequelize } from './database/models/index';
 import AuthRouters from './routes/Auth';
 import routes from './routes';
 const { productExpireTask } = require('./cronJob/productsCron');
+import chats from './helps/chats';
 
 import { cartExpiryJob } from './cronJob/cartExpiry.job';
 
 dotenv.config();
 productExpireTask.start();
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? false
+        : ['http://localhost:5173', 'http://localhost:7000/api'],
+  },
+});
 app.use(cors());
 app.use(express.json());
 
 const port = process.env.PORT || 7000;
 const session = require('express-session');
-
+chats.chats(io);
 app.use(cors());
 app.use(express.json());
 
@@ -40,7 +52,6 @@ app.use(
 app.use(passport.session());
 app.use(passport.initialize());
 
-//Use body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
