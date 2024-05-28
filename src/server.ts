@@ -12,9 +12,12 @@ import passport from './config/google.auth';
 import { db, sequelize } from './database/models/index';
 import AuthRouters from './routes/Auth';
 import routes from './routes';
+import { chats } from './helps/chats';
 dotenv.config();
 
 const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http)
 app.use(cors());
 app.use(express.json());
 
