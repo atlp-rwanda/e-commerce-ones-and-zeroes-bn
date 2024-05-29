@@ -18,11 +18,15 @@ module.exports = (
         foreignKey: 'collectionId',
         onDelete: 'CASCADE',
       });
+       Product.hasMany(models.Wishlist, {
+        foreignKey: 'productId',
+        as: 'wishlists',
+      });
     }
   }
   Product.init(
     {
-      id: {
+      productId: {
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUID,
