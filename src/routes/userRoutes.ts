@@ -13,7 +13,7 @@ router.post('/registerUser', UserController.registerUser);
 router.post('/isVerified/:token', UserController.isVerified);
 router.post('/login', UserController.login);
 router.post('/forgot-password', handlePasswordResetRequest);
-router.post('/reset-password', resetPassword);
+router.post('/reset-password/:token', resetPassword);
 
 router.put(
   '/disable/:id',

@@ -9,6 +9,7 @@ module.exports = (
     DECIMAL: any;
     ARRAY: any;
     DATE: any;
+    BOOLEAN: any;
     INTEGER: any;
   },
 ) => {
@@ -18,11 +19,15 @@ module.exports = (
         foreignKey: 'collectionId',
         onDelete: 'CASCADE',
       });
+      Product.hasMany(models.Wishlist, {
+        foreignKey: 'productId',
+        as: 'wishlists',
+      });
     }
   }
   Product.init(
     {
-      id: {
+      productId: {
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUID,
@@ -48,6 +53,10 @@ module.exports = (
       },
       expiryDate: {
         type: DataTypes.DATE,
+      },
+      expired: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
       bonus: {
         type: DataTypes.STRING,

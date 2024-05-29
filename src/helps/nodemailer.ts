@@ -14,8 +14,8 @@ async function sendEmail(
   const config = {
     service: 'gmail',
     auth: {
-      user: process.env.NODE_MAILER_USER || '',
-      pass: process.env.GMAIL_PASSWORD || '',
+      user: process.env.NODEMAILER_EMAIL_USERNAME || '',
+      pass: process.env.NODEMAILER_EMAIL_PASSWORD || '',
     },
   };
 

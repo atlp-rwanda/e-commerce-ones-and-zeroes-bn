@@ -3,7 +3,7 @@ bin-debug/
 bin-release/
 [Oo]bj/
 [Bb]in/
-.vscode/
+.vscode/coverage
 node_modules
 
 .env
@@ -31,6 +31,7 @@ coveralls.env
 node_modules/
 *.env
 
+coverage/
+
 coverage/sendgrid.env
 sendgrid.env
-coverage/

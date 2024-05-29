@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import {
   createCollection,
   createProduct,
+  getProducts,
 } from '../../controllers/productController';
 import { db } from '../../database/models';
 import cloudinary from '../../helps/cloudinaryConfig';
@@ -14,6 +15,10 @@ interface CustomRequest extends Request {
   user?: User;
   files?: any;
 }
+
+jest.mock('../../database/models', () => ({
+  db: {},
+}));
 
 jest.mock('../../database/models', () => ({
   db: {
@@ -29,6 +34,7 @@ jest.mock('../../database/models', () => ({
       findByPk: jest.fn(),
       findOne: jest.fn(),
       create: jest.fn(),
+      findAll: jest.fn(),
     },
   },
 }));
@@ -507,5 +513,46 @@ describe('Collection and Product Controllers', () => {
         error: new Error('Server error'),
       });
     });
+  });
+});
+
+describe('Product Controller - getProducts', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return 404 if no products are found', async () => {
+    const req = {} as Partial<Request> as Request;
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    (db.Product.findAll as jest.Mock).mockResolvedValueOnce([]);
+
+    await getProducts(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ message: 'no Products in store' });
+  });
+
+  it('should return 200 and the list of products if products are found', async () => {
+    const req = {} as Partial<Request> as Request;
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    const mockProducts = [
+      { id: 1, name: 'Product 1', expired: false },
+      { id: 2, name: 'Product 2', expired: false },
+    ];
+
+    (db.Product.findAll as jest.Mock).mockResolvedValueOnce(mockProducts);
+
+    await getProducts(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(mockProducts);
   });
 });

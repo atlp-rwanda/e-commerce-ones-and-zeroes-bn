@@ -6,7 +6,6 @@ module.exports = (
 ) => {
   class Collection extends Model {
     static associate(models: any) {
-      // define association here
       this.belongsTo(models.User, {
         foreignKey: 'sellerId',
         onDelete: 'CASCADE',

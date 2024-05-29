@@ -113,3 +113,15 @@ export async function createProduct(req: CustomRequest, res: Response) {
     return res.status(500).json({ message: 'Internal Server Error', error });
   }
 }
+
+export async function getProducts(req: any, res: Response) {
+  const products = await db.Product.findAll({
+    where: {
+      expired: false,
+    },
+  });
+  if (products.length <= 0) {
+    return res.status(404).json({ message: 'no Products in store' });
+  }
+  return res.status(200).json(products);
+}
