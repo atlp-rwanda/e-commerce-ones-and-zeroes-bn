@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
-import wishlistRoutes from './routes/wishlistRoute';
 import specs from './docs';
 import startCronJob from './cronJob/password.cron.job';
 import { changePasswordIgnored } from './middleware/changePasswordIgnored';
@@ -13,7 +12,6 @@ import passport from './config/google.auth';
 import { db, sequelize } from './database/models/index';
 import AuthRouters from './routes/Auth';
 import routes from './routes';
-
 dotenv.config();
 
 const app = express();
@@ -40,7 +38,7 @@ app.use(passport.initialize());
 //Use body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use('/api', routes, wishlistRoutes, changePasswordIgnored);
+app.use('/api', changePasswordIgnored, routes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/auth', AuthRouters);
 
