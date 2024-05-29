@@ -171,12 +171,13 @@ const userPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
-  '/api/users/reset-password': {
+  '/api/users/reset-password/{token}': {
     post: {
       summary: 'Reset user password',
       tags: ['Users'],
       description:
         'This endpoint resets the user password using the provided token',
+
       requestBody: {
         required: true,
         content: {
@@ -184,14 +185,24 @@ const userPaths: OpenAPIV3.PathsObject = {
             schema: {
               type: 'object',
               properties: {
-                token: { type: 'string' },
                 newPassword: { type: 'string' },
               },
-              required: ['token', 'newPassword'],
+              required: ['newPassword'],
             },
           },
         },
       },
+      parameters: [
+        {
+          name: 'token',
+          in: 'path',
+          description: 'Token to reset password',
+          required: true,
+          schema: {
+            type: 'string',
+          },
+        },
+      ],
       responses: {
         '200': {
           description: 'Password reset successfully',
@@ -498,6 +509,284 @@ const userPaths: OpenAPIV3.PathsObject = {
         },
         '404': {
           description: 'Resource not found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  '/api/wishlist/{productId}': {
+    post: {
+      summary: 'Add product to wishlist',
+      tags: ['Wishlist'],
+      description:
+        'This endpoint allows a user to add a product to their wishlist',
+      parameters: [
+        {
+          name: 'productId',
+          in: 'path',
+          required: true,
+          schema: {
+            type: 'string',
+          },
+          description: 'The ID of the product to add to the wishlist',
+        },
+      ],
+      security: [{ bearerAuth: [] }],
+      responses: {
+        '201': {
+          description: 'Product added to wishlist successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                  wishlistItem: { type: 'object' },
+                },
+              },
+            },
+          },
+        },
+        '400': {
+          description: 'Bad Request',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '401': {
+          description: 'Unauthorized',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'Product not found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    delete: {
+      summary: 'Remove product from wishlist',
+      tags: ['Wishlist'],
+      description:
+        'This endpoint allows a user to remove a product from their wishlist',
+      parameters: [
+        {
+          name: 'productId',
+          in: 'path',
+          required: true,
+          schema: {
+            type: 'string',
+          },
+          description: 'The ID of the product to add to the wishlist',
+        },
+      ],
+      security: [{ bearerAuth: [] }],
+      responses: {
+        '200': {
+          description: 'Product removed from wishlist successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '400': {
+          description: 'Bad Request',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '401': {
+          description: 'Unauthorized',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'Product not found in wishlist',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  '/api/wishlist': {
+    get: {
+      summary: 'Get user wishlist',
+      tags: ['Wishlist'],
+      description: 'This endpoint allows a user to retrieve their wishlist',
+      security: [{ bearerAuth: [] }],
+      responses: {
+        '200': {
+          description: 'Wishlist retrieved successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number' },
+                    productName: { type: 'string' },
+                    productPrice: { type: 'number' },
+                  },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'No items in the wishlist',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    delete: {
+      summary: 'Clear wishlist',
+      tags: ['Wishlist'],
+      description: 'This endpoint allows a user to clear their wishlist',
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        '200': {
+          description: 'Wishlist cleared successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '401': {
+          description: 'Unauthorized',
           content: {
             'application/json': {
               schema: {

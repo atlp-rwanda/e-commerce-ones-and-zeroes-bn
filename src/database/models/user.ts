@@ -4,7 +4,10 @@ import { DataTypes, Model } from 'sequelize';
 module.exports = (sequelize: any, DataTypes: any) => {
   class User extends Model {
     static associate(models: any) {
-      // define association here
+      User.hasMany(models.Wishlist, {
+        foreignKey: 'userId',
+        as: 'wishlists',
+      });
     }
   }
   User.init(

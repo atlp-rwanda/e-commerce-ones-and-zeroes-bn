@@ -5,10 +5,10 @@ import { validateEmail, validatePassword } from '../validations/validations';
 import {
   registerMessageTemplate,
   nodeMail,
-  resetPasswordEmail,
   successfullyverifiedTemplate,
   successfullyDisabledAccountTemplate,
   successfullyRestoredAccountTemplate,
+  resetPasswordEmail,
 } from '../utils/emails';
 import { db } from '../database/models';
 import passport from '../config/google.auth';
@@ -397,24 +397,6 @@ export default class UserController {
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-function generatetoken(payload: any): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-}
-
-export async function sendPasswordResetEmail(
-  email: string,
-  token: string,
-): Promise<void> {
-  const resetLink = `http://localhost:7000/reset-password?token=${token}`;
-  const msg = {
-    to: email,
-    from: 'ihimbazweigor@gmail.com',
-    subject: 'Password Reset Request',
-    html: `<p>To reset your password, click <a href="${resetLink}">here</a>.</p>`,
-  };
-}
 export async function handlePasswordResetRequest(
   req: Request,
   res: Response,
@@ -461,7 +443,9 @@ export async function resetPassword(
   res: Response,
 ): Promise<void> {
   try {
-    const { token, newPassword } = req.body;
+    const { newPassword } = req.body;
+    const token = req.params.token;
+    console.log(token);
 
     if (!newPassword) {
       res.status(400).json({ error: 'New password is required' });
@@ -472,7 +456,7 @@ export async function resetPassword(
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Verify the token and decode the payload
-    const decodedToken = jwt.verify(token, JWT_SECRET) as { email: string };
+    const decodedToken = jwt.verify(token, secret) as { email: string };
 
     // Find user by decoded email from token
     const user = await db.User.findOne({
