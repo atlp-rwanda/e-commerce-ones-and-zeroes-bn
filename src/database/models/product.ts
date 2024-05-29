@@ -18,7 +18,7 @@ module.exports = (
         foreignKey: 'collectionId',
         onDelete: 'CASCADE',
       });
-       Product.hasMany(models.Wishlist, {
+      Product.hasMany(models.Wishlist, {
         foreignKey: 'productId',
         as: 'wishlists',
       });
