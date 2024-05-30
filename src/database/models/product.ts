@@ -9,6 +9,7 @@ module.exports = (
     DECIMAL: any;
     ARRAY: any;
     DATE: any;
+    BOOLEAN: any;
     INTEGER: any;
   },
 ) => {
@@ -52,6 +53,10 @@ module.exports = (
       },
       expiryDate: {
         type: DataTypes.DATE,
+      },
+      expired: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
       bonus: {
         type: DataTypes.STRING,

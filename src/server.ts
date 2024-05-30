@@ -12,8 +12,10 @@ import passport from './config/google.auth';
 import { db, sequelize } from './database/models/index';
 import AuthRouters from './routes/Auth';
 import routes from './routes';
-dotenv.config();
+const { productExpireTask } = require('./cronJob/productsCron');
 
+dotenv.config();
+productExpireTask.start();
 const app = express();
 app.use(cors());
 app.use(express.json());

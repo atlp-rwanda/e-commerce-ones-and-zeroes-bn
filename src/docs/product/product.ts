@@ -2,6 +2,18 @@ import { OpenAPIV3 } from 'openapi-types';
 
 const productPaths: OpenAPIV3.PathsObject = {
   '/api/products': {
+    get: {
+      summary: 'Get all Products',
+      tags: ['Products'],
+      responses: {
+        '200': {
+          description: 'Find products in Store',
+        },
+        '404': {
+          description: 'No products in store',
+        },
+      },
+    },
     post: {
       summary: 'Create a new collection',
       tags: ['Collections'],

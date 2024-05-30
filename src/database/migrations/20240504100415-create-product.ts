@@ -25,6 +25,10 @@ module.exports = {
       expiryDate: {
         type: DataTypes.DATE,
       },
+      expired: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
       bonus: {
         type: DataTypes.STRING,
       },
