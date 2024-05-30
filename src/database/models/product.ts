@@ -54,13 +54,11 @@ module.exports = (
       expiryDate: {
         type: DataTypes.DATE,
       },
-      expired: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
+      description: DataTypes.STRING,
       bonus: {
         type: DataTypes.STRING,
       },
+      discount: DataTypes.STRING,
       images: {
         type: DataTypes.ARRAY(DataTypes.STRING),
       },

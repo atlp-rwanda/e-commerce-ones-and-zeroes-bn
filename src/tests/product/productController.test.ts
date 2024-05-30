@@ -6,15 +6,16 @@ import {
 } from '../../controllers/productController';
 import { db } from '../../database/models';
 import cloudinary from '../../helps/cloudinaryConfig';
-interface User {
-  role: string;
-  userId: string;
-}
+import { CustomRequest, User } from '../../controllers/productController';
+// interface User {
+//   role: string;
+//   userId: string;
+// }
 
-interface CustomRequest extends Request {
-  user?: User;
-  files?: any;
-}
+// interface CustomRequest extends Request {
+//   user?: User;
+//   files?: any;
+// }
 
 jest.mock('../../database/models', () => ({
   db: {},

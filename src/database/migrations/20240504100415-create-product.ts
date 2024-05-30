@@ -14,9 +14,17 @@ module.exports = {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       price: {
         allowNull: false,
         type: DataTypes.DECIMAL(10, 2),
+      },
+      discount: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       category: {
         allowNull: false,

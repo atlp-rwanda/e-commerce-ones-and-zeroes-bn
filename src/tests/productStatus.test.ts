@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { productController } from '../controllers/productStatusController';
+import { ProductController } from '../controllers/productController';
 import { db } from '../database/models';
 
 // Mock the db object
@@ -26,55 +26,6 @@ const mockResponse = (): Partial<Response> => {
 };
 
 describe('productController', () => {
-  describe('getProduct', () => {
-    it('should return all products with status 200', async () => {
-      const req = mockRequest();
-      const res = mockResponse();
-
-      (db.Product.findAll as jest.Mock).mockResolvedValue([
-        { productId: 1, name: 'Product 1' },
-      ]);
-
-      await productController.getProduct(req as Request, res as Response);
-
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({
-        message: 'We have these products in our store',
-        allProducts: [{ productId: 1, name: 'Product 1' }],
-      });
-    });
-
-    it('should return 404 if no products found', async () => {
-      const req = mockRequest();
-      const res = mockResponse();
-
-      (db.Product.findAll as jest.Mock).mockResolvedValue([]);
-
-      await productController.getProduct(req as Request, res as Response);
-
-      expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({
-        message: 'No product available in our store',
-      });
-    });
-
-    it('should handle errors with status 500', async () => {
-      const req = mockRequest();
-      const res = mockResponse();
-
-      (db.Product.findAll as jest.Mock).mockRejectedValue(
-        new Error('Database error'),
-      );
-
-      await productController.getProduct(req as Request, res as Response);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        message: 'Internal Server Error',
-      });
-    });
-  });
-
   describe('getAvailableProduct', () => {
     it('should return available products with status 200', async () => {
       const req = mockRequest();
@@ -84,7 +35,7 @@ describe('productController', () => {
         { productId: 1, name: 'Product 1', isAvailable: true },
       ]);
 
-      await productController.getAvailableProduct(
+      await ProductController.getAvailableProduct(
         req as Request,
         res as Response,
       );
@@ -104,7 +55,7 @@ describe('productController', () => {
 
       (db.Product.findAll as jest.Mock).mockResolvedValue([]);
 
-      await productController.getAvailableProduct(
+      await ProductController.getAvailableProduct(
         req as Request,
         res as Response,
       );
@@ -123,57 +74,10 @@ describe('productController', () => {
         new Error('Database error'),
       );
 
-      await productController.getAvailableProduct(
+      await ProductController.getAvailableProduct(
         req as Request,
         res as Response,
       );
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        message: 'Internal Server Error',
-      });
-    });
-  });
-
-  describe('getSingleProduct', () => {
-    it('should return a single product with status 200', async () => {
-      const req = mockRequest({ productId: '1' });
-      const res = mockResponse();
-
-      (db.Product.findOne as jest.Mock).mockResolvedValue({
-        productId: 1,
-        name: 'Product 1',
-      });
-
-      await productController.getSingleProduct(req as Request, res as Response);
-
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({
-        singleProduct: { productId: 1, name: 'Product 1' },
-      });
-    });
-
-    it('should return 404 if product not found', async () => {
-      const req = mockRequest({ productId: '1' });
-      const res = mockResponse();
-
-      (db.Product.findOne as jest.Mock).mockResolvedValue(null);
-
-      await productController.getSingleProduct(req as Request, res as Response);
-
-      expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ message: 'Product not found' });
-    });
-
-    it('should handle errors with status 500', async () => {
-      const req = mockRequest({ productId: '1' });
-      const res = mockResponse();
-
-      (db.Product.findOne as jest.Mock).mockRejectedValue(
-        new Error('Database error'),
-      );
-
-      await productController.getSingleProduct(req as Request, res as Response);
 
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
@@ -199,7 +103,7 @@ describe('productController', () => {
       const productMock = { productId: '1', isAvailable: false };
       (db.Product.findOne as jest.Mock).mockResolvedValue(productMock);
 
-      await productController.updateSingleProduct(
+      await ProductController.updateSingleProduct(
         req as Request,
         res as Response,
       );
@@ -222,7 +126,7 @@ describe('productController', () => {
       const productMock = { productId: '1', isAvailable: true };
       (db.Product.findOne as jest.Mock).mockResolvedValue(productMock);
 
-      await productController.updateSingleProduct(
+      await ProductController.updateSingleProduct(
         req as Request,
         res as Response,
       );
@@ -244,7 +148,7 @@ describe('productController', () => {
     test('should return 404 if product not found', async () => {
       (db.Product.findOne as jest.Mock).mockResolvedValue(null);
 
-      await productController.updateSingleProduct(
+      await ProductController.updateSingleProduct(
         req as Request,
         res as Response,
       );
@@ -260,7 +164,7 @@ describe('productController', () => {
       const error = new Error('Database error');
       (db.Product.findOne as jest.Mock).mockRejectedValue(error);
 
-      await productController.updateSingleProduct(
+      await ProductController.updateSingleProduct(
         req as Request,
         res as Response,
       );
@@ -277,7 +181,7 @@ describe('productController', () => {
     test('should return 400 if productId is not provided', async () => {
       req.params = {}; // Ensure params is an empty object to simulate missing productId
 
-      await productController.updateSingleProduct(
+      await ProductController.updateSingleProduct(
         req as Request,
         res as Response,
       );

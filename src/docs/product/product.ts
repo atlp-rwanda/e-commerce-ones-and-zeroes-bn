@@ -112,6 +112,7 @@ const productPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+
   '/api/products/{collectionId}/': {
     post: {
       summary: 'Add a product to a collection',
@@ -146,6 +147,7 @@ const productPaths: OpenAPIV3.PathsObject = {
                 price: {
                   type: 'number',
                 },
+
                 category: {
                   type: 'string',
                 },
