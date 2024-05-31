@@ -23,6 +23,11 @@ module.exports = (
         foreignKey: 'productId',
         as: 'wishlists',
       });
+      Product.belongsToMany(models.Cart, {
+        through: models.CartProduct,
+        foreignKey: 'productId',
+        //otherKey: 'cartId'
+      });
     }
   }
   Product.init(

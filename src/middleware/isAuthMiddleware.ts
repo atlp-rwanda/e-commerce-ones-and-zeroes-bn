@@ -29,19 +29,19 @@ const isAuthenticated = async (
   try {
     const header = req.headers.authorization;
     if (!header) {
-      sendResponse('Not Authenicated, Please Login headers');
+      sendResponse('Not Authenticated, Please Login headers');
       return;
     }
     const token = header.split(' ')[1];
     const userInfo = decodeToken(token);
     if (!userInfo) {
-      sendResponse('Not Authenicated, Please Login no details');
+      sendResponse('Not Authenticated, Please Login no details');
       return;
     }
     req.user = userInfo;
     isActive(res, next, req.user.isVerified);
   } catch (error) {
-    res.status(506).json({ message: 'Authenication Issues' });
+    res.status(506).json({ message: 'Authentication Issues' });
   }
 };
 

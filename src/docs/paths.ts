@@ -3,6 +3,7 @@ import examples from './Examples/examples';
 import users from './Users/users';
 import googlePaths from './Users/googleAuth';
 import productStatusPath from './product/productStatus';
+import cartPaths from './Carts/cart';
 import loginDocs from './Users/auth';
 import updateUserPath from './Users/updateUser';
 import productPaths from './product/product';
@@ -13,6 +14,7 @@ const allPaths: OpenAPIV3.PathsObject = {
   ...users,
   ...productPaths,
   ...productStatusPath,
+  ...cartPaths,
   '/auth/login': loginDocs,
   ...updateUserPath,
   ...productPaths,

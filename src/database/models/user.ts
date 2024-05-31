@@ -1,12 +1,24 @@
 'use strict';
-import { DataTypes, Model } from 'sequelize';
-
-module.exports = (sequelize: any, DataTypes: any) => {
+const { Model } = require('sequelize');
+module.exports = (
+  sequelize: any,
+  DataTypes: {
+    BOOLEAN: any;
+    UUID: any;
+    UUIDV4: any;
+    STRING: any;
+    DATE: any;
+    ENUM: any;
+  },
+) => {
   class User extends Model {
     static associate(models: any) {
       User.hasMany(models.Wishlist, {
         foreignKey: 'userId',
         as: 'wishlists',
+      });
+      User.hasOne(models.Cart, {
+        foreignKey: 'userId',
       });
     }
   }
