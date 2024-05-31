@@ -7,10 +7,14 @@ import {
 import isAuthenticated from '../middleware/isAuthMiddleware';
 import checkPermission from '../middleware/checkPermissionMiddleware';
 import upload from '../middleware/multerConfig';
-import { productController } from '../controllers/productStatusController';
+import ProductController from '../controllers/productController';
+import multer from 'multer';
+import authMiddleware from '../middleware/authMiddleware';
+import uploads from '../middleware/multer';
+import cloudinary from '../helps/cloudinaryConfig';
 
 const router = express.Router();
-router.get('/', getProducts);
+router.get('/', isAuthenticated, authMiddleware.checkRole, getProducts);
 router.post('/', isAuthenticated, checkPermission('seller'), createCollection);
 router.post(
   '/:collectionId',
@@ -20,24 +24,39 @@ router.post(
   createProduct,
 );
 
-router.get('/', isAuthenticated, checkPermission('seller'), getProducts);
+router.get('/', isAuthenticated, checkPermission('admin'), getProducts);
 router.get(
   '/available',
   isAuthenticated,
   checkPermission('seller'),
-  productController.getAvailableProduct,
+  ProductController.getAvailableProduct,
 );
 router.get(
   '/:id',
   isAuthenticated,
   checkPermission('seller'),
-  productController.getSingleProduct,
+  ProductController.getSingleProduct,
 );
+
+router.get('/:productId', isAuthenticated, ProductController.getSingleProduct);
 router.put(
   '/:productId',
   isAuthenticated,
   checkPermission('seller'),
-  productController.updateSingleProduct,
+  ProductController.updateSingleProduct,
+);
+router.patch(
+  '/:productId',
+  isAuthenticated,
+  checkPermission('seller'),
+  uploads.array('images'),
+  ProductController.updateProduct,
+);
+router.post(
+  '/remove-image',
+  isAuthenticated,
+  checkPermission('seller'),
+  ProductController.removeProductImage,
 );
 
 export default router;
