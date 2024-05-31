@@ -20,12 +20,7 @@ router.post(
   createProduct,
 );
 
-router.get(
-  '/',
-  isAuthenticated,
-  checkPermission('seller'),
-  productController.getProduct,
-);
+router.get('/', isAuthenticated, checkPermission('seller'), getProducts);
 router.get(
   '/available',
   isAuthenticated,
