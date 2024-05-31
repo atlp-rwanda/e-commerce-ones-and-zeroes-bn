@@ -111,7 +111,6 @@ const productPaths: OpenAPIV3.PathsObject = {
         },
       },
     },
-  
   },
   '/api/products/{collectionId}/': {
     post: {
