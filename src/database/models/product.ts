@@ -10,7 +10,6 @@ module.exports = (
     BOOLEAN: any;
     ARRAY: any;
     DATE: any;
-    BOOLEAN: any;
     INTEGER: any;
   },
 ) => {

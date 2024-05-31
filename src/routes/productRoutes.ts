@@ -24,7 +24,7 @@ router.get(
   '/',
   isAuthenticated,
   checkPermission('seller'),
-  productController.getProduct,
+  getProducts,
 );
 router.get(
   '/available',
