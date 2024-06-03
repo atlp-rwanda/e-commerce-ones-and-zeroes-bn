@@ -393,6 +393,66 @@ export default class UserController {
       }
     }
   }
+
+  static async updatePassword(req: any, res: Response) {
+    const { token } = req;
+    const { password, newPassword, verifyNewPassword } = req.body;
+
+    try {
+      const getDecodedToken = jwt.verify(token, secret);
+      const userId = getDecodedToken.userId;
+      const userData = await db.User.findOne({
+        where: { userId: userId },
+      });
+
+      if (!userData) {
+        return res.status(404).json({
+          status: 'fail',
+          message: 'User not found',
+        });
+      }
+
+      //extract Hash Password from user detail
+      const currentHash = userData.dataValues.password;
+
+      try {
+        const result = await bcrypt.compare(password, currentHash);
+        if (result == false) {
+          return res.status(401).json({
+            status: 'fail',
+            message: 'Wrong credentials',
+          });
+        }
+
+        //hashNewPassword
+        const saltRounds = 10;
+        const salt: any = await bcrypt.genSalt(saltRounds);
+        const newHashPassword = await bcrypt.hash(newPassword, salt);
+
+        const [updatePassword] = await db.User.update(
+          { password: newHashPassword },
+          { where: { userId: userId } },
+        );
+
+        if (updatePassword > 0) {
+          return res.status(200).json({
+            status: 'OK',
+            message: 'Password updated successfully',
+          });
+        }
+      } catch (e) {
+        return res.status(500).json({
+          status: 'error',
+          message: 'Server error',
+        });
+      }
+    } catch (e) {
+      res.status(500).json({
+        status: 'fail',
+        message: 'something went wrong: ' + e,
+      });
+    }
+  }
 }
 
 dotenv.config();

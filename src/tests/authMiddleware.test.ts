@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { db } from '../database/models';
 import 'dotenv/config';
-import authMiddleware from '../middleware/authMiddleware';
+import { authMiddleware } from '../middleware/authMiddleware';
 import { generateToken } from '../helps/generateToken';
 import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 
