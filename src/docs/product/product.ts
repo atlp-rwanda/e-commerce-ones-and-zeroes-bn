@@ -3,69 +3,72 @@ import { OpenAPIV3 } from 'openapi-types';
 const productPaths: OpenAPIV3.PathsObject = {
   '/api/products': {
     get: {
-      summary: 'Get all Products',
+      summary: 'Get products',
       tags: ['Products'],
-      security: [
+      description:
+        'Get product,Search a product by name, category, and price range',
+      parameters: [
         {
-          bearerAuth: [],
+          in: 'path',
+          name: 'searchKeyword',
+          required: false,
+          schema: {
+            type: 'string',
+          },
+          description: 'Search keyword',
+        },
+        {
+          in: 'query',
+          name: 'minPrice',
+          required: false,
+          schema: {
+            type: 'number',
+          },
+          description: 'Minimum price of the products',
+        },
+        {
+          in: 'query',
+          name: 'maxPrice',
+          required: false,
+          schema: {
+            type: 'number',
+          },
+          description: 'Maximum price of the products',
         },
       ],
       responses: {
         '200': {
-          description: 'Find products in Store',
-        },
-        '404': {
-          description: 'No products in store',
-        },
-      },
-    },
-    post: {
-      summary: 'Create a new collection',
-      tags: ['Collections'],
-      security: [
-        {
-          bearerAuth: [],
-        },
-      ],
-      requestBody: {
-        required: true,
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                name: {
-                  type: 'string',
-                },
-              },
-              required: ['name'],
-            },
-          },
-        },
-      },
-      responses: {
-        '201': {
-          description: 'Collection created successfully',
+          description: 'A successful response',
           content: {
             'application/json': {
               schema: {
-                type: 'object',
-                properties: {
-                  id: {
-                    type: 'string',
-                    format: 'uuid',
-                  },
-                  name: {
-                    type: 'string',
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: {
+                      type: 'string',
+                    },
+                    name: {
+                      type: 'string',
+                    },
+                    category: {
+                      type: 'string',
+                    },
+                    price: {
+                      type: 'number',
+                    },
+                    isAvailable: {
+                      type: 'boolean',
+                    },
                   },
                 },
-                required: ['id', 'name'],
               },
             },
           },
         },
         '400': {
-          description: 'Bad request',
+          description: 'Bad Request',
           content: {
             'application/json': {
               schema: {
@@ -80,13 +83,13 @@ const productPaths: OpenAPIV3.PathsObject = {
           },
         },
         '404': {
-          description: 'Not found',
+          description: 'No result found',
           content: {
             'application/json': {
               schema: {
                 type: 'object',
                 properties: {
-                  error: {
+                  message: {
                     type: 'string',
                   },
                 },
@@ -101,8 +104,11 @@ const productPaths: OpenAPIV3.PathsObject = {
               schema: {
                 type: 'object',
                 properties: {
-                  error: {
+                  message: {
                     type: 'string',
+                  },
+                  error: {
+                    type: 'object',
                   },
                 },
               },
