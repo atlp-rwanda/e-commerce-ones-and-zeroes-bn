@@ -4,20 +4,22 @@ import {
   createProduct,
   getProducts,
 } from '../controllers/productController';
-import isAuthenticated from '../middleware/isAuthMiddleware';
-import checkPermission from '../middleware/checkPermissionMiddleware';
 import upload from '../middleware/multerConfig';
+import isAuthenticated from '../middleware/isAuthMiddleware';
 import ProductController from '../controllers/productController';
+import { SearchController } from '../controllers/productSearch';
 import multer from 'multer';
 import authMiddleware from '../middleware/authMiddleware';
 import uploads from '../middleware/multer';
 import cloudinary from '../helps/cloudinaryConfig';
+import checkPermission from '../middleware/checkPermissionMiddleware';
 
 const router = express.Router();
 router.get(
-  '/',
-  isAuthenticated,
-  authMiddleware.checkRole('admin'),
+  '/:searchKeyword',
+  // isAuthenticated,
+  // authMiddleware.checkRole('admin'),
+  SearchController.search,
   getProducts,
 );
 router.post('/', isAuthenticated, checkPermission('seller'), createCollection);
