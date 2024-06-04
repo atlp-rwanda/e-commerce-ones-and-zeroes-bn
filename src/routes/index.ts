@@ -4,6 +4,7 @@ import userRoute from './userRoutes';
 import productsRoutes from './productRoutes';
 import wishlistRoutes from './wishlistRoute';
 import cartRoute from '../routes/cartRoutes';
+import chatRoutes from '../routes/chatsRoutes';
 
 const router: Router = express.Router();
 
@@ -15,6 +16,7 @@ router.use('/users', userRoute);
 router.use('/products', productsRoutes);
 router.use('/wishlist', wishlistRoutes);
 router.use('/carts', cartRoute);
+router.use('/chats', chatRoutes);
 
 router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
