@@ -56,7 +56,4 @@ export default class authMiddleware {
   }
 }
 
-
-
-
 export { authMiddleware };

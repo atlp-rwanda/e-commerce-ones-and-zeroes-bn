@@ -12,7 +12,7 @@ const router: Router = express.Router();
 
 router.get('/', UserController.getUsers);
 router.post('/registerUser', UserController.registerUser);
-router.post('/isVerified/:token', UserController.isVerified);
+router.get('/isVerified/:token', UserController.isVerified);
 router.post('/login', UserController.login);
 router.post('/forgot-password', handlePasswordResetRequest);
 router.post('/reset-password/:token', resetPassword);
