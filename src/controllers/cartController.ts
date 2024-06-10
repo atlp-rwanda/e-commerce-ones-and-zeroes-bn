@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { db } from '../database/models';
 import { v4 as uuidv4 } from 'uuid';
+import stripe from '../helps/stripeConfig';
 
 export default class CartController {
   static async getCartProducts(req: Request, res: Response) {
@@ -344,6 +345,79 @@ export default class CartController {
     } catch (error) {
       console.log(error);
       return res.status(500).json({ message: 'Failed to clear cart' });
+    }
+  }
+
+  static async checkoutCart(req: Request, res: Response) {
+    try {
+      let { cartId } = req.params;
+      let { addressId } = req.body;
+      if (!addressId) {
+        return res.status(400).json({ message: 'Missing information' });
+      }
+      const cart = await db.Cart.findOne({
+        where: {
+          cartId: cartId,
+        },
+        include: [
+          {
+            model: db.Product,
+            through: {
+              model: db.CartProduct,
+              attributes: ['quantity'],
+            },
+          },
+        ],
+      });
+      if (!cart) {
+        return res.status(404).json({ message: 'No such cart found' });
+      }
+
+      const total = cart.dataValues.Products.reduce(
+        (accumulator: number, product: any): number => {
+          return (
+            accumulator +
+            product.dataValues.price *
+              product.dataValues.CartProduct.dataValues.quantity
+          );
+        },
+        0,
+      );
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: total,
+        currency: 'rwf',
+        //description: `Goods`
+      });
+
+      const order = await db.Order.create({
+        orderId: uuidv4(),
+        userId: (req as any).user.userId,
+        cartId: cart.dataValues.cartId,
+        addressId: addressId,
+        paymentIntentId: paymentIntent.id,
+      });
+
+      cart.dataValues.Products.forEach(async (product: any) => {
+        await db.OrderProduct.create({
+          orderProductId: uuidv4(),
+          orderId: order.dataValues.orderId,
+          productId: product.dataValues.productId,
+          quantity: product.dataValues.CartProduct.dataValues.quantity,
+        });
+      });
+
+      return res.status(200).json({
+        message: 'Cart ready for checkout',
+        cart,
+        order,
+        paymentIntent,
+      });
+    } catch (error: any) {
+      console.log(error);
+      return res
+        .status(500)
+        .json({ message: 'Failed to checkout cart products' });
     }
   }
 }

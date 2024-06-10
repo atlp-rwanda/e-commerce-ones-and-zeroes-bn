@@ -20,6 +20,17 @@ jest.mock('../database/models', () => ({
 //jest.mock('../utils/emails')
 const mockedNodeMail = jest.spyOn(mailHelpers, 'nodeMail').mockImplementation();
 
+const mockUser: any = {
+  userId: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
+  firstName: 'christian',
+  lastName: 'Ishimwe',
+  email: 'christianinjoooa3@gmail.com',
+  role: 'admin',
+  isActive: true,
+  createdAt: '2024-05-06T18:17:45.933Z',
+  updatedAt: '2024-05-06T18:17:45.933Z',
+};
+
 describe('UserController', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -31,16 +42,7 @@ describe('UserController', () => {
         params: {
           id: 'f2f98eeb-f579-411a-8f59-f2617beb261b',
         },
-        user: {
-          userId: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
-          firstName: 'christian',
-          lastName: 'Ishimwe',
-          email: 'christianinjoooa3@gmail.com',
-          role: 'admin',
-          isActive: true,
-          createdAt: '2024-05-06T18:17:45.933Z',
-          updatedAt: '2024-05-06T18:17:45.933Z',
-        },
+        user: mockUser,
         body: {
           reason: 'Harrasment of other users of the application',
         },
@@ -51,9 +53,9 @@ describe('UserController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.User.findOne = jest.fn().mockReturnValue(null);
+      db.User.findOne.mockReturnValue(null);
 
-      db.User.update = jest.fn().mockReturnValue([0]);
+      db.User.update.mockReturnValue([0]);
 
       try {
         await UserController.disableUser(req, res);
@@ -68,16 +70,7 @@ describe('UserController', () => {
         params: {
           id: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
         },
-        user: {
-          userId: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
-          firstName: 'christian',
-          lastName: 'Ishimwe',
-          email: 'christianinjoooa3@gmail.com',
-          role: 'admin',
-          isActive: true,
-          createdAt: '2024-05-06T18:17:45.933Z',
-          updatedAt: '2024-05-06T18:17:45.933Z',
-        },
+        user: mockUser,
         body: {
           reason: 'Harrasment of other users of the application',
         },
@@ -88,20 +81,9 @@ describe('UserController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.User.findOne = jest.fn().mockReturnValue({
-        dataValues: {
-          userId: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
-          firstName: 'christian',
-          lastName: 'Ishimwe',
-          email: 'christianinjoooa3@gmail.com',
-          role: 'admin',
-          isActive: true,
-          createdAt: '2024-05-06T18:17:45.933Z',
-          updatedAt: '2024-05-06T18:17:45.933Z',
-        },
+      db.User.findOne.mockReturnValue({
+        dataValues: { ...mockUser },
       });
-
-      db.User.update = jest.fn().mockReturnValue([0]);
 
       try {
         await UserController.disableUser(req, res);
@@ -118,16 +100,7 @@ describe('UserController', () => {
         params: {
           id: 'f2f98eeb-f579-411a-8f59-f2617beb261b',
         },
-        user: {
-          userId: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
-          firstName: 'Christian',
-          lastName: 'Ishimwe',
-          email: 'christianinjoooa3@gmail.com',
-          role: 'admin',
-          isActive: true,
-          createdAt: '2024-05-06T18:17:45.933Z',
-          updatedAt: '2024-05-06T18:17:45.933Z',
-        },
+        user: mockUser,
         body: {},
       } as unknown as Request;
 
@@ -136,7 +109,7 @@ describe('UserController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.User.findOne = jest.fn().mockReturnValue({
+      db.User.findOne.mockReturnValue({
         dataValues: {
           userId: 'f2f98eeb-f579-411a-8f59-f2617beb261b',
           firstName: 'celestin',
@@ -149,9 +122,7 @@ describe('UserController', () => {
         },
       });
 
-      try {
-        await UserController.disableUser(req, res);
-      } catch (error) {}
+      await UserController.disableUser(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         message: 'Missing reason for disabling account',
@@ -163,16 +134,7 @@ describe('UserController', () => {
         params: {
           id: 'f2f98eeb-f579-411a-8f59-f2617beb261b',
         },
-        user: {
-          userId: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
-          firstName: 'Christian',
-          lastName: 'Ishimwe',
-          email: 'christianinjoooa3@gmail.com',
-          role: 'admin',
-          isActive: true,
-          createdAt: '2024-05-06T18:17:45.933Z',
-          updatedAt: '2024-05-06T18:17:45.933Z',
-        },
+        user: mockUser,
         body: {
           reason: 'Harrasment of other users of the application',
         },
@@ -183,7 +145,7 @@ describe('UserController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.User.findOne = jest.fn().mockReturnValue({
+      db.User.findOne.mockReturnValue({
         dataValues: {
           userId: 'f2f98eeb-f579-411a-8f59-f2617beb261b',
           firstName: 'celestin',
@@ -196,11 +158,9 @@ describe('UserController', () => {
         },
       });
 
-      db.User.update = jest.fn().mockReturnValue([1]);
+      db.User.update.mockReturnValue([1]);
 
-      try {
-        await UserController.disableUser(req, res);
-      } catch (error) {}
+      await UserController.disableUser(req, res);
 
       const firstName: string = 'celestin';
       const message: string = mailHelpers.successfullyDisabledAccountTemplate(
@@ -224,16 +184,7 @@ describe('UserController', () => {
         params: {
           id: 'f2f98eeb-f579-411a-8f59-f2617beb261b',
         },
-        user: {
-          userId: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
-          firstName: 'Christian',
-          lastName: 'Ishimwe',
-          email: 'christianinjoooa3@gmail.com',
-          role: 'admin',
-          isActive: true,
-          createdAt: '2024-05-06T18:17:45.933Z',
-          updatedAt: '2024-05-06T18:17:45.933Z',
-        },
+        user: mockUser,
         body: {
           reason: 'Harrasment of other users of the application',
         },
@@ -244,7 +195,7 @@ describe('UserController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.User.findOne = jest.fn().mockReturnValue({
+      db.User.findOne.mockReturnValue({
         dataValues: {
           userId: 'f2f98eeb-f579-411a-8f59-f2617beb261b',
           firstName: 'celestin',
@@ -257,11 +208,7 @@ describe('UserController', () => {
         },
       });
 
-      db.User.update = jest.fn().mockReturnValue([1]);
-
-      try {
-        await UserController.disableUser(req, res);
-      } catch (error) {}
+      await UserController.disableUser(req, res);
 
       const message: string =
         mailHelpers.successfullyRestoredAccountTemplate('celestin');
@@ -282,16 +229,7 @@ describe('UserController', () => {
         params: {
           id: 'f2f98eeb-f579-411a-8f59-f2617beb261b',
         },
-        user: {
-          userId: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
-          firstName: 'Christian',
-          lastName: 'Ishimwe',
-          email: 'christianinjoooa3@gmail.com',
-          role: 'admin',
-          isActive: true,
-          createdAt: '2024-05-06T18:17:45.933Z',
-          updatedAt: '2024-05-06T18:17:45.933Z',
-        },
+        user: mockUser,
         body: {
           reason: 'Harrasment of other users of the application',
         },
@@ -302,17 +240,15 @@ describe('UserController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.User.findOne = jest.fn().mockReturnValue(() => {
+      db.User.findOne.mockReturnValue(() => {
         throw new Error('Database Error');
       });
 
-      db.User.update = jest.fn().mockReturnValue(() => {
+      db.User.update.mockImplementation(() => {
         throw new Error('Database Error');
       });
 
-      try {
-        await UserController.disableUser(req, res);
-      } catch (error) {}
+      await UserController.disableUser(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({

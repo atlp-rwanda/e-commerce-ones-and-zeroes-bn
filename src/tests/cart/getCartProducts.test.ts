@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import CartController from '../controllers/cartController';
+import CartController from '../../controllers/cartController';
 import dotenv from 'dotenv';
-import { db } from '../database/models';
+import { db } from '../../database/models';
 
 dotenv.config();
 
-jest.mock('../database/models', () => ({
+jest.mock('../../database/models', () => ({
   db: {
     Cart: {
       findOne: jest.fn(),
@@ -79,7 +79,7 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Cart.findOne = jest.fn().mockReturnValue(null);
+      db.Cart.findOne.mockReturnValue(null);
 
       await CartController.getCartProducts(req, res);
 
@@ -99,7 +99,7 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Cart.findOne = jest.fn().mockReturnValue(mockCart);
+      db.Cart.findOne.mockReturnValue(mockCart);
 
       await CartController.getCartProducts(req, res);
 
@@ -125,7 +125,7 @@ describe('CartController', () => {
       let registeredUserCart: any = mockCart;
       registeredUserCart.dataValues.userId =
         '0c3cb46d-b870-403f-a35c-f51ad5a72bd8';
-      db.Cart.findOne = jest.fn().mockReturnValue(null);
+      db.Cart.findOne.mockReturnValue(null);
 
       await CartController.getCartProducts(req, res);
 
@@ -148,7 +148,7 @@ describe('CartController', () => {
       let registeredUserCart: any = mockCart;
       registeredUserCart.dataValues.userId =
         '0c3cb46d-b870-403f-a35c-f51ad5a72bd8';
-      db.Cart.findOne = jest.fn().mockReturnValue(registeredUserCart);
+      db.Cart.findOne.mockReturnValue(registeredUserCart);
 
       await CartController.getCartProducts(req, res);
 
@@ -171,7 +171,7 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Cart.findOne = jest.fn().mockImplementation(() => {
+      db.Cart.findOne.mockImplementation(() => {
         throw new Error('Database Error');
       });
 

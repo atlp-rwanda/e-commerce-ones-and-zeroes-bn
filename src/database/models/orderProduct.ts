@@ -1,19 +1,13 @@
 'use strict';
-const { Model } = require('sequelize');
-const User = require('./user');
 
+const { Model } = require('sequelize');
+const Order = require('./order');
+const Product = require('./product');
 module.exports = (
   sequelize: any,
-  DataTypes: {
-    BOOLEAN: any;
-    UUID: any;
-    UUIDV4: any;
-    STRING: any;
-    DATE: any;
-    NOW: any;
-  },
+  DataTypes: { UUID: any; UUIDV4: any; STRING: any; INTEGER: any; DATE: any },
 ) => {
-  class Cart extends Model {
+  class OrderProduct extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -21,29 +15,35 @@ module.exports = (
      */
     static associate(models: any) {
       // define association here
-      Cart.belongsToMany(models.Product, {
-        through: models.CartProduct,
-        foreignKey: 'cartId',
-        //otherKey: 'productId'
-      });
     }
   }
-  Cart.init(
+  OrderProduct.init(
     {
-      cartId: {
+      orderProductId: {
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
       },
-      userId: {
-        allowNull: true,
+      orderId: {
+        allowNull: false,
         type: DataTypes.UUID,
         references: {
-          model: User,
-          key: 'Id',
+          model: Order,
+          key: 'orderId',
         },
-        unique: true,
+      },
+      productId: {
+        allowNull: false,
+        type: DataTypes.UUID,
+        references: {
+          model: Product,
+          key: 'productId',
+        },
+      },
+      quantity: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
       },
       createdAt: {
         allowNull: false,
@@ -58,8 +58,9 @@ module.exports = (
     },
     {
       sequelize,
-      modelName: 'Cart',
+      modelName: 'OrderProduct',
+      timestamps: true,
     },
   );
-  return Cart;
+  return OrderProduct;
 };

@@ -57,6 +57,7 @@
     "sequelize-cli": "^6.6.2",
     "socket.io": "^4.7.5",
     "speakeasy": "^2.0.0",
+    "stripe": "^15.9.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "typescript": "^5.4.4",

@@ -17,5 +17,11 @@ router.delete(
   CartController.removeProduct,
 );
 router.delete('/clear', authMiddleware.verifyToken, CartController.clearCart);
+router.post(
+  '/:cartId/checkout',
+  authMiddleware.verifyToken,
+  authMiddleware.isAuthenticated,
+  CartController.checkoutCart,
+);
 
 export default router;

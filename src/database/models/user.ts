@@ -20,6 +20,9 @@ module.exports = (
       User.hasOne(models.Cart, {
         foreignKey: 'userId',
       });
+      User.hasOne(models.Address, {
+        foreignKey: 'userId',
+      });
     }
   }
   User.init(

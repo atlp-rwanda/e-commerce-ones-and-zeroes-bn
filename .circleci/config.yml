@@ -14,17 +14,17 @@ jobs:
           name: Install dependencies
           command: npm install
           environment:
-          COVERALLS_REPO_TOKEN: $COVERALLS_REPO_TOKEN
+            COVERALLS_REPO_TOKEN: $COVERALLS_REPO_TOKEN
       - run:
           name: Run tests
           command: npm test
+          no_output_timeout: 20m
 
       - run:
           name: send coverage data to coveralls
           command: npm run coveralls
 
 workflows:
-  version: 2
-  build:
+  build_workflow:
     jobs:
       - build

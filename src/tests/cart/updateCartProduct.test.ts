@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import CartController from '../controllers/cartController';
+import CartController from '../../controllers/cartController';
 import dotenv from 'dotenv';
-import { db } from '../database/models';
+import { db } from '../../database/models';
 
 dotenv.config();
 
-jest.mock('../database/models', () => ({
+jest.mock('../../database/models', () => ({
   db: {
     Cart: {
       findOne: jest.fn(),
@@ -17,6 +17,7 @@ jest.mock('../database/models', () => ({
     CartProduct: {
       findOne: jest.fn(),
       create: jest.fn(),
+      update: jest.fn(),
     },
   },
 }));
@@ -130,7 +131,7 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Cart.findOne = jest.fn().mockReturnValue(null);
+      db.Cart.findOne.mockReturnValue(null);
 
       await CartController.updateCartProduct(req, res);
 
@@ -156,7 +157,7 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Cart.findOne = jest.fn().mockReturnValue(null);
+      db.Cart.findOne.mockReturnValue(null);
 
       await CartController.updateCartProduct(req, res);
 
@@ -184,9 +185,9 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+      db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-      db.Product.findOne = jest.fn().mockReturnValue(null);
+      db.Product.findOne.mockReturnValue(null);
 
       await CartController.updateCartProduct(req, res);
 
@@ -214,11 +215,11 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+      db.Product.findOne.mockReturnValue(mockProduct);
 
-      db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+      db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-      db.CartProduct.findOne = jest.fn().mockReturnValue(null);
+      db.CartProduct.findOne.mockReturnValue(null);
 
       await CartController.updateCartProduct(req, res);
 
@@ -248,11 +249,11 @@ describe('CartController', () => {
 
       let product = mockProduct;
       product.dataValues.quantity = 50;
-      db.Product.findOne = jest.fn().mockReturnValue(product);
+      db.Product.findOne.mockReturnValue(product);
 
-      db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+      db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-      db.CartProduct.findOne = jest.fn().mockReturnValue(mockCartProduct);
+      db.CartProduct.findOne.mockReturnValue(mockCartProduct);
 
       await CartController.updateCartProduct(req, res);
 
@@ -278,15 +279,15 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+      db.Product.findOne.mockReturnValue(mockProduct);
 
       let cart: any = mockAnonymousCart;
       cart.dataValues.userId = (req as any).user.userId;
-      db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+      db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-      db.CartProduct.findOne = jest.fn().mockReturnValue(mockCartProduct);
+      db.CartProduct.findOne.mockReturnValue(mockCartProduct);
 
-      db.CartProduct.update = jest.fn().mockReturnValue([1]);
+      db.CartProduct.update.mockReturnValue([1]);
 
       await CartController.updateCartProduct(req, res);
 
@@ -314,13 +315,13 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+      db.Product.findOne.mockReturnValue(mockProduct);
 
-      db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+      db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-      db.CartProduct.findOne = jest.fn().mockReturnValue(mockCartProduct);
+      db.CartProduct.findOne.mockReturnValue(mockCartProduct);
 
-      db.CartProduct.update = jest.fn().mockImplementation(() => {
+      db.CartProduct.update.mockImplementation(() => {
         throw new Error('Database error');
       });
 
