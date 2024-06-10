@@ -45,8 +45,21 @@ module.exports = {
       },
       status: {
         allowNull: false,
-        type: Sequelize.ENUM('processing', 'shipped', 'failed'),
-        defaultValue: 'processing',
+        type: Sequelize.ENUM(
+          'placed',
+          'processing',
+          'shipped',
+          'delivered',
+          'cancelled',
+          'failed',
+          'returned',
+        ),
+        defaultValue: 'placed',
+      },
+      expectedDeliveryDate: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       createdAt: {
         allowNull: false,
