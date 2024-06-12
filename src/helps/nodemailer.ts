@@ -17,6 +17,9 @@ async function sendEmail(
       user: process.env.NODEMAILER_EMAIL_USERNAME || '',
       pass: process.env.NODEMAILER_EMAIL_PASSWORD || '',
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
   };
 
   const transporter = nodemailer.createTransport(config);

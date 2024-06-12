@@ -17,7 +17,7 @@ const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const dotenv = require('dotenv');
 dotenv.config();
-const secret = process.env.USER_SECRET;
+const secret = process.env.JWT_SECRET;
 
 interface User {
   firstName: string;
@@ -88,7 +88,7 @@ export default class UserController {
 
       await nodeMail(
         email,
-        'Welcome to One and Zero E-commerce',
+        'You are required to Verify your email',
         registerMessageTemplate(firstName, token),
       );
 
@@ -374,7 +374,7 @@ export default class UserController {
       }
 
       const email = decoded.email;
-      const name = decoded.name;
+      const name = decoded.firstName;
 
       await nodeMail(
         email,
@@ -382,7 +382,9 @@ export default class UserController {
         successfullyverifiedTemplate(name),
       );
 
-      res.status(200).json({ message: 'Email successfully verified' });
+      return res
+        .status(200)
+        .redirect(`${process.env.CLIENT_URL}/users/isVerified`);
     } catch (error) {
       if (error instanceof jwt.JsonWebTokenError) {
         return res.status(400).json({ error: 'Invalid token content' });
@@ -505,7 +507,6 @@ export async function resetPassword(
   try {
     const { newPassword } = req.body;
     const token = req.params.token;
-    console.log(token);
 
     if (!newPassword) {
       res.status(400).json({ error: 'New password is required' });

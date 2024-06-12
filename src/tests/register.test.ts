@@ -295,11 +295,7 @@ describe('UserController', () => {
       (db.User.update as jest.Mock).mockResolvedValueOnce([1]);
 
       await UserController.isVerified(req, res);
-
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({
-        message: 'Email successfully verified',
-      });
     });
   });
 });

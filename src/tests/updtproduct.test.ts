@@ -24,7 +24,6 @@ jest.mock('../database/models', () => ({
     },
   },
 }));
-console.log('database:', db.Products);
 describe('Update Product', () => {
   afterEach(() => {
     jest.clearAllMocks();
