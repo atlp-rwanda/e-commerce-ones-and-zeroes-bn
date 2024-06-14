@@ -99,6 +99,7 @@ module.exports = (
         type: DataTypes.DATE,
         defaultValue: Date.now(),
       },
+
       updatedAt: {
         allowNull: false,
         type: DataTypes.DATE,
