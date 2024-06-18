@@ -1,5 +1,4 @@
 import { OpenAPIV3 } from 'openapi-types';
-import examples from './Examples/examples';
 import users from './Users/users';
 import googlePaths from './Users/googleAuth';
 import productStatusPath from './product/productStatus';
@@ -11,7 +10,6 @@ import updtProductPath from './product/updtproduct';
 import chatPaths from './chats/chatsPath';
 import productReviewPaths from './product/productReview';
 const allPaths: OpenAPIV3.PathsObject = {
-  ...examples,
   ...googlePaths,
   ...users,
   ...productPaths,

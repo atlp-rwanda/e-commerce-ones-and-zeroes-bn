@@ -89,9 +89,9 @@ module.exports = (
         defaultValue: 'buyer',
       },
       passwordLastChanged: {
-        allowNull: false,
         type: DataTypes.DATE,
         defaultValue: Date.now(),
+        allowNull: false,
       },
 
       createdAt: {

@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 
-import ProductController from '../controllers/productController';
+import { ProductController } from '../controllers/productController';
 import { db } from '../database/models';
 import dotenv from 'dotenv';
 import cloudinary from '../helps/cloudinaryConfig';

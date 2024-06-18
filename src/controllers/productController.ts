@@ -1,13 +1,21 @@
 import { Request, Response } from 'express';
 import cloudinary from '../helps/cloudinaryConfig';
 import { db } from '../database/models/index';
+import { verify } from 'crypto';
+import { authenticateToken } from '../config/jwt.token';
+import ProductService from '../services/productService';
+import CollectionService from '../services/collectionService';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
 import { validateEmail, validatePassword } from '../validations/validations';
 import path from 'path';
 import { Console, log } from 'console';
 import { logger } from 'sequelize/types/utils/logger';
 import upload from '../middleware/multer';
 import { UploadApiResponse, ResourceType } from 'cloudinary';
-export interface User {
+
+interface User {
   role: string;
   userId: string;
   userproductId: string;
@@ -51,8 +59,6 @@ export async function createCollection(req: CustomRequest, res: Response) {
 
     return res.status(201).json(collection);
   } catch (error) {
-    console.log(error);
-
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
@@ -119,8 +125,6 @@ export async function createProduct(req: CustomRequest, res: Response) {
       .status(201)
       .json({ message: 'Product added successfully', product });
   } catch (error) {
-    console.log(error);
-
     return res.status(500).json({ message: 'Internal Server Error', error });
   }
 }
@@ -303,7 +307,6 @@ export class ProductController {
         data: singleProduct,
       });
     } catch (error: any) {
-      console.error('Error updating product:', error);
       return res.status(500).json({
         status: 'error',
         message: 'Internal Server Error',
@@ -362,6 +365,65 @@ export class ProductController {
       });
     }
   }
-}
+  static async deleteProduct(req: any, res: any) {
+    const { id } = req.params;
 
-export default ProductController;
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is not defined ');
+    }
+
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, jwtSecret);
+    } catch (error) {
+      return res.status(401).json({ error: 'Invalid or expired token' });
+    }
+
+    const { userId, role } = decoded;
+
+    // Scenario 3: If the request body fails validation checks or the user is not a seller
+    if (role !== 'seller') {
+      return res
+        .status(403)
+        .json({ error: 'You must be a seller to delete a product.' });
+    }
+
+    const product = await ProductService.getProductById(id);
+
+    // Scenario 1: Check if the user is a seller and if the product exists
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found.' });
+    }
+
+    // Fetch the collection that the product belongs to
+    const collection = await CollectionService.getCollectionById(
+      product.collectionId,
+    );
+
+    if (!collection) {
+      return res.status(404).json({ error: 'Collection not found.' });
+    }
+
+    if (collection.sellerId !== userId) {
+      return res
+        .status(403)
+        .json({ error: 'You can only delete your own products.' });
+    }
+
+    // Scenario 2: If the user is a seller and the product exists, delete the product
+    const deletedProduct = await ProductService.deleteProduct(id);
+
+    return res.status(200).json({
+      message: 'Product deleted successfully.',
+      product: deletedProduct,
+    });
+  }
+}
