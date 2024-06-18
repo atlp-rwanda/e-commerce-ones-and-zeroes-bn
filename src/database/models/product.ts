@@ -3,11 +3,11 @@ const { Model } = require('sequelize');
 module.exports = (
   sequelize: any,
   DataTypes: {
+    BOOLEAN: any;
     UUID: any;
     UUIDV4: any;
     STRING: any;
     DECIMAL: any;
-    BOOLEAN: any;
     ARRAY: any;
     DATE: any;
     INTEGER: any;

@@ -61,6 +61,23 @@ const resetPasswordEmail = (token: string): string => `
 Dear User,
 Click here to reset password ${host}/api/users/reset-password/${token}.
 `;
+/* TWO FACTOR AUTHENTICATION MESSAGE TEMPLATE */
+
+const twoFAMessageTemplate = (token: string) => `
+Dear,
+You have requested to enable two factor authentication on your account. please use the token below to confirm your identity.
+${token}   
+Copy and paste the token above to the input field on the page.
+If you did not request for two factor authentication, please contact our support team.
+Thank you.  `;
+
+/*  AvailableProduct  */
+const sendProductEndEmail = (firstName: string) => `
+Dear ${firstName},
+
+There is a product that was said to have ended on the market.
+Please check it to make it available again on the market.
+`;
 
 const nodeMail = async (
   email: string,
@@ -107,4 +124,6 @@ export {
   successfullyDisabledAccountTemplate,
   successfullyRestoredAccountTemplate,
   resetPasswordEmail,
+  twoFAMessageTemplate,
+  sendProductEndEmail,
 };

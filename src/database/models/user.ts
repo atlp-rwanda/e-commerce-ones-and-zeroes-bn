@@ -100,6 +100,11 @@ module.exports = (
         defaultValue: Date.now(),
       },
 
+      use2FA: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+
       updatedAt: {
         allowNull: false,
         type: DataTypes.DATE,

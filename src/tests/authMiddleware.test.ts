@@ -4,6 +4,8 @@ import 'dotenv/config';
 import { authMiddleware } from '../middleware/authMiddleware';
 import { generateToken } from '../helps/generateToken';
 import jwt, { JsonWebTokenError } from 'jsonwebtoken';
+import AuthMiddleware from '../middleware/authMiddleware';
+import { CustomRequest } from '../controllers/productController';
 
 jest.mock('../database/models', () => ({
   db: {
@@ -16,6 +18,19 @@ jest.mock('../database/models', () => ({
     },
   },
 }));
+
+beforeEach(() => {
+  const req = {
+    headers: {},
+  } as unknown as CustomRequest;
+
+  const res = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn(),
+  } as unknown as Response;
+
+  const next = jest.fn();
+});
 
 describe('AuthMiddlware', () => {
   afterEach(() => {
@@ -39,9 +54,7 @@ describe('AuthMiddlware', () => {
 
       try {
         await authMiddleware.verifyToken(req, res, next);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       expect((req as any).user).toBe(null);
       expect(next).toHaveBeenCalledWith();
@@ -62,9 +75,7 @@ describe('AuthMiddlware', () => {
 
       try {
         await authMiddleware.verifyToken(req, res, next);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       expect((req as any).user).toBe(null);
       expect(next).toHaveBeenCalledWith();
@@ -97,9 +108,7 @@ describe('AuthMiddlware', () => {
 
       try {
         await authMiddleware.verifyToken(req, res, next);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       expect((req as any).user).toBe(null);
       expect(next).toHaveBeenCalledWith();
@@ -146,18 +155,16 @@ describe('AuthMiddlware', () => {
 
       try {
         await authMiddleware.verifyToken(req, res, next);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       expect((req as any).user).toBe(mockUser.dataValues);
       expect(next).toHaveBeenCalledWith();
     });
 
-    it('returns 500 when jwt cannot be verified', async () => {
+    it('returns 401 when jwt cannot be verified', async () => {
       const req = {
         headers: {
-          authorization: `Bearer token`,
+          authorization: 'Bearer invalidToken', // Providing an invalid token
         },
       } as unknown as Request;
 
@@ -168,15 +175,14 @@ describe('AuthMiddlware', () => {
 
       const next: NextFunction = jest.fn();
 
+      // Mock jwt.verify to throw a JsonWebTokenError
       jwt.verify = jest.fn().mockImplementation(() => {
-        throw new JsonWebTokenError('jwt error');
+        throw new jwt.JsonWebTokenError('jwt error');
       });
 
       try {
         await authMiddleware.verifyToken(req, res, next);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       expect((req as any).user).toBe(null);
       expect(next).toHaveBeenCalledWith();
@@ -258,9 +264,7 @@ describe('AuthMiddlware', () => {
 
       try {
         authMiddleware.checkRole('admin')(req, res, next);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
@@ -294,9 +298,7 @@ describe('AuthMiddlware', () => {
 
       try {
         authMiddleware.checkRole('admin')(req, res, next);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       expect(next).toHaveBeenCalled();
     });

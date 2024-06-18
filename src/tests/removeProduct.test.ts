@@ -51,7 +51,7 @@ describe('CartController', () => {
       quantity: 80,
     },
     destroy: () => {
-      console.log('deleted');
+      // console.log('deleted');
     },
   };
 
