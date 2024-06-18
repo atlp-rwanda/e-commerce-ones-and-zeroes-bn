@@ -5,7 +5,18 @@ import { Request, Response } from 'express';
 export class SearchController {
   static async search(req: Request, res: Response) {
     try {
-      const { searchKeyword } = req.params;
+      const { searchKeyword } = req.query;
+      if (!searchKeyword) {
+        const products = await db.Product.findAll({
+          where: {
+            expired: false,
+          },
+        });
+        if (products <= 0) {
+          return res.status(404).json({ message: 'no Products in store' });
+        }
+        return res.status(200).json(products);
+      }
 
       const minPrice = req.query.minPrice
         ? Number(req.query.minPrice)
@@ -32,20 +43,18 @@ export class SearchController {
           searchConditions.price[Op.lte] = maxPrice;
         }
       }
-      const products = await db.Product.findAll({ where: searchConditions });
-      //get all product if no keyword provided
-      if (!products || products.length === 0) {
-        const products = await db.Product.findAll({
-          where: {
-            expired: false,
-          },
-        });
-        if (products.length <= 0) {
+      const productSearched = await db.Product.findAll({
+        where: searchConditions,
+      });
+
+      if (!productSearched) {
+        const products = await db.Product.findAll({});
+        if (products <= 0) {
           return res.status(404).json({ message: 'no Products in store' });
         }
-        return res.status(200).json(products);
+        return res.status(200).json({ data: products });
       }
-      res.json(products);
+      res.status(200).json({ data: productSearched });
     } catch (error) {
       return res.status(500).json({ message: 'Internal server error', error });
     }

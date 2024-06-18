@@ -352,7 +352,6 @@ export default class UserController {
         .status(200)
         .json({ message: 'User account was successfully disabled' });
     } catch (err) {
-      console.log(err);
       return res
         .status(500)
         .json({ message: 'Failed to disable user account' });
