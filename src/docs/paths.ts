@@ -10,6 +10,8 @@ import seller from './seller/seller';
 import updtProductPath from './product/updtproduct';
 import chatPaths from './chats/chatsPath';
 import productReviewPaths from './product/productReview';
+import addressPaths from './Addresses/address';
+import orderPaths from './Orders/order';
 const allPaths: OpenAPIV3.PathsObject = {
   ...googlePaths,
   ...users,
@@ -23,6 +25,8 @@ const allPaths: OpenAPIV3.PathsObject = {
   ...updtProductPath,
   ...chatPaths,
   ...productReviewPaths,
+  ...addressPaths,
+  ...orderPaths,
 };
 
 export default allPaths;

@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import CartController from '../controllers/cartController';
+import CartController from '../../controllers/cartController';
 import dotenv from 'dotenv';
-import { db } from '../database/models';
+import { db } from '../../database/models';
 
 dotenv.config();
 
-jest.mock('../database/models', () => ({
+jest.mock('../../database/models', () => ({
   db: {
     Cart: {
       findOne: jest.fn(),
@@ -17,6 +17,7 @@ jest.mock('../database/models', () => ({
     CartProduct: {
       findOne: jest.fn(),
       create: jest.fn(),
+      destroy: jest.fn(),
     },
   },
 }));
@@ -62,7 +63,7 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Cart.findOne = jest.fn().mockReturnValue(null);
+      db.Cart.findOne.mockReturnValue(null);
 
       await CartController.clearCart(req, res);
 
@@ -84,7 +85,7 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Cart.findOne = jest.fn().mockReturnValue(null);
+      db.Cart.findOne.mockReturnValue(null);
 
       await CartController.clearCart(req, res);
 
@@ -106,9 +107,9 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+      db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-      db.CartProduct.destroy = jest.fn().mockReturnValue([1]);
+      db.CartProduct.destroy.mockReturnValue([1]);
 
       await CartController.clearCart(req, res);
 
@@ -130,9 +131,9 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+      db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-      db.CartProduct.destroy = jest.fn().mockImplementation(() => {
+      db.CartProduct.destroy.mockImplementation(() => {
         throw new Error('Database Error');
       });
 

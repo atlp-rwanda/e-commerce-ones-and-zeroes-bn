@@ -28,6 +28,11 @@ module.exports = (
         foreignKey: 'productId',
         //otherKey: 'cartId'
       });
+      Product.belongsToMany(models.Order, {
+        through: models.OrderProduct,
+        foreignKey: 'productId',
+        otherKey: 'orderId',
+      });
     }
   }
   Product.init(
@@ -72,20 +77,11 @@ module.exports = (
         defaultValue: false,
         type: DataTypes.BOOLEAN,
       },
-      createdAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-        defaultValue: Date.now(),
-      },
-      updatedAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-        defaultValue: Date.now(),
-      },
     },
     {
       sequelize,
       modelName: 'Product',
+      timestamps: 'true',
     },
   );
   return Product;

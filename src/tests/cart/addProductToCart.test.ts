@@ -1,20 +1,22 @@
 import { Request, Response } from 'express';
-import CartController from '../controllers/cartController';
+import CartController from '../../controllers/cartController';
 import dotenv from 'dotenv';
-import { db } from '../database/models';
+import { db } from '../../database/models';
 
 dotenv.config();
 
-jest.mock('../database/models', () => ({
+jest.mock('../../database/models', () => ({
   db: {
     Cart: {
       findOne: jest.fn(),
+      create: jest.fn(),
     },
     Product: {
       findOne: jest.fn(),
     },
     CartProduct: {
       findOne: jest.fn(),
+      create: jest.fn(),
     },
   },
 }));
@@ -120,11 +122,11 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+      db.Product.findOne.mockReturnValue(mockProduct);
 
-      db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+      db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-      db.CartProduct.findOne = jest.fn().mockReturnValue(mockCartProduct);
+      db.CartProduct.findOne.mockReturnValue(mockCartProduct);
 
       await CartController.addProduct(req, res);
 
@@ -150,11 +152,11 @@ describe('CartController', () => {
         json: jest.fn(),
       } as unknown as Response;
 
-      db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+      db.Product.findOne.mockReturnValue(mockProduct);
 
-      db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+      db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-      db.CartProduct.findOne = jest.fn().mockReturnValue(null);
+      db.CartProduct.findOne.mockReturnValue(null);
 
       await CartController.addProduct(req, res);
 
@@ -180,13 +182,13 @@ describe('CartController', () => {
           cookie: jest.fn(),
         } as unknown as Response;
 
-        db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+        db.Product.findOne.mockReturnValue(mockProduct);
 
-        db.Cart.create = jest.fn().mockReturnValue(mockAnonymousCart);
+        db.Cart.create.mockReturnValue(mockAnonymousCart);
 
-        db.CartProduct.findOne = jest.fn().mockReturnValue(null);
+        db.CartProduct.findOne.mockReturnValue(null);
 
-        db.CartProduct.create = jest.fn().mockReturnValue(mockCartProduct);
+        db.CartProduct.create.mockReturnValue(mockCartProduct);
         await CartController.addProduct(req, res);
         expect(res.status).toHaveBeenCalledWith(200);
       });
@@ -208,13 +210,13 @@ describe('CartController', () => {
           cookie: jest.fn(),
         } as unknown as Response;
 
-        db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+        db.Product.findOne.mockReturnValue(mockProduct);
 
-        db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+        db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-        db.CartProduct.findOne = jest.fn().mockReturnValue(null);
+        db.CartProduct.findOne.mockReturnValue(null);
 
-        db.CartProduct.create = jest.fn().mockReturnValue(mockCartProduct);
+        db.CartProduct.create.mockReturnValue(mockCartProduct);
         await CartController.addProduct(req, res);
         expect(res.status).toHaveBeenCalledWith(200);
       });
@@ -236,13 +238,13 @@ describe('CartController', () => {
           cookie: jest.fn(),
         } as unknown as Response;
 
-        db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+        db.Product.findOne.mockReturnValue(mockProduct);
 
-        db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+        db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-        db.CartProduct.findOne = jest.fn().mockReturnValue(null);
+        db.CartProduct.findOne.mockReturnValue(null);
 
-        db.CartProduct.create = jest.fn().mockReturnValue(mockCartProduct);
+        db.CartProduct.create.mockReturnValue(mockCartProduct);
         await CartController.addProduct(req, res);
         expect(res.status).toHaveBeenCalledWith(200);
       });
@@ -264,15 +266,15 @@ describe('CartController', () => {
           cookie: jest.fn(),
         } as unknown as Response;
 
-        db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+        db.Product.findOne.mockReturnValue(mockProduct);
 
-        db.Cart.findOne = jest.fn().mockReturnValue(null);
+        db.Cart.findOne.mockReturnValue(null);
 
-        db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+        db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-        db.CartProduct.findOne = jest.fn().mockReturnValue(null);
+        db.CartProduct.findOne.mockReturnValue(null);
 
-        db.CartProduct.create = jest.fn().mockReturnValue(mockCartProduct);
+        db.CartProduct.create.mockReturnValue(mockCartProduct);
         await CartController.addProduct(req, res);
         expect(res.status).toHaveBeenCalledWith(200);
       });
@@ -294,15 +296,15 @@ describe('CartController', () => {
           cookie: jest.fn(),
         } as unknown as Response;
 
-        db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+        db.Product.findOne.mockReturnValue(mockProduct);
 
-        db.Cart.findOne = jest.fn().mockReturnValue(null);
+        db.Cart.findOne.mockReturnValue(null);
 
-        db.Cart.create = jest.fn().mockReturnValue(mockAnonymousCart);
+        db.Cart.create.mockReturnValue(mockAnonymousCart);
 
-        db.CartProduct.findOne = jest.fn().mockReturnValue(null);
+        db.CartProduct.findOne.mockReturnValue(null);
 
-        db.CartProduct.create = jest.fn().mockReturnValue(mockCartProduct);
+        db.CartProduct.create.mockReturnValue(mockCartProduct);
         await CartController.addProduct(req, res);
         expect(res.status).toHaveBeenCalledWith(200);
       });
@@ -324,13 +326,13 @@ describe('CartController', () => {
           cookie: jest.fn(),
         } as unknown as Response;
 
-        db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+        db.Product.findOne.mockReturnValue(mockProduct);
 
-        db.Cart.findOne = jest.fn().mockReturnValue(mockAnonymousCart);
+        db.Cart.findOne.mockReturnValue(mockAnonymousCart);
 
-        db.CartProduct.findOne = jest.fn().mockReturnValue(null);
+        db.CartProduct.findOne.mockReturnValue(null);
 
-        db.CartProduct.create = jest.fn().mockReturnValue(mockCartProduct);
+        db.CartProduct.create.mockReturnValue(mockCartProduct);
         await CartController.addProduct(req, res);
         expect(res.status).toHaveBeenCalledWith(200);
       });
@@ -350,18 +352,18 @@ describe('CartController', () => {
           cookie: jest.fn(),
         } as unknown as Response;
 
-        db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+        db.Product.findOne.mockReturnValue(mockProduct);
 
-        db.Cart.findOne = jest.fn().mockReturnValue(null);
+        db.Cart.findOne.mockReturnValue(null);
 
-        db.Cart.create = jest.fn().mockReturnValue({
+        db.Cart.create.mockReturnValue({
           ...mockAnonymousCart,
           userId: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
         });
 
-        db.CartProduct.findOne = jest.fn().mockReturnValue(null);
+        db.CartProduct.findOne.mockReturnValue(null);
 
-        db.CartProduct.create = jest.fn().mockReturnValue(mockCartProduct);
+        db.CartProduct.create.mockReturnValue(mockCartProduct);
         await CartController.addProduct(req, res);
         expect(res.status).toHaveBeenCalledWith(200);
       });
@@ -381,16 +383,16 @@ describe('CartController', () => {
           cookie: jest.fn(),
         } as unknown as Response;
 
-        db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+        db.Product.findOne.mockReturnValue(mockProduct);
 
-        db.Cart.findOne = jest.fn().mockReturnValue({
+        db.Cart.findOne.mockReturnValue({
           ...mockAnonymousCart,
           userId: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
         });
 
-        db.CartProduct.findOne = jest.fn().mockReturnValue(null);
+        db.CartProduct.findOne.mockReturnValue(null);
 
-        db.CartProduct.create = jest.fn().mockReturnValue(mockCartProduct);
+        db.CartProduct.create.mockReturnValue(mockCartProduct);
         await CartController.addProduct(req, res);
         expect(res.status).toHaveBeenCalledWith(200);
       });
@@ -412,16 +414,16 @@ describe('CartController', () => {
       cookie: jest.fn(),
     } as unknown as Response;
 
-    db.Product.findOne = jest.fn().mockReturnValue(mockProduct);
+    db.Product.findOne.mockReturnValue(mockProduct);
 
-    db.Cart.findOne = jest.fn().mockReturnValue({
+    db.Cart.findOne.mockReturnValue({
       ...mockAnonymousCart,
       userId: 'a91da155-2829-41c5-a4de-95f91b25e9b2',
     });
 
-    db.CartProduct.findOne = jest.fn().mockReturnValue(null);
+    db.CartProduct.findOne.mockReturnValue(null);
 
-    db.CartProduct.create = jest.fn().mockImplementation(() => {
+    db.CartProduct.create.mockImplementation(() => {
       throw new Error('Database Error');
     });
     await CartController.addProduct(req, res);
