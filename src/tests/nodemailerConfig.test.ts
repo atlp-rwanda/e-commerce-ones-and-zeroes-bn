@@ -1,15 +1,18 @@
-import { addProductEmailtemplate, collectionEmailTemplate, productAvailabilityEmailTemplate } from "../utils/notifications/nodemailerConfig";
-
+import {
+  addProductEmailtemplate,
+  collectionEmailTemplate,
+  productAvailabilityEmailTemplate,
+} from '../utils/notifications/nodemailerConfig';
 
 describe('collectionEmailTemplate', () => {
-    it('should generate correct email template for collection', () => {
-        const data = {
-            firstName: 'John',
-            collectionName: 'Spring Collection',
-            created: '2023-06-20'
-        };
+  it('should generate correct email template for collection', () => {
+    const data = {
+      firstName: 'John',
+      collectionName: 'Spring Collection',
+      created: '2023-06-20',
+    };
 
-        const expectedHtml = `
+    const expectedHtml = `
     <html>
     <body>
         <div
@@ -93,23 +96,23 @@ describe('collectionEmailTemplate', () => {
     </html>
 `;
 
-        const result = collectionEmailTemplate(data);
-        // expect(result).toBe(expectedHtml);
-    });
+    const result = collectionEmailTemplate(data);
+    // expect(result).toBe(expectedHtml);
+  });
 });
 
 describe('addProductEmailtemplate', () => {
-    it('should generate correct email template for product', () => {
-        const mockData = {
-            firstName: 'John',
-            productName: 'Awesome Widget',
-            price: '$19.99',
-            category: 'Gadgets',
-            quantity: '100',
-            expiryDate: '2023-12-31'
-        };
+  it('should generate correct email template for product', () => {
+    const mockData = {
+      firstName: 'John',
+      productName: 'Awesome Widget',
+      price: '$19.99',
+      category: 'Gadgets',
+      quantity: '100',
+      expiryDate: '2023-12-31',
+    };
 
-        const expectedHtml2 = `
+    const expectedHtml2 = `
     <html>
   <body>
     <div
@@ -232,23 +235,23 @@ describe('addProductEmailtemplate', () => {
 </html>
 `;
 
-        const result2 = addProductEmailtemplate(mockData);
-        // expect(result2).toBe(expectedHtml2);
-    });
+    const result2 = addProductEmailtemplate(mockData);
+    // expect(result2).toBe(expectedHtml2);
+  });
 });
 
 describe('productAvailabilityEmailTemplate', () => {
-    it('should generate correct email template for product availablity', () => {
-        const data3 = {
-            firstName: 'John',
-            name: 'Awesome Widget',
-            newStatus: 'In Stock',
-            price: '$19.99',
-            quantity: '100',
-            expiryDate: '2023-12-31'
-        };
+  it('should generate correct email template for product availablity', () => {
+    const data3 = {
+      firstName: 'John',
+      name: 'Awesome Widget',
+      newStatus: 'In Stock',
+      price: '$19.99',
+      quantity: '100',
+      expiryDate: '2023-12-31',
+    };
 
-        const expectedHtml3 = `
+    const expectedHtml3 = `
     <html>
   <body>
     <div
@@ -334,8 +337,7 @@ describe('productAvailabilityEmailTemplate', () => {
 </html>
 `;
 
-        const result3 = productAvailabilityEmailTemplate(data3);
-        // expect(result3).toBe(expectedHtml3);
-    });
+    const result3 = productAvailabilityEmailTemplate(data3);
+    // expect(result3).toBe(expectedHtml3);
+  });
 });
-

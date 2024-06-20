@@ -972,7 +972,6 @@ const userPaths: OpenAPIV3.PathsObject = {
         },
       ],
 
-
       responses: {
         '200': {
           description: 'Notification retrieved successfully',
@@ -1010,7 +1009,6 @@ const userPaths: OpenAPIV3.PathsObject = {
             },
           },
         },
-
 
         '500': {
           description: 'Internal server error',
@@ -1056,7 +1054,8 @@ const userPaths: OpenAPIV3.PathsObject = {
     put: {
       summary: 'Read single notification',
       tags: ['Users'],
-      description: 'Authenticated users can Read and Mark a notifcation as Read',
+      description:
+        'Authenticated users can Read and Mark a notifcation as Read',
       security: [
         {
           bearerAuth: [],
@@ -1073,8 +1072,6 @@ const userPaths: OpenAPIV3.PathsObject = {
                 notificationId: {
                   type: 'string',
                 },
-
-
               },
               required: ['notificationId'],
             },
@@ -1119,7 +1116,6 @@ const userPaths: OpenAPIV3.PathsObject = {
             },
           },
         },
-
 
         '500': {
           description: 'Internal server error',

@@ -6,12 +6,10 @@ import path from 'path';
 import { Console, log } from 'console';
 import { logger } from 'sequelize/types/utils/logger';
 import upload from '../middleware/multer';
-import { UploadApiResponse, ResourceType } from 'cloudinary'
+import { UploadApiResponse, ResourceType } from 'cloudinary';
 import { collectionEmitter } from '../utils/notifications/collectionAddedEmitter';
 import { productEmitter } from '../utils/notifications/productAddedEmitter';
 import { productAvailabilityEmitter } from '../utils/notifications/productAvailabilityEmitter';
-
-
 
 export interface User {
   role: string;
@@ -57,7 +55,13 @@ export async function createCollection(req: CustomRequest, res: Response) {
       sellerId: sellerId,
     });
 
-    collectionEmitter.emit('created', { userId: req.user?.userId, firstName: req.user?.firstName, email: req.user?.email, collectionName: collection.name, created: collection.createdAt })
+    collectionEmitter.emit('created', {
+      userId: req.user?.userId,
+      firstName: req.user?.firstName,
+      email: req.user?.email,
+      collectionName: collection.name,
+      created: collection.createdAt,
+    });
 
     return res.status(201).json(collection);
   } catch (error) {
@@ -126,8 +130,7 @@ export async function createProduct(req: CustomRequest, res: Response) {
       collectionId,
     });
 
-
-    productEmitter.emit('created', { product, userInfo })
+    productEmitter.emit('created', { product, userInfo });
 
     return res
       .status(201)
@@ -195,10 +198,14 @@ export class ProductController {
         { where: { productId } },
       );
 
-      const productStatus = newStatus ? "Available" : "Not available"
+      const productStatus = newStatus ? 'Available' : 'Not available';
       const userInfo = req.user;
-      productAvailabilityEmitter.emit('updated', { product, userInfo, productStatus })
-      console.log(`status: ${productStatus}`)
+      productAvailabilityEmitter.emit('updated', {
+        product,
+        userInfo,
+        productStatus,
+      });
+      console.log(`status: ${productStatus}`);
       res.status(200).json({
         message: `Product is successfully marked as ${newStatus ? 'available' : 'unavailable'}`,
         isAvailable: newStatus,

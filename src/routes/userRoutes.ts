@@ -31,8 +31,16 @@ router.put(
   UserController.updatePassword,
 );
 
-router.get('/notifications', updatePasswordMiddleWare.isAuthenticated, UserController.getNotifications)
-router.put('/notification', updatePasswordMiddleWare.isAuthenticated, UserController.getSingleNotification)
+router.get(
+  '/notifications',
+  updatePasswordMiddleWare.isAuthenticated,
+  UserController.getNotifications,
+);
+router.put(
+  '/notification',
+  updatePasswordMiddleWare.isAuthenticated,
+  UserController.getSingleNotification,
+);
 router.get(
   '/',
   authMiddleware.verifyToken,

@@ -1,8 +1,9 @@
-const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer');
 import dotenv from 'dotenv';
 dotenv.config();
 
-const { NODEMAILER_EMAIL_USERNAME, NODEMAILER_EMAIL_PASSWORD, PORT } = process.env;
+const { NODEMAILER_EMAIL_USERNAME, NODEMAILER_EMAIL_PASSWORD, PORT } =
+  process.env;
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -310,5 +311,9 @@ const productAvailabilityEmailTemplate = (data: any) => `
 </html>
 `;
 
-
-export { collectionEmailTemplate, addProductEmailtemplate, productAvailabilityEmailTemplate, transporter }
+export {
+  collectionEmailTemplate,
+  addProductEmailtemplate,
+  productAvailabilityEmailTemplate,
+  transporter,
+};

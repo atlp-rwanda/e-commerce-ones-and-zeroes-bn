@@ -459,7 +459,6 @@ export default class UserController {
   static async getNotifications(req: any, res: Response) {
     const { token } = req;
 
-
     try {
       const getDecodedToken = jwt.verify(token, secret);
       const userId = getDecodedToken.userId;
@@ -475,10 +474,9 @@ export default class UserController {
       }
 
       return res.status(200).json({
-        status: "Success",
+        status: 'Success',
         data: allNotifications,
       });
-
     } catch (e) {
       res.status(500).json({
         status: 'fail',
@@ -490,7 +488,6 @@ export default class UserController {
     const { token } = req;
     const { notificationId } = req.body;
 
-
     try {
       const getDecodedToken = jwt.verify(token, secret);
       const userId = getDecodedToken.userId;
@@ -498,7 +495,6 @@ export default class UserController {
         where: {
           userId: userId,
           notificationId: notificationId,
-
         },
       });
 
@@ -506,7 +502,7 @@ export default class UserController {
         singleNotification.isRead = true;
         await singleNotification.save();
         return res.status(200).json({
-          status: "Success",
+          status: 'Success',
           data: singleNotification,
         });
       } else {
@@ -515,9 +511,6 @@ export default class UserController {
           message: 'No notification found',
         });
       }
-
-
-
     } catch (e) {
       res.status(500).json({
         status: 'fail',
