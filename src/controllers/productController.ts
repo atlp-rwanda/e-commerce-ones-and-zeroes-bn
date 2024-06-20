@@ -14,11 +14,19 @@ import { Console, log } from 'console';
 import { logger } from 'sequelize/types/utils/logger';
 import upload from '../middleware/multer';
 import { UploadApiResponse, ResourceType } from 'cloudinary';
+import { addCollectionEmitter } from '../utils/notifications/addCollectionHandler';
+import { addProductEmitter } from '../utils/notifications/addProductHandler';
+import { updateProductEmitter } from '../utils/notifications/updateProductHandler';
+import { saveCollectionToDbEmitter } from '../utils/notifications/saveCollectionToDbHandler';
+import { saveStatusToDbEmitter } from '../utils/notifications/saveStatusToDbHandler';
+import { saveProductToDbEmitter } from '../utils/notifications/saveProductToDbHandler';
 
-interface User {
+export interface User {
   role: string;
   userId: string;
   userproductId: string;
+  email: string;
+  firstName: string;
 }
 
 export interface CustomRequest extends Request {
@@ -57,6 +65,19 @@ export async function createCollection(req: CustomRequest, res: Response) {
       sellerId: sellerId,
     });
 
+    addCollectionEmitter.emit('add', {
+      userId: req.user?.userId,
+      firstName: req.user?.firstName,
+      email: req.user?.email,
+      collectionName: collection.name,
+      created: collection.createdAt,
+    });
+
+    saveCollectionToDbEmitter.emit('save', {
+      userId: req.user?.userId,
+      collectionName: collection.name,
+    });
+
     return res.status(201).json(collection);
   } catch (error) {
     return res.status(500).json({ error: 'Internal Server Error' });
@@ -65,6 +86,7 @@ export async function createCollection(req: CustomRequest, res: Response) {
 
 export async function createProduct(req: CustomRequest, res: Response) {
   try {
+    const userInfo = req.user;
     const { collectionId } = req.params;
     const { name, price, category, quantity, expiryDate, bonus } = req.body;
 
@@ -121,6 +143,10 @@ export async function createProduct(req: CustomRequest, res: Response) {
       collectionId,
     });
 
+    //productEmitter.emit('created', { product, userInfo });
+
+    addProductEmitter.emit('add', { product, userInfo });
+    saveProductToDbEmitter.emit('save', { product, userInfo });
     return res
       .status(201)
       .json({ message: 'Product added successfully', product });
@@ -187,7 +213,7 @@ export class ProductController {
     }
   }
 
-  static async updateSingleProduct(req: Request, res: Response) {
+  static async updateSingleProduct(req: CustomRequest, res: Response) {
     try {
       const { productId } = req.params;
       if (!productId) {
@@ -208,6 +234,12 @@ export class ProductController {
         { isAvailable: newStatus },
         { where: { productId } },
       );
+
+      const productStatus = newStatus ? 'Available' : 'Not available';
+      const userInfo = req.user;
+
+      updateProductEmitter.emit('update', { product, userInfo, productStatus });
+      saveStatusToDbEmitter.emit('save', { product, userInfo, productStatus });
 
       res.status(200).json({
         message: `Product is successfully marked as ${newStatus ? 'available' : 'unavailable'}`,
