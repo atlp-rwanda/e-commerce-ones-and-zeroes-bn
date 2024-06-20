@@ -8,7 +8,7 @@
     "start": "node dist/server.js",
     "dev": "nodemon --exec ts-node src/server.ts",
     "test": "jest",
-    "coverage": "jest --coverage",
+    "coverage": "jest --coverage ",
     "pretest": "tsc",
     "coveralls": "node -e \"const data = require('fs').readFileSync('./coverage/lcov.info', 'utf8'); require('child_process').execSync('coveralls', { input: data })\"",
     "seed": "npx ts-node ./node_modules/sequelize-cli/lib/sequelize db:seed:all",

@@ -961,6 +961,206 @@ const userPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+  '/api/users/notifications': {
+    get: {
+      summary: 'Read notifications',
+      tags: ['Users'],
+      description: 'Authenticated users can view their notifications',
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+
+      responses: {
+        '200': {
+          description: 'Notification retrieved successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: 'string',
+                  },
+                  data: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'No notification found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: 'string',
+                  },
+                  data: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+
+
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: 'string',
+                  },
+                  message: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+
+        '403': {
+          description: 'FORBIDEN: No Authorization / Token',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: 'string',
+                  },
+                  message: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  '/api/users/notification': {
+    put: {
+      summary: 'Read single notification',
+      tags: ['Users'],
+      description: 'Authenticated users can Read and Mark a notifcation as Read',
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                notificationId: {
+                  type: 'string',
+                },
+
+
+              },
+              required: ['notificationId'],
+            },
+          },
+        },
+      },
+
+      responses: {
+        '200': {
+          description: 'Notification retrieved successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: 'string',
+                  },
+                  data: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'No notification found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: 'string',
+                  },
+                  data: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+
+
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: 'string',
+                  },
+                  message: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+
+        '403': {
+          description: 'FORBIDEN: No Authorization / Token',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: 'string',
+                  },
+                  message: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 };
 
 export default userPaths;

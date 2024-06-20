@@ -6,11 +6,19 @@ import path from 'path';
 import { Console, log } from 'console';
 import { logger } from 'sequelize/types/utils/logger';
 import upload from '../middleware/multer';
-import { UploadApiResponse, ResourceType } from 'cloudinary';
+import { UploadApiResponse, ResourceType } from 'cloudinary'
+import { collectionEmitter } from '../utils/notifications/collectionAddedEmitter';
+import { productEmitter } from '../utils/notifications/productAddedEmitter';
+import { productAvailabilityEmitter } from '../utils/notifications/productAvailabilityEmitter';
+
+
+
 export interface User {
   role: string;
   userId: string;
   userproductId: string;
+  email: string;
+  firstName: string;
 }
 
 export interface CustomRequest extends Request {
@@ -49,6 +57,8 @@ export async function createCollection(req: CustomRequest, res: Response) {
       sellerId: sellerId,
     });
 
+    collectionEmitter.emit('created', { userId: req.user?.userId, firstName: req.user?.firstName, email: req.user?.email, collectionName: collection.name, created: collection.createdAt })
+
     return res.status(201).json(collection);
   } catch (error) {
     console.log(error);
@@ -59,6 +69,7 @@ export async function createCollection(req: CustomRequest, res: Response) {
 
 export async function createProduct(req: CustomRequest, res: Response) {
   try {
+    const userInfo = req.user;
     const { collectionId } = req.params;
     const { name, price, category, quantity, expiryDate, bonus } = req.body;
 
@@ -115,6 +126,9 @@ export async function createProduct(req: CustomRequest, res: Response) {
       collectionId,
     });
 
+
+    productEmitter.emit('created', { product, userInfo })
+
     return res
       .status(201)
       .json({ message: 'Product added successfully', product });
@@ -159,7 +173,7 @@ export class ProductController {
     }
   }
 
-  static async updateSingleProduct(req: Request, res: Response) {
+  static async updateSingleProduct(req: CustomRequest, res: Response) {
     try {
       const { productId } = req.params;
       if (!productId) {
@@ -181,6 +195,10 @@ export class ProductController {
         { where: { productId } },
       );
 
+      const productStatus = newStatus ? "Available" : "Not available"
+      const userInfo = req.user;
+      productAvailabilityEmitter.emit('updated', { product, userInfo, productStatus })
+      console.log(`status: ${productStatus}`)
       res.status(200).json({
         message: `Product is successfully marked as ${newStatus ? 'available' : 'unavailable'}`,
         isAvailable: newStatus,
