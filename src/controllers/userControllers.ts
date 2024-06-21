@@ -194,7 +194,8 @@ export default class UserController {
   }
 
   static async registerUserGoogle(req: any, res: any) {
-    const data = req.user._json;
+    const data = req.body;
+    console.log(data);
     let firstName = data.given_name;
     let lastName = data.family_name;
     let email = data.email;
@@ -207,6 +208,16 @@ export default class UserController {
       password: 'google',
     };
     try {
+      const emailExist = await db.User.findOne({
+        where: { email: email, isGoogle: false },
+      });
+      if (emailExist) {
+        ('Email already exists');
+        return res.status(401).json({
+          message:
+            'Email has registered using normal way, Go and login using email and password',
+        });
+      }
       const alreadyRegistered = await db.User.findOne({
         where: { email: email, isGoogle: true },
       });
@@ -221,11 +232,19 @@ export default class UserController {
         return res.status(201).json({ message: 'User signed in!', userToken });
       }
       const createdUser = await db.User.create(newUser);
+      const payLoad = {
+        userId: createdUser.userId,
+        firstName: createdUser.firstName,
+        lastName: createdUser.lastName,
+        role: createdUser.role,
+      };
+      const userToken = await registerToken(payLoad);
       return res.status(201).json({
         message: 'User registered Successful, Please Sign in!',
-        userId: createdUser.userId,
+        token: userToken,
       });
     } catch (err) {
+      console.log(err);
       return res.status(500).json({ message: 'Internal Serveral error!' });
     }
   }
@@ -279,7 +298,6 @@ export default class UserController {
       // Send a response indicating that the login was successful, along with the token
       return res.status(200).send({ message: 'Login successful', token });
     } catch (error: any) {
-      // console.error(error);
       return res
         .status(500)
         .json({ message: 'Failed to login', error: error.message });
@@ -347,7 +365,6 @@ export default class UserController {
         .status(200)
         .json({ message: 'User account was successfully disabled' });
     } catch (err) {
-      console.log(err);
       return res
         .status(500)
         .json({ message: 'Failed to disable user account' });
@@ -387,11 +404,13 @@ export default class UserController {
         .redirect(`${process.env.CLIENT_URL}/users/isVerified`);
     } catch (error) {
       if (error instanceof jwt.JsonWebTokenError) {
-        return res.status(400).json({ error: 'Invalid token content' });
+        return res
+          .status(400)
+          .redirect(`${process.env.CLIENT_URL}/users/isVerified`);
       } else {
         return res
           .status(500)
-          .json({ error: 'An error occurred during email verification' });
+          .redirect(`${process.env.CLIENT_URL}/users/isVerified`);
       }
     }
   }

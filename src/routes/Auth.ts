@@ -3,10 +3,10 @@ import { db } from '../database/models';
 import UserController from '../controllers/userControllers';
 import passport from '../config/google.auth';
 const isValidated = (req: any, res: any, next: () => void) => {
-  if (req.user) {
+  if (req.body) {
     next();
   } else {
-    res.sendStatus(401);
+    res.sendStatus(406);
   }
 };
 
@@ -24,7 +24,7 @@ router.get(
     res.redirect('/auth/google/register');
   },
 );
-router.get('/google/register', isValidated, UserController.registerUserGoogle);
+router.post('/google/register', UserController.registerUserGoogle);
 
 router.get('/protected', isValidated, (req: any, res: any) => {
   res.status(200).send('User signed is as: ');

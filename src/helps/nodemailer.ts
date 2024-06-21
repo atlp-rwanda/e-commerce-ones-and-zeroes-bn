@@ -44,7 +44,7 @@ async function sendEmail(
   try {
     await transporter.sendMail(message);
   } catch (error) {
-    console.error('Error sending email:', error);
+    // console.error('Error sending email:', error);
   }
 }
 

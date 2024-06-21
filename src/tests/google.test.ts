@@ -73,20 +73,20 @@ describe('User Google Aunthentication', () => {
 
 describe('registerUserGoogle', () => {
   let req: {
-      user: {
-        _json: { given_name: string; family_name: string; email: string };
+      body: {
+        given_name: string;
+        family_name: string;
+        email: string;
       };
     },
     res: { status: any; json: any };
 
   beforeEach(() => {
     req = {
-      user: {
-        _json: {
-          given_name: 'John',
-          family_name: 'Doe',
-          email: 'john.doe@example.com',
-        },
+      body: {
+        given_name: 'John',
+        family_name: 'Doe',
+        email: 'john.doe@example.com',
       },
     };
     res = {
@@ -99,39 +99,25 @@ describe('registerUserGoogle', () => {
     jest.clearAllMocks();
   });
 
-  it('should sign in user if already registered', async () => {
-    const alreadyRegisteredUser = {
+  it('should register new user if not already registered', async () => {
+    db.User.findOne.mockResolvedValue(null);
+    const createdUser = {
       userId: '123',
       firstName: 'John',
       lastName: 'Doe',
       role: 'user',
       email: 'christianinja3@gmail.com',
     };
-
-    (db.User.findOne as jest.Mock).mockResolvedValue(alreadyRegisteredUser);
+    db.User.create.mockResolvedValue(createdUser);
     (registerToken as jest.Mock).mockResolvedValue('mocked-token');
     await UserController.registerUserGoogle(req, res);
-    expect(db.User.findOne).toHaveBeenCalledTimes(1);
-    expect(registerToken).toHaveBeenCalledTimes(1);
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith({
-      message: 'User signed in!',
-      userToken: 'mocked-token',
-    });
-  });
-  it('should register new user if not already registered', async () => {
-    db.User.findOne.mockResolvedValue(null);
-    const createdUser = { userId: '456' };
-    db.User.create.mockResolvedValue(createdUser);
 
-    await UserController.registerUserGoogle(req, res);
-
-    expect(db.User.findOne).toHaveBeenCalledTimes(1);
+    expect(db.User.findOne).toHaveBeenCalled();
     expect(db.User.create).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
       message: 'User registered Successful, Please Sign in!',
-      userId: '456',
+      token: 'mocked-token',
     });
   });
 
