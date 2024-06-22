@@ -76,7 +76,7 @@ describe('User Controller', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(404);
       expect(mockResponse.json).toHaveBeenCalledWith({
-        error: 'User not found',
+        message: 'User not found',
       });
     });
 
