@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const { PORT, BACKEND_URL } = process.env;
+
 const servers = [
   {
     url: `http://localhost:${PORT}/`,
