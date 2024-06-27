@@ -1,5 +1,5 @@
 'use strict';
-const { Model } = require('sequelize');
+const { Model, Sequelize } = require('sequelize');
 const User = require('./user');
 const Cart = require('./cart');
 const Address = require('./address');
@@ -72,8 +72,21 @@ module.exports = (
       },
       status: {
         allowNull: false,
-        type: DataTypes.ENUM('processing', 'shipped', 'failed'),
-        defaultValue: 'processing',
+        type: DataTypes.ENUM(
+          'placed',
+          'processing',
+          'shipped',
+          'delivered',
+          'cancelled',
+          'failed',
+          'returned',
+        ),
+        defaultValue: 'placed',
+      },
+      expectedDeliveryDate: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: Sequelize.NOW,
       },
     },
     {
