@@ -17,7 +17,7 @@ import checkPermission from '../middleware/checkPermissionMiddleware';
 const router = express.Router();
 router.get(
   '/available',
-  isAuthenticated ,
+  isAuthenticated,
   checkPermission('seller'),
   ProductController.getAvailableProduct,
 );

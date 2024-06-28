@@ -7,12 +7,11 @@ module.exports = {
     dialect: 'postgres',
     logging: false,
     dialectOptions: {
-      ssl:{
+      ssl: {
         require: true,
-        rejectUnauthorized: false, 
-
-      }
-    }
+        rejectUnauthorized: false,
+      },
+    },
   },
   test: {
     url: process.env.TEST_DATABASE_URL,
