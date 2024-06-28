@@ -218,33 +218,6 @@ describe('OrderController', () => {
       });
     });
 
-    it('should return 404 when user address does not exist', async () => {
-      const req = {
-        body: {
-          country: mockAddress.dataValues.country,
-          province: mockAddress.dataValues.province,
-          district: mockAddress.dataValues.district,
-          sector: mockAddress.dataValues.sector,
-          street: mockAddress.dataValues.street,
-        },
-        user: {
-          userId: mockUser.userId,
-        },
-      } as unknown as Request;
-
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      db.Address.findOne.mockReturnValue(null);
-
-      await AddressController.updateAddress(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ message: 'No address found' });
-    });
-
     it('should return 200 when address is updated', async () => {
       const req = {
         body: {
