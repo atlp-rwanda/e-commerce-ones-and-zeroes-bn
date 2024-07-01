@@ -57,9 +57,22 @@ Dear ${firstName},
 your account has been restored.
 `;
 
-const resetPasswordEmail = (token: string): string => `
-Dear User,
-Click here to reset password ${host}/api/users/reset-password/${token}.
+const resetPasswordEmail = (token: string, username: string): string => `
+
+
+<div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; background-color: #fff; margin: 0; padding: 0;">
+    <div style="max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #ffffff;">
+        <div style="font-size: 18px; font-weight: bold; margin-bottom: 20px;">Dear ${username},</div>
+          <p style="font-size: 16px;">Please click on the following button to Reset your password</p>
+          <p>If you haven't requested it, please ignore this email</p>
+        <div style="text-align: center;">
+            <a  href="${process.env.CLIENT_URL}/reset/new-password?q=${token}" style="text-decoration: none;">
+                <button style="background-color: #0F1848; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer;"> Reset Password</button>
+            </a>
+        </div>
+    </div>
+</div>
+
 `;
 /* TWO FACTOR AUTHENTICATION MESSAGE TEMPLATE */
 

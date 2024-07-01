@@ -46,6 +46,7 @@ export default class UserController {
   }
 
   static async registerUser(req: Request, res: Response): Promise<Response> {
+    console.log(req.body);
     try {
       const { firstName, lastName, email, password } = req.body as User;
 
@@ -103,6 +104,7 @@ export default class UserController {
         .status(200)
         .json({ message: 'Account created!', data: newUser, token });
     } catch (error: any) {
+      console.log(error);
       return res.status(500).json({ message: 'Failed to register user' });
     }
   }
@@ -537,7 +539,7 @@ export async function handlePasswordResetRequest(
 
     const user = await db.User.findOne({ where: { email: email } });
     if (!user) {
-      res.status(404).json({ error: 'User not found' });
+      res.status(404).json({ message: 'User not found' });
       return;
     }
 
@@ -557,19 +559,25 @@ export async function handlePasswordResetRequest(
 
     await user.save();
 
-    await nodeMail(email, 'Reset password request', resetPasswordEmail(token));
+    await nodeMail(email, 'Reset password request', resetPasswordEmail(token, user.firstName));
 
     res.status(200).json({ message: 'Password reset email sent successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
 }
+
 export async function resetPassword(
   req: Request,
   res: Response,
 ): Promise<void> {
   try {
     const { newPassword } = req.body;
+    const isValid = validatePassword(newPassword);
+    if (!isValid) {
+      res.status(404).json({ message: 'Password must be strong' });
+      return;
+    }
     const token = req.params.token;
 
     if (!newPassword) {
