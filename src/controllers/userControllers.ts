@@ -559,13 +559,14 @@ export async function handlePasswordResetRequest(
 
     await user.save();
 
-    await nodeMail(email, 'Reset password request', resetPasswordEmail(token));
+    await nodeMail(email, 'Reset password request', resetPasswordEmail(token, user.firstName));
 
     res.status(200).json({ message: 'Password reset email sent successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
 }
+
 export async function resetPassword(
   req: Request,
   res: Response,

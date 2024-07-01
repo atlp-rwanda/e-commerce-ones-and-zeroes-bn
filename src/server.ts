@@ -23,7 +23,7 @@ dotenv.config();
 productExpireTask.start();
 const app = express();
 const server = http.createServer(app);
-var morgan = require('morgan')
+var morgan = require('morgan');
 
 const io = new Server(server, {
   cors: {
@@ -35,7 +35,7 @@ const io = new Server(server, {
 });
 app.use(cors());
 app.use(express.json());
-app.use(morgan('dev'))
+app.use(morgan('dev'));
 const port = process.env.PORT || 7000;
 const session = require('express-session');
 chats.chats(io);

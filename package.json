@@ -54,6 +54,7 @@
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.11.5",
     "pg-hstore": "^2.3.4",
+    "react-toastify": "^10.0.5",
     "sequelize": "^6.37.3",
     "sequelize-cli": "^6.6.2",
     "socket.io": "^4.7.5",
