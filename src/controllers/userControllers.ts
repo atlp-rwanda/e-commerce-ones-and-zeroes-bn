@@ -97,7 +97,7 @@ export default class UserController {
         'You are required to Verify your email',
         registerMessageTemplate(firstName, token),
       );
-      console.log(registerMessageTemplate);
+      // console.log(registerMessageTemplate);
 
       return res
         .status(200)

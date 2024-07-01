@@ -89,7 +89,6 @@ export async function addChat(
       res.status(500).json({ message: 'Failed to update chat' });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: 'There is a server error' });
   }
 }
