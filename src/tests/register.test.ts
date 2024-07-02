@@ -329,7 +329,7 @@ describe('isVerified', () => {
     } as unknown as Request;
     const res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      redirect: jest.fn(),
     } as unknown as Response;
 
     jwt.verify = jest.fn().mockImplementation(() => {
@@ -339,9 +339,6 @@ describe('isVerified', () => {
     await UserController.isVerified(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: 'Invalid token content',
-    });
   });
 
   it('should return 500 if user update fails', async () => {
@@ -350,7 +347,7 @@ describe('isVerified', () => {
     } as unknown as Request;
     const res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      redirect: jest.fn(),
     } as unknown as Response;
 
     jwt.verify = jest.fn().mockReturnValue({
@@ -362,9 +359,6 @@ describe('isVerified', () => {
     await UserController.isVerified(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({
-      error: 'An error occurred during email verification',
-    });
   });
 
   it('should return 200 when email verification is successful', async () => {
@@ -373,18 +367,22 @@ describe('isVerified', () => {
     } as unknown as Request;
     const res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      redirect: jest.fn(),
     } as unknown as Response;
 
     jwt.verify = jest.fn().mockReturnValue({
       userId: 1,
       email: 'john@example.com',
-      name: 'John',
+      firstName: 'John',
     });
 
     (db.User.update as jest.Mock).mockResolvedValueOnce([1]);
 
     await UserController.isVerified(req, res);
+
     expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.redirect).toHaveBeenCalledWith(
+      `${process.env.CLIENT_URL}/users/isVerified`,
+    );
   });
 });
