@@ -15,6 +15,7 @@ import cloudinary from '../helps/cloudinaryConfig';
 import checkPermission from '../middleware/checkPermissionMiddleware';
 
 const router = express.Router();
+router.get('/available', ProductController.getAvailableProduct);
 router.get(
   '/available',
   isAuthenticated,
@@ -46,7 +47,6 @@ router.get(
   ProductController.getSingleProduct,
 );
 
-router.get('/:productId', isAuthenticated, ProductController.getSingleProduct);
 router.put(
   '/:productId',
   isAuthenticated,
