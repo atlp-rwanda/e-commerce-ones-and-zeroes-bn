@@ -80,6 +80,57 @@ const orderPaths: OpenAPIV3.PathsObject = {
     },
   },
   '/api/orders/': {
+    get: {
+      summary: 'get all user orders',
+      tags: ['Orders'],
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      description: 'This is the endpoint to get all user orders',
+      responses: {
+        '200': {
+          description: 'successs',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  orders: { type: 'object' },
+                },
+              },
+            },
+          },
+        },
+        '401': {
+          description: 'Unauthorized',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     post: {
       summary: 'create an order',
       tags: ['Orders'],

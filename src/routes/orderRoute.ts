@@ -10,6 +10,12 @@ router.get(
   authMiddleware.isAuthenticated,
   OrderController.getOrder,
 );
+router.get(
+  '/',
+  authMiddleware.verifyToken,
+  authMiddleware.isAuthenticated,
+  OrderController.getAllUserOrders,
+);
 router.post(
   '/',
   authMiddleware.verifyToken,

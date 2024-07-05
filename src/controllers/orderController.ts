@@ -46,7 +46,7 @@ class OrderController {
         quantity: quantity,
       });
 
-      return res.status(200).json({ order });
+      return res.status(200).json({ order, paymentIntent });
     } catch (error: any) {
       console.log(error);
       return res.status(500).json({ message: 'Failed to create order' });
@@ -77,6 +77,29 @@ class OrderController {
     } catch (error: any) {
       console.log(error);
       return res.status(500).json({ message: 'Failed to get orders' });
+    }
+  }
+
+  static async getAllUserOrders(req: Request, res: Response) {
+    try {
+      const orders: any = await db.Order.findAll({
+        where: {
+          userId: (req as any).user.userId,
+        },
+        include: [
+          {
+            model: db.Product,
+            through: {
+              model: db.OrderProduct,
+              attributes: ['quantity'],
+            },
+          },
+        ],
+      });
+
+      res.status(200).json({ orders });
+    } catch (err: any) {
+      return res.status(500).json({ message: 'Failed to get all user orders' });
     }
   }
 
