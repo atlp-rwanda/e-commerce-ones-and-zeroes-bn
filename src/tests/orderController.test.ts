@@ -21,6 +21,7 @@ jest.mock('../database/models', () => ({
     },
     Order: {
       findOne: jest.fn(),
+      findAll: jest.fn(),
       create: jest.fn(),
     },
     OrderProduct: {
@@ -279,7 +280,10 @@ describe('OrderController', () => {
       await OrderController.createOrder(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({ order: mockOrder });
+      expect(res.json).toHaveBeenCalledWith({
+        order: mockOrder,
+        paymentIntent: mockPaymentIntent,
+      });
     });
 
     it('should return 500 when stripe error occurs', async () => {
@@ -309,6 +313,50 @@ describe('OrderController', () => {
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
         message: 'Failed to create order',
+      });
+    });
+  });
+
+  describe('getAllUserOrder', () => {
+    it('should return 200 when all user orders are retrieved', async () => {
+      const req = {
+        user: {
+          userId: mockUser.userId,
+        },
+      } as unknown as Request;
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+
+      db.Order.findAll.mockReturnValue([mockOrder]);
+      await OrderController.getAllUserOrders(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ orders: [mockOrder] });
+    });
+
+    it('should return 500 when error occurs', async () => {
+      const req = {
+        user: {
+          userId: mockUser.userId,
+        },
+      } as unknown as Request;
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+
+      db.Order.findAll.mockImplementation(() => {
+        throw new Error('Database Error');
+      });
+      await OrderController.getAllUserOrders(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Failed to get all user orders',
       });
     });
   });
