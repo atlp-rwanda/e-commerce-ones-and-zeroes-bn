@@ -31,6 +31,7 @@ const createResponse = (): Partial<Response> => {
 
 const join = async (socket: any) => {
   const token = socket.handshake.query.token;
+
   const user = await isValidAuthToken(token);
 
   if (!token || !user) {
@@ -47,8 +48,9 @@ const join = async (socket: any) => {
 
   const req = createRequest();
   const res = createResponse();
-  const data: any = await findChatsController(req as Request, res as Response);
+  (req as any).user = user;
 
+  const data: any = await findChatsController(req as Request, res as Response);
   data?.chats.forEach((chat: any) => {
     socket.emit('message', chat);
   });
@@ -65,23 +67,30 @@ const disconnect = (socket: any) => {
 };
 
 const handleChatMessage = async (io: any, socket: any, message: any) => {
-  const { firstName: username, userId } = socket;
+  const { username, id: userId } = socket;
+
   const messageObj: IChat = {
     username,
     userId,
     message,
     timestamp: new Date(),
   };
-  io.emit('message', messageObj);
+  io.emit('newMessage', messageObj);
 
   const req = createRequest(messageObj);
   const res = createResponse();
+  const user = { username, userId };
+
+  (req as any).user = user;
+
   await addChatController(req as Request, res as Response);
 };
 
 const chats = (io: any) => {
   io.on('connection', async (socket: any) => {
-    const token = socket.handshake.query.token;
+    const token = socket.handshake.auth.token;
+
+    console.log('front', token);
     const user = await isValidAuthToken(token);
 
     if (!token || !user) {
@@ -94,11 +103,14 @@ const chats = (io: any) => {
     socket.username = user.firstName;
 
     socket.on('join', () => join(socket));
-    socket.on('message', (message: any) =>
-      handleChatMessage(io, socket, message),
-    );
+    socket.on('message', (message: any) => {
+      handleChatMessage(io, socket, message);
+    });
     socket.on('typing', (message: any) => {
-      socket.broadcast.emit('typing', message);
+      socket.broadcast.emit('typing', {
+        username: user.firstName,
+        userId: user.userId,
+      });
     });
     socket.on('disconnect', () => disconnect(socket));
   });
