@@ -1,7 +1,7 @@
 import { OpenAPIV3 } from 'openapi-types';
 
 const productPaths: OpenAPIV3.PathsObject = {
-  '/api/products/{searchKeyword}/': {
+  '/api/products/search/{searchKeyword}/': {
     get: {
       summary: 'Get products',
       tags: ['Products'],
