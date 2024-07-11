@@ -3,6 +3,9 @@ import {
   createCollection,
   createProduct,
   getProducts,
+  getUserCollections,
+  getProductsPerCollection,
+  deleteCollection,
 } from '../controllers/productController';
 import upload from '../middleware/multerConfig';
 import isAuthenticated from '../middleware/isAuthMiddleware';
@@ -20,6 +23,19 @@ router.post('/recommend', productRecommend);
 router.get('/:id', ProductController.getSingleProduct);
 router.get('/:searchKeyword', SearchController.search, getProducts);
 router.post('/', isAuthenticated, checkPermission('seller'), createCollection);
+router.get(
+  '/collections/list',
+  isAuthenticated,
+  checkPermission('seller'),
+  getUserCollections,
+);
+router.post(
+  '/:collectionId',
+  isAuthenticated,
+  checkPermission('seller'),
+  upload.array('images'),
+  createProduct,
+);
 
 router.get('/', isAuthenticated, checkPermission('admin'), getProducts);
 
@@ -51,5 +67,17 @@ router.post(
 );
 
 router.delete('/:id', isAuthenticated, ProductController.deleteProduct);
+router.get(
+  '/:collectionid/products',
+  isAuthenticated,
+  checkPermission('seller'),
+  getProductsPerCollection,
+);
+router.delete(
+  '/collection/:collectionid',
+  isAuthenticated,
+  checkPermission('seller'),
+  deleteCollection,
+);
 
 export default router;

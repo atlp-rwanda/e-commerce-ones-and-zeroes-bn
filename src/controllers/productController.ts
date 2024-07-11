@@ -14,6 +14,7 @@ import { Console, log } from 'console';
 import { logger } from 'sequelize/types/utils/logger';
 import upload from '../middleware/multer';
 import { UploadApiResponse, ResourceType } from 'cloudinary';
+import { where } from 'sequelize';
 import { addCollectionEmitter } from '../utils/notifications/addCollectionHandler';
 import { addProductEmitter } from '../utils/notifications/addProductHandler';
 import { updateProductEmitter } from '../utils/notifications/updateProductHandler';
@@ -84,13 +85,110 @@ export async function createCollection(req: CustomRequest, res: Response) {
   }
 }
 
+export async function getUserCollections(req: CustomRequest, res: Response) {
+  try {
+    const userInfo = req.user;
+    const sellerId = userInfo?.userId;
+    if (!sellerId) {
+      return res.status(400).json({ error: 'sellerId is required' });
+    }
+    const user = await db.User.findByPk(sellerId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const collectionList = await db.Collection.findAll({
+      where: { sellerId: sellerId },
+    });
+    if (!collectionList.length) {
+      return res.status(200).json([]);
+    }
+
+    return res.status(200).json(collectionList);
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+export async function deleteCollection(req: CustomRequest, res: Response) {
+  try {
+    const collectionId = req.params.collectionid;
+    const userInfo = req.user;
+    const sellerId = userInfo?.userId;
+
+    if (!collectionId) {
+      return res.status(400).json({ error: 'CollectionId is required' });
+    }
+    if (!sellerId) {
+      return res.status(400).json({ error: 'sellerId is required' });
+    }
+    const user = await db.User.findByPk(sellerId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const collection = await db.Collection.findOne({
+      where: { sellerId: sellerId, id: collectionId },
+    });
+    if (!collection) {
+      return res.status(404).json({
+        error: 'Collection not found',
+      });
+    }
+    if (collection.id === collectionId) {
+      await collection.destroy();
+      res.status(200).json({
+        message: 'Collection deleted Successfully.',
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal Server Error', error });
+  }
+}
+export async function getProductsPerCollection(
+  req: CustomRequest,
+  res: Response,
+) {
+  try {
+    const collectionId = req.params.collectionid;
+    if (!collectionId) {
+      return res.status(400).json({ message: 'collection id is required' });
+    }
+    const collection = await db.Collection.findByPk(collectionId);
+    const exit = Boolean(collection);
+    if (!exit) {
+      return res
+        .status(404)
+        .json({ error: 'Collection with the given id does not exist' });
+    }
+    let Products;
+    Products = await db.Product.findAll({
+      where: { collectionId: collectionId },
+    });
+
+    if (!Products.length) {
+      return res.status(200).json({
+        message: 'collection is empty',
+        data: [],
+      });
+    }
+    return res.status(200).json({
+      message: 'Products retrieved successfully',
+      data: Products,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: 'Internal Server Error', error: 'Server error' });
+  }
+}
+
 export async function createProduct(req: CustomRequest, res: Response) {
   try {
     const userInfo = req.user;
     const { collectionId } = req.params;
-    const { name, price, category, quantity, expiryDate, bonus } = req.body;
+    const { name, price, discount, quantity, expiryDate, bonus, description } =
+      req.body;
 
-    if (!name || !price || !category || !quantity) {
+    if (!name || !price || !quantity || !description) {
       return res.status(400).json({ error: 'All fields are required' });
     }
     const fileImages = req.files;
@@ -135,15 +233,14 @@ export async function createProduct(req: CustomRequest, res: Response) {
     const product = await db.Product.create({
       name,
       price,
-      category,
       quantity,
+      discount,
       expiryDate: expiryDate || null,
       bonus: bonus || null,
       images: uploadedImageUrls,
       collectionId,
+      description,
     });
-
-    //productEmitter.emit('created', { product, userInfo });
 
     addProductEmitter.emit('add', { product, userInfo });
     saveProductToDbEmitter.emit('save', { product, userInfo });
@@ -441,7 +538,6 @@ export class ProductController {
 
     const { userId, role } = decoded;
 
-    // Scenario 3: If the request body fails validation checks or the user is not a seller
     if (role !== 'seller') {
       return res
         .status(403)
@@ -450,12 +546,10 @@ export class ProductController {
 
     const product = await ProductService.getProductById(id);
 
-    // Scenario 1: Check if the user is a seller and if the product exists
     if (!product) {
       return res.status(404).json({ error: 'Product not found.' });
     }
 
-    // Fetch the collection that the product belongs to
     const collection = await CollectionService.getCollectionById(
       product.collectionId,
     );
@@ -470,7 +564,6 @@ export class ProductController {
         .json({ error: 'You can only delete your own products.' });
     }
 
-    // Scenario 2: If the user is a seller and the product exists, delete the product
     const deletedProduct = await ProductService.deleteProduct(id);
 
     return res.status(200).json({

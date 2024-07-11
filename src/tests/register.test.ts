@@ -151,9 +151,7 @@ describe('UserController', () => {
 
       try {
         await UserController.registerUser(req, res);
-      } catch (error) {
-        console.error(error);
-      }
+      } catch (error) {}
 
       expect(mockedNodeMail).toHaveBeenCalledWith(
         'john123@example.com',
@@ -175,71 +173,6 @@ describe('UserController', () => {
     });
   });
 
-  // it('should register a new user as a seller', async () => {
-
-  //   const req = {
-  //     body: {
-  //       firstName: 'John',
-  //       lastName: 'Doe',
-  //       email: 'john123@example.com',
-  //       isSeller:true,
-  //       password:'hashedPassword',
-  //     },
-  //   } as unknown as Request;
-
-  //   const res = {
-  //     status: jest.fn().mockReturnThis(),
-  //     json: jest.fn(),
-  //   } as unknown as Response;
-
-  //   (generateToken as jest.Mock).mockReturnValue('mockedToken');
-  //   const firstName: string = 'John';
-  //   const token: string = 'mockedToken';
-  //   const message: string = mailHelpers.registerMessageTemplate(firstName, token);
-
-  //   (db.User.findOne as jest.Mock).mockResolvedValueOnce(null);
-  //   (db.User.create as jest.Mock).mockResolvedValueOnce({
-  //     id: 1,
-  //     firstName: 'John',
-  //     lastName: 'Doe',
-  //     role:'seller',
-  //     email: 'john.doe@example.com',
-  //     password: 'hashedPassword',
-
-  //   });
-
-  //   try {
-  //     await UserController.registerUser(req, res);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  //   expect(mockedNodeMail).toHaveBeenCalledWith(
-  //     'john123@example.com',
-  //     'Welcome to One and Zero E-commerce',
-  //     message,
-  //   );
-  //   expect(db.User.create).toHaveBeenCalledWith({
-  //     firstName: 'John',
-  //     lastName: 'Doe',
-  //     role:'seller',
-  //     email: 'john.doe@example.com',
-  //     password: 'hashedPassword',
-  //   });
-  //   expect(res.status).toHaveBeenCalledWith(200);
-  //   expect(res.json).toHaveBeenCalledWith({
-  //     message: 'Account created!',
-  //     data: {
-  //       id: 1,
-  //       firstName: 'John',
-  //       lastName: 'Doe',
-  //       role:'seller',
-  //       email: 'john123@example.com',
-  //       password: 'hashedPassword',
-  //     },
-  //   });
-  // });
-
-  //
   it('should return 500 if an unexpected error occurs', async () => {
     const req = {
       body: {

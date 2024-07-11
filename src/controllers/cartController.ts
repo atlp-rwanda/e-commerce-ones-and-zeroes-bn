@@ -344,7 +344,6 @@ export default class CartController {
   }
 
   static async checkoutCart(req: Request, res: Response) {
-    console.log(req.body, req.params);
     try {
       let { cartId } = req.params;
       let { addressId } = req.body;
@@ -415,7 +414,6 @@ export default class CartController {
         paymentIntent,
       });
     } catch (error: any) {
-      console.log(error);
       return res
         .status(500)
         .json({ message: 'Failed to checkout cart products' });
