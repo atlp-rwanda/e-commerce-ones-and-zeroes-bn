@@ -13,39 +13,24 @@ import authMiddleware from '../middleware/authMiddleware';
 import uploads from '../middleware/multer';
 import cloudinary from '../helps/cloudinaryConfig';
 import checkPermission from '../middleware/checkPermissionMiddleware';
-
+import productRecommend from '../controllers/productRecommend';
 const router = express.Router();
 router.get('/available', ProductController.getAvailableProduct);
+router.post('/recommend', productRecommend)
 router.get(
-  '/available',
-  isAuthenticated,
-  checkPermission('seller'),
-  ProductController.getAvailableProduct,
+  '/:id',
+  ProductController.getSingleProduct,
 );
 router.get(
   '/:searchKeyword',
-  // isAuthenticated,
-  // authMiddleware.checkRole('admin'),
   SearchController.search,
   getProducts,
 );
 router.post('/', isAuthenticated, checkPermission('seller'), createCollection);
-router.post(
-  '/:collectionId',
-  isAuthenticated,
-  checkPermission('seller'),
-  upload.array('images'),
-  createProduct,
-);
 
 router.get('/', isAuthenticated, checkPermission('admin'), getProducts);
 
-router.get(
-  '/:id',
-  isAuthenticated,
-  checkPermission('seller'),
-  ProductController.getSingleProduct,
-);
+
 
 router.put(
   '/:productId',
@@ -66,6 +51,14 @@ router.post(
   checkPermission('seller'),
   ProductController.removeProductImage,
 );
+router.post(
+  '/:collectionId',
+  isAuthenticated,
+  checkPermission('seller'),
+  upload.array('images'),
+  createProduct,
+);
+
 
 router.delete('/:id', isAuthenticated, ProductController.deleteProduct);
 

@@ -473,6 +473,120 @@ const productPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+  "/api/products/recommend": {
+  post: {
+    summary: "Get recommended products",
+    tags: ["Products"],
+    security: [
+      {
+        bearerAuth: []
+      }
+    ],
+    requestBody: {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              productId: {
+                type: "string"
+              }
+            },
+            required: ["productId"]
+          }
+        }
+      }
+    },
+    responses: {
+      "200": {
+        description: "Recommended products retrieved successfully",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                message: {
+                  type: "string"
+                },
+                products: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: {
+                        type: "string",
+                        format: "uuid"
+                      },
+                      name: {
+                        type: "string"
+                      },
+                      collectionId: {
+                        type: "string"
+                      },
+                      isAvailable: {
+                        type: "boolean"
+                      }
+                    },
+                    required: ["id", "name", "collectionId", "isAvailable"]
+                  }
+                }
+              },
+              required: ["message", "products"]
+            }
+          }
+        }
+      },
+      "400": {
+        description: "Bad request",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                error: {
+                  type: "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        description: "Product not found",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                error: {
+                  type: "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        description: "Internal server error",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                error: {
+                  type: "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
 };
 
 export default productPaths;
