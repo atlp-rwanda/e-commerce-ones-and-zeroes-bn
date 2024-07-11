@@ -3,6 +3,7 @@ import {
   createCollection,
   createProduct,
   getProducts,
+  getUserCollections,
 } from '../controllers/productController';
 import upload from '../middleware/multerConfig';
 import isAuthenticated from '../middleware/isAuthMiddleware';
@@ -16,21 +17,25 @@ import checkPermission from '../middleware/checkPermissionMiddleware';
 import productRecommend from '../controllers/productRecommend';
 const router = express.Router();
 router.get('/available', ProductController.getAvailableProduct);
-router.post('/recommend', productRecommend)
-router.get(
-  '/:id',
-  ProductController.getSingleProduct,
-);
-router.get(
-  '/:searchKeyword',
-  SearchController.search,
-  getProducts,
-);
+router.post('/recommend', productRecommend);
+router.get('/:id', ProductController.getSingleProduct);
+router.get('/:searchKeyword', SearchController.search, getProducts);
 router.post('/', isAuthenticated, checkPermission('seller'), createCollection);
+router.get(
+  '/collections/list',
+  isAuthenticated,
+  checkPermission('seller'),
+  getUserCollections,
+);
+router.post(
+  '/:collectionId',
+  isAuthenticated,
+  checkPermission('seller'),
+  upload.array('images'),
+  createProduct,
+);
 
 router.get('/', isAuthenticated, checkPermission('admin'), getProducts);
-
-
 
 router.put(
   '/:productId',
@@ -58,7 +63,6 @@ router.post(
   upload.array('images'),
   createProduct,
 );
-
 
 router.delete('/:id', isAuthenticated, ProductController.deleteProduct);
 

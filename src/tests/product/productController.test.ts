@@ -3,6 +3,7 @@ import {
   createCollection,
   createProduct,
   getProducts,
+  getUserCollections,
 } from '../../controllers/productController';
 import { db } from '../../database/models';
 import cloudinary from '../../helps/cloudinaryConfig';
@@ -30,6 +31,7 @@ jest.mock('../../database/models', () => ({
       findOne: jest.fn(),
       create: jest.fn(),
       findByPk: jest.fn(),
+      findAll: jest.fn(),
     },
     Product: {
       findByPk: jest.fn(),
@@ -555,5 +557,120 @@ describe('Product Controller - getProducts', () => {
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(mockProducts);
+  });
+});
+describe('Product Controller - getUserCollections', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return 400 if sellerId is missing from the request', async () => {
+    const req = {
+      user: {},
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    await getUserCollections(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'sellerId is required',
+    });
+  });
+
+  it('should return 404 if the user is not found', async () => {
+    const req = {
+      user: { userId: 'non-existent-id' },
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    (db.User.findByPk as jest.Mock).mockResolvedValueOnce(null);
+
+    await getUserCollections(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'User not found',
+    });
+  });
+
+  it('should return 200 with an empty array if no collections are found', async () => {
+    const req = {
+      user: { userId: 'valid-user-id' },
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    (db.User.findByPk as jest.Mock).mockResolvedValueOnce({
+      id: 'valid-user-id',
+    });
+    (db.Collection.findAll as jest.Mock).mockResolvedValueOnce([]);
+
+    await getUserCollections(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith([]);
+  });
+
+  it('should return 200 with the list of collections if collections are found', async () => {
+    const req = {
+      user: { userId: 'valid-user-id' },
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    const mockCollections = [
+      { id: 1, name: 'Collection 1', sellerId: 'valid-user-id' },
+      { id: 2, name: 'Collection 2', sellerId: 'valid-user-id' },
+    ];
+
+    (db.User.findByPk as jest.Mock).mockResolvedValueOnce({
+      id: 'valid-user-id',
+    });
+    (db.Collection.findAll as jest.Mock).mockResolvedValueOnce(mockCollections);
+
+    await getUserCollections(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'Collection retrieved successfully',
+      data: mockCollections,
+    });
+  });
+
+  it('should return 500 if there is a server error', async () => {
+    const req = {
+      user: { userId: 'valid-user-id' },
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    (db.User.findByPk as jest.Mock).mockImplementationOnce(() => {
+      throw new Error('Server error');
+    });
+
+    await getUserCollections(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Internal Server Error',
+    });
   });
 });

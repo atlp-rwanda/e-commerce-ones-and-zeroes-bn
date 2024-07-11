@@ -14,6 +14,7 @@ import { Console, log } from 'console';
 import { logger } from 'sequelize/types/utils/logger';
 import upload from '../middleware/multer';
 import { UploadApiResponse, ResourceType } from 'cloudinary';
+import { where } from 'sequelize';
 
 interface User {
   role: string;
@@ -63,12 +64,40 @@ export async function createCollection(req: CustomRequest, res: Response) {
   }
 }
 
+export async function getUserCollections(req: CustomRequest, res: Response) {
+  try {
+    const userInfo = req.user;
+    const sellerId = userInfo?.userId;
+    if (!sellerId) {
+      return res.status(400).json({ error: 'sellerId is required' });
+    }
+    const user = await db.User.findByPk(sellerId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const collectionList = await db.Collection.findAll({
+      where: { sellerId: sellerId },
+    });
+    if (!collectionList.length) {
+      return res.status(200).json([]);
+    }
+
+    return res.status(200).json({
+      message: 'Collection retrieved successfully',
+      data: collectionList,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 export async function createProduct(req: CustomRequest, res: Response) {
   try {
     const { collectionId } = req.params;
-    const { name, price, category, quantity, expiryDate, bonus } = req.body;
+    const { name, price, category, quantity, expiryDate, bonus, description } =
+      req.body;
 
-    if (!name || !price || !category || !quantity) {
+    if (!name || !price || !category || !quantity || !description) {
       return res.status(400).json({ error: 'All fields are required' });
     }
     const fileImages = req.files;
@@ -119,11 +148,12 @@ export async function createProduct(req: CustomRequest, res: Response) {
       bonus: bonus || null,
       images: uploadedImageUrls,
       collectionId,
+      description,
     });
 
     return res
       .status(201)
-        .json({ message: 'Product added successfully', product });
+      .json({ message: 'Product added successfully', product });
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error', error });
   }
@@ -221,7 +251,7 @@ export class ProductController {
   static async getSingleProduct(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const singleProduct= await db.Product.findByPk(id)
+      const singleProduct = await db.Product.findByPk(id);
       return res.status(200).json({
         status: 'success',
         message: 'Retreived Product',
