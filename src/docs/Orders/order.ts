@@ -81,7 +81,7 @@ const orderPaths: OpenAPIV3.PathsObject = {
   },
   '/api/orders/': {
     get: {
-      summary: 'get all user orders',
+      summary: 'Get all user orders',
       tags: ['Orders'],
       security: [
         {
@@ -89,15 +89,46 @@ const orderPaths: OpenAPIV3.PathsObject = {
         },
       ],
       description: 'This is the endpoint to get all user orders',
+      parameters: [
+        {
+          name: 'page',
+          in: 'query',
+          description: 'Page number for pagination',
+          required: false,
+          schema: {
+            type: 'integer',
+            default: 1,
+          },
+        },
+        {
+          name: 'pageSize',
+          in: 'query',
+          description: 'Number of orders per page',
+          required: false,
+          schema: {
+            type: 'integer',
+            default: 10,
+          },
+        },
+      ],
       responses: {
         '200': {
-          description: 'successs',
+          description: 'Success',
           content: {
             'application/json': {
               schema: {
                 type: 'object',
                 properties: {
-                  orders: { type: 'object' },
+                  orders: { type: 'array', items: { type: 'object' } },
+                  pagination: {
+                    type: 'object',
+                    properties: {
+                      currentPage: { type: 'integer' },
+                      pageSize: { type: 'integer' },
+                      totalPages: { type: 'integer' },
+                      totalOrders: { type: 'integer' },
+                    },
+                  },
                 },
               },
             },
@@ -132,7 +163,7 @@ const orderPaths: OpenAPIV3.PathsObject = {
       },
     },
     post: {
-      summary: 'create an order',
+      summary: 'Create an order',
       tags: ['Orders'],
       security: [
         {
@@ -158,7 +189,7 @@ const orderPaths: OpenAPIV3.PathsObject = {
       },
       responses: {
         '200': {
-          description: 'successs',
+          description: 'Success',
           content: {
             'application/json': {
               schema: {

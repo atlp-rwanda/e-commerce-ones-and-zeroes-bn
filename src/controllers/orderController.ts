@@ -39,14 +39,14 @@ class OrderController {
         paymentIntentId: paymentIntent.id,
       });
 
-      await db.OrderProduct.create({
+      const orderProduct = await db.OrderProduct.create({
         orderProductId: uuidv4(),
         orderId: order.dataValues.orderId,
         productId: product.dataValues.productId,
         quantity: quantity,
       });
 
-      return res.status(200).json({ order, paymentIntent });
+      return res.status(200).json({ order, paymentIntent, orderProduct });
     } catch (error: any) {
       return res.status(500).json({ message: 'Failed to create order' });
     }
@@ -80,9 +80,14 @@ class OrderController {
 
   static async getAllUserOrders(req: Request, res: Response) {
     try {
-      const orders: any = await db.Order.findAll({
+      const userId = (req as any).user.userId;
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 10; // Get pageSize from query params or default to 10
+      const offset = (page - 1) * pageSize;
+
+      const orders = await db.Order.findAll({
         where: {
-          userId: (req as any).user.userId,
+          userId: userId,
         },
         include: [
           {
@@ -93,9 +98,27 @@ class OrderController {
             },
           },
         ],
+        limit: pageSize,
+        offset: offset,
       });
 
-      res.status(200).json({ orders });
+      const totalOrders = await db.Order.count({
+        where: {
+          userId: userId,
+        },
+      });
+
+      const totalPages = Math.ceil(totalOrders / pageSize);
+
+      res.status(200).json({
+        orders,
+        pagination: {
+          currentPage: page,
+          pageSize: pageSize,
+          totalPages: totalPages,
+          totalOrders: totalOrders,
+        },
+      });
     } catch (err: any) {
       return res.status(500).json({ message: 'Failed to get all user orders' });
     }
@@ -144,13 +167,11 @@ class OrderController {
           },
         });
       }
-      //update product quantity
       order.dataValues.Products.forEach((product: any) => {
         product.decrement('quantity', {
           by: product.dataValues.OrderProduct.dataValues.quantity,
         });
       });
-      //change order payment status
       order.update({ paid: true });
 
       return res.status(200).json({ message: 'Order was successfully paid' });

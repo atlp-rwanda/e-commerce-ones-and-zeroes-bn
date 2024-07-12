@@ -123,7 +123,7 @@ export async function createProduct(req: CustomRequest, res: Response) {
 
     return res
       .status(201)
-        .json({ message: 'Product added successfully', product });
+      .json({ message: 'Product added successfully', product });
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error', error });
   }
@@ -221,7 +221,7 @@ export class ProductController {
   static async getSingleProduct(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const singleProduct= await db.Product.findByPk(id)
+      const singleProduct = await db.Product.findByPk(id);
       return res.status(200).json({
         status: 'success',
         message: 'Retreived Product',
