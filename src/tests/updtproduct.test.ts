@@ -25,8 +25,8 @@ jest.mock('../database/models', () => ({
     },
   },
   Product: {
-    findByPk: jest.fn()
-  }
+    findByPk: jest.fn(),
+  },
 }));
 describe('Update Product', () => {
   afterEach(() => {
@@ -60,7 +60,6 @@ describe('Update Product', () => {
       };
 
       // (db.Product.findByPk as jest.Mock).mockResolvedValueOnce({ productId: 1, name: 'Test Product' });
-
 
       // Act
       await ProductController.getSingleProduct(req, res);

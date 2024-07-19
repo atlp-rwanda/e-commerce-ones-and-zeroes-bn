@@ -16,21 +16,12 @@ import checkPermission from '../middleware/checkPermissionMiddleware';
 import productRecommend from '../controllers/productRecommend';
 const router = express.Router();
 router.get('/available', ProductController.getAvailableProduct);
-router.post('/recommend', productRecommend)
-router.get(
-  '/:id',
-  ProductController.getSingleProduct,
-);
-router.get(
-  '/:searchKeyword',
-  SearchController.search,
-  getProducts,
-);
+router.post('/recommend', productRecommend);
+router.get('/:id', ProductController.getSingleProduct);
+router.get('/:searchKeyword', SearchController.search, getProducts);
 router.post('/', isAuthenticated, checkPermission('seller'), createCollection);
 
 router.get('/', isAuthenticated, checkPermission('admin'), getProducts);
-
-
 
 router.put(
   '/:productId',
@@ -58,7 +49,6 @@ router.post(
   upload.array('images'),
   createProduct,
 );
-
 
 router.delete('/:id', isAuthenticated, ProductController.deleteProduct);
 

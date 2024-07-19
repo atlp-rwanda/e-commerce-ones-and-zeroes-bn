@@ -344,6 +344,7 @@ export default class CartController {
   }
 
   static async checkoutCart(req: Request, res: Response) {
+    console.log(req.body, req.params);
     try {
       let { cartId } = req.params;
       let { addressId } = req.body;
@@ -378,6 +379,11 @@ export default class CartController {
         },
         0,
       );
+      if (total < 1000) {
+        return res
+          .status(401)
+          .json({ message: 'We do not accept order less than 1000 RWF' });
+      }
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: total,
@@ -409,6 +415,7 @@ export default class CartController {
         paymentIntent,
       });
     } catch (error: any) {
+      console.log(error);
       return res
         .status(500)
         .json({ message: 'Failed to checkout cart products' });
