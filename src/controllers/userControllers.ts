@@ -696,6 +696,7 @@ export async function resetPassword(
     user.password = hashedPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
+    user.passwordLastChanged = new Date();
 
     await user.save();
 

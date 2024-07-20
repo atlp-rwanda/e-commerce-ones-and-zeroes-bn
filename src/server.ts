@@ -18,6 +18,7 @@ const { productExpireTask } = require('./cronJob/productsCron');
 import chats from './helps/chats';
 
 import { cartExpiryJob } from './cronJob/cartExpiry.job';
+import path from 'path';
 
 dotenv.config();
 productExpireTask.start();
@@ -33,6 +34,8 @@ const io = new Server(server, {
         : ['http://localhost:5173', 'http://localhost:7000/api'],
   },
 });
+// Register your middleware
+// app.use(changePasswordIgnored);
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
@@ -56,7 +59,7 @@ app.use(passport.initialize());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use('/api', changePasswordIgnored, routes);
+app.use('/api', routes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/auth', AuthRouters);
 
