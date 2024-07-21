@@ -34,13 +34,29 @@ interface User {
 export default class UserController {
   static async getUsers(req: Request, res: Response): Promise<Response> {
     try {
-      const users = await db.User.findAll();
-      return res.status(200).json({
-        status: 'success',
+      const page = parseInt(req.query.page as string) || 1;
+      const rowsPerPage = parseInt(req.query.rowsPerPage as string) || 10;
+      const offset = (page - 1) * rowsPerPage;
+      const users = await db.User.findAll({
+        offset: offset,
+        limit: rowsPerPage,
+      });
 
-        data: users,
+      const userCount = await db.User.count();
+
+      return res.status(200).json({
+        data: {
+          users: users,
+          pagination: {
+            currentPage: page,
+            rowsPerPage: rowsPerPage,
+            pageCount: Math.ceil(userCount / rowsPerPage),
+            totalUsers: userCount,
+          },
+        },
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: 'Failed to fetch users' });
     }
   }

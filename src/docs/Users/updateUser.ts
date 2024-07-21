@@ -7,6 +7,24 @@ const updateUserPath: OpenAPIV3.PathsObject = {
       summary: 'Get All Users',
       tags: ['Users'],
       description: 'This is endpoint for getting all Users from database',
+      parameters: [
+        {
+          in: 'query',
+          name: 'page',
+          description: 'pagination page',
+          schema: {
+            type: 'integer',
+          },
+        },
+        {
+          in: 'query',
+          name: 'rowsPerPage',
+          description: 'pagination rowsPerPage',
+          schema: {
+            type: 'integer',
+          },
+        },
+      ],
       responses: {
         '200': {
           description: 'A successful response',
@@ -20,17 +38,7 @@ const updateUserPath: OpenAPIV3.PathsObject = {
                     items: {
                       type: 'object',
                       properties: {
-                        userId: { type: 'string' },
-                        firstName: { type: 'string' },
-                        lastName: { type: 'string' },
-                        email: { type: 'string' },
-                        isActve: { type: 'boolean' },
-                        isGoogle: { type: 'boolean' },
-                        gender: { type: 'string' },
-                        birthdate: { type: 'string' },
-                        preferredLanguage: { type: 'string' },
-                        preferredCurrency: { type: 'string' },
-                        billingAddress: { type: 'string' },
+                        data: { type: 'object' },
                       },
                     },
                   },
@@ -278,6 +286,112 @@ const updateUserPath: OpenAPIV3.PathsObject = {
         },
         '404': {
           description: 'Resource not found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  '/api/users/{id}/orders': {
+    get: {
+      summary: 'get all user orders',
+      tags: ['Users'],
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      description: 'This is the endpoint to get all users orders',
+      parameters: [
+        {
+          in: 'path',
+          name: 'id',
+          required: true,
+          description: 'ID of the user to update',
+          schema: {
+            type: 'string',
+          },
+        },
+
+        {
+          in: 'query',
+          name: 'page',
+          description: 'pagination page',
+          schema: {
+            type: 'integer',
+            default: 1,
+          },
+        },
+        {
+          in: 'query',
+          name: 'pageSize',
+          description: 'pagination rowsPerPage',
+          schema: {
+            type: 'integer',
+            default: 10,
+          },
+        },
+      ],
+
+      responses: {
+        '200': {
+          description: 'Success',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  orders: { type: 'object' },
+                  pagination: {
+                    type: 'object',
+                    properties: {
+                      currentPage: { type: 'integer' },
+                      pageSize: { type: 'integer' },
+                      totalPages: { type: 'integer' },
+                      totalOrders: { type: 'integer' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        '401': {
+          description: 'Unauthorized',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'Resource Not Found',
           content: {
             'application/json': {
               schema: {

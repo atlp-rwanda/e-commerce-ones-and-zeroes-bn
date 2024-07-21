@@ -80,15 +80,27 @@ class OrderController {
 
   static async getAllUserOrders(req: Request, res: Response) {
     try {
-      const userId = (req as any).user.userId;
+      const { id } = req.params;
       const page = parseInt(req.query.page as string) || 1;
       const pageSize = parseInt(req.query.pageSize as string) || 10; // Get pageSize from query params or default to 10
       const offset = (page - 1) * pageSize;
 
+      const user = await db.User.findOne({
+        where: {
+          userId: id,
+        },
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: 'No such user found' });
+      }
+
       const orders = await db.Order.findAll({
         where: {
-          userId: userId,
+          userId: user.userId,
         },
+        offset: offset,
+        limit: pageSize,
         include: [
           {
             model: db.Product,
@@ -98,13 +110,11 @@ class OrderController {
             },
           },
         ],
-        limit: pageSize,
-        offset: offset,
       });
 
       const totalOrders = await db.Order.count({
         where: {
-          userId: userId,
+          userId: id,
         },
       });
 
@@ -121,6 +131,30 @@ class OrderController {
       });
     } catch (err: any) {
       return res.status(500).json({ message: 'Failed to get all user orders' });
+    }
+  }
+
+  static async getAllOrders(req: Request, res: Response) {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 10;
+      const offset = (page - 1) * pageSize;
+      const orders = await db.Order.findAll({
+        offset: offset,
+        limit: pageSize,
+      });
+      const totalOrders: number = await db.Order.count();
+      res.status(200).json({
+        orders,
+        pagination: {
+          currentPage: page,
+          pageSize: pageSize,
+          totalPages: Math.ceil(totalOrders / pageSize),
+          totalOrders: totalOrders,
+        },
+      });
+    } catch (err: any) {
+      return res.status(500).json({ message: 'Failed to get all orders' });
     }
   }
 

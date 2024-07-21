@@ -12,6 +12,7 @@ jest.mock('../database/models', () => ({
       findAll: jest.fn(),
       create: jest.fn(),
       save: jest.fn(),
+      count: jest.fn(),
     },
   },
 }));
@@ -23,25 +24,40 @@ describe('Update User', () => {
   // Add more test cases to cover edge cases and error scenarios
 
   describe('getUsers', () => {
-    it('should return all users', async () => {
+    const page: number = 1;
+    const rowsPerPage: number = 5;
+    it('should return users', async () => {
       const users = [
         { id: 1, firstName: 'John', lastName: 'Doe' },
         { id: 2, firstName: 'Jane', lastName: 'Smith' },
       ];
 
-      const req = {} as Request;
+      const req = {
+        query: {
+          page: page,
+          rowsPerPage: rowsPerPage,
+        },
+      } as unknown as Request;
       const res = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
       } as unknown as Response;
-      (db.User.findAll as jest.Mock).mockResolvedValueOnce(users);
-
+      const offset = (page - 1) * rowsPerPage;
+      const paginatedUsers = users.slice(offset, offset + rowsPerPage);
+      (db.User.findAll as jest.Mock).mockResolvedValueOnce(paginatedUsers);
+      (db.User.count as jest.Mock).mockResolvedValueOnce(users.length);
       await UserController.getUsers(req, res);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
-        status: 'success',
-
-        data: users,
+        data: {
+          users: paginatedUsers,
+          pagination: {
+            currentPage: page,
+            rowsPerPage: rowsPerPage,
+            pageCount: Math.ceil(users.length / rowsPerPage),
+            totalUsers: users.length,
+          },
+        },
       });
     });
     it('should return 500 if fetching users fails due to an error', async () => {

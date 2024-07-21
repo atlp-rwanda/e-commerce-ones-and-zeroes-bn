@@ -9,6 +9,7 @@ import authMiddleware from '../middleware/authMiddleware';
 import { validations } from '../validations/validations';
 import updatePasswordMiddleWare from '../middleware/updatePasswordMiddleware';
 import sellerController from '../controllers/sellerController';
+import OrderController from '../controllers/orderController';
 
 const router: Router = express.Router();
 
@@ -51,6 +52,12 @@ router.get(
   authMiddleware.verifyToken,
   authMiddleware.isAuthenticated,
   UserController.getSingleUser,
+);
+router.get(
+  '/:id/orders',
+  authMiddleware.verifyToken,
+  authMiddleware.isAuthenticated,
+  OrderController.getAllUserOrders,
 );
 router.patch(
   '/:id',

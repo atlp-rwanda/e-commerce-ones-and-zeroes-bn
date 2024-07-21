@@ -81,7 +81,7 @@ const orderPaths: OpenAPIV3.PathsObject = {
   },
   '/api/orders/': {
     get: {
-      summary: 'Get all user orders',
+      summary: 'get all orders',
       tags: ['Orders'],
       security: [
         {
@@ -119,7 +119,7 @@ const orderPaths: OpenAPIV3.PathsObject = {
               schema: {
                 type: 'object',
                 properties: {
-                  orders: { type: 'array', items: { type: 'object' } },
+                  orders: { type: 'object' },
                   pagination: {
                     type: 'object',
                     properties: {
@@ -269,6 +269,7 @@ const orderPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+
   '/api/orders/{orderId}/confirm': {
     put: {
       summary: 'confirm order payment',

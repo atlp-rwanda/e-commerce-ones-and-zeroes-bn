@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import OrderController from '../controllers/orderController';
 import authMiddleware from '../middleware/authMiddleware';
 
@@ -14,8 +14,9 @@ router.get(
   '/',
   authMiddleware.verifyToken,
   authMiddleware.isAuthenticated,
-  OrderController.getAllUserOrders,
+  OrderController.getAllOrders,
 );
+
 router.post(
   '/',
   authMiddleware.verifyToken,
