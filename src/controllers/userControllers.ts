@@ -525,7 +525,6 @@ export default class UserController {
       });
     }
   }
-
   static async setUserRoles(req: Request, res: Response) {
     try {
       const { role } = req.body;
@@ -550,6 +549,69 @@ export default class UserController {
       return res.status(500).json({
         status: 'error',
         message: error.message,
+      });
+    }
+  }
+
+  static async getNotifications(req: any, res: Response) {
+    const { token } = req;
+
+    try {
+      const getDecodedToken = jwt.verify(token, secret);
+      const userId = getDecodedToken.userId;
+      const allNotifications = await db.Notifications.findAll({
+        where: { userId: userId },
+      });
+
+      if (!allNotifications) {
+        return res.status(404).json({
+          status: 'fail',
+          message: 'No notification found',
+        });
+      }
+
+      return res.status(200).json({
+        status: 'Success',
+        data: allNotifications,
+      });
+    } catch (e) {
+      res.status(500).json({
+        status: 'fail',
+        message: 'something went wrong: ' + e,
+      });
+    }
+  }
+  static async getSingleNotification(req: any, res: Response) {
+    const { token } = req;
+    const { notificationId } = req.body;
+
+    try {
+      const getDecodedToken = jwt.verify(token, secret);
+      const userId = getDecodedToken.userId;
+      const singleNotification = await db.Notifications.findOne({
+        where: {
+          userId: userId,
+          notificationId: notificationId,
+        },
+      });
+
+      if (singleNotification) {
+        singleNotification.isRead = true;
+        await singleNotification.save();
+        return res.status(200).json({
+          status: 'Success',
+          data: singleNotification,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'fail',
+          message: 'No notification found',
+        });
+      }
+    } catch (e) {
+      res.status(500).json({
+        status: 'fail',
+        message: 'something went wrong: ' + e,
       });
     }
   }

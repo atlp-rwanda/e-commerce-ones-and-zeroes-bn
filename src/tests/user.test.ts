@@ -197,6 +197,102 @@ describe('Update User', () => {
       expect(user.billingAddress).toBe(req.body.billingAddress);
     });
 
+    it('should return 404 if no user was found', async () => {
+      // Mock request and response objects
+      const req = {
+        params: { id: '1' }, // Assuming id '1' for the test
+        body: {
+          firstName: 'Updated',
+          lastName: 'User',
+          gender: 'Male',
+          birthdate: '1990-01-01',
+          preferredLanguage: 'English',
+          preferredCurrency: 'USD',
+          billingAddress: '123 Main St, City, Country',
+        },
+      } as unknown as Request;
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+
+      // Mock the db.User.findOne and save functions to return a user
+      const user = {
+        // Mocked user object
+        firstName: 'Old',
+        lastName: 'User',
+        gender: 'Female',
+        birthdate: '1980-01-01',
+        preferredLanguage: 'Spanish',
+        preferredCurrency: 'EUR',
+        billingAddress: '456 Second St, City, Country',
+        save: jest.fn().mockResolvedValueOnce(undefined), // Mock the save function
+      };
+      jest.spyOn(db.User, 'findOne').mockResolvedValueOnce(null);
+
+      // Call the updateSingleUser function
+      await UserController.updateSingleUser(req, res);
+
+      // Assertions
+      expect(res.status).toHaveBeenCalledWith(404);
+      // expect(res.json).toHaveBeenCalledWith({
+      //   status: 'Profile updated successfully',
+      //   data: user,
+      // });
+      // Check if the user properties are updated correctly
+      // expect(user.firstName).toBe(req.body.firstName);
+      // expect(user.lastName).toBe(req.body.lastName);
+      // expect(user.gender).toBe(req.body.gender);
+      // expect(user.birthdate).toBe(req.body.birthdate);
+      // expect(user.preferredLanguage).toBe(req.body.preferredLanguage);
+      // expect(user.preferredCurrency).toBe(req.body.preferredCurrency);
+      // expect(user.billingAddress).toBe(req.body.billingAddress);
+    });
+
+    it('should return 400 if email is in the request body', async () => {
+      const req = {
+        params: { id: '1' }, // Assuming id '1' for the test
+        body: {
+          email: 'dev@gmail.com',
+          firstName: 'Updated',
+          lastName: 'User',
+          gender: 'Male',
+          birthdate: '1990-01-01',
+          preferredLanguage: 'English',
+          preferredCurrency: 'USD',
+          billingAddress: '123 Main St, City, Country',
+        },
+      } as unknown as Request;
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+
+      // Mock the db.User.findOne and save functions to return a user
+      const user = {
+        // Mocked user object
+        firstName: 'Old',
+        lastName: 'User',
+        gender: 'Female',
+        birthdate: '1980-01-01',
+        preferredLanguage: 'Spanish',
+        preferredCurrency: 'EUR',
+        billingAddress: '456 Second St, City, Country',
+        save: jest.fn().mockResolvedValueOnce(undefined), // Mock the save function
+      };
+      jest.spyOn(db.User, 'findOne').mockResolvedValueOnce(user);
+
+      await UserController.updateSingleUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      // expect(res.json).toHaveBeenCalledWith({
+      //   status: 'Bad Request',
+      //   error: 'Email cannot be updated',
+      // });
+    });
+
     it('should return 500 if updating user fails due to an error', async () => {
       // Mock request and response objects
       const req = {

@@ -13,6 +13,18 @@ jest.mock('../database/models', () => ({
   },
 }));
 
+jest.mock('../utils/notifications/updateProductHandler', () => ({
+  updateProductEmitter: {
+    emit: jest.fn(),
+  },
+}));
+
+jest.mock('../utils/notifications/saveStatusToDbHandler', () => ({
+  saveStatusToDbEmitter: {
+    emit: jest.fn(),
+  },
+}));
+
 const mockRequest = (params?: any, body?: any): Partial<Request> => ({
   params,
   body,

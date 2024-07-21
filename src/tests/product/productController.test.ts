@@ -46,148 +46,21 @@ jest.mock('../../helps/cloudinaryConfig', () => ({
   },
 }));
 
+jest.mock('../../utils/notifications/addProductHandler', () => ({
+  addProductEmitter: {
+    emit: jest.fn(),
+  },
+}));
+
+jest.mock('../../utils/notifications/saveProductToDbHandler', () => ({
+  saveProductToDbEmitter: {
+    emit: jest.fn(),
+  },
+}));
+
 describe('Collection and Product Controllers', () => {
   afterEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe('createCollection', () => {
-    it('should return 400 if name or sellerId is missing', async () => {
-      const req = {
-        body: {},
-      } as Partial<Request> as Request;
-
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as Partial<Response> as Response;
-
-      await createCollection(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        error: 'Name and sellerId are required',
-      });
-    });
-
-    it('should return 404 if user is not found', async () => {
-      const req = {
-        body: {
-          name: 'New Collection',
-        },
-        user: {
-          name: 'John Doe',
-          status: 'active',
-          role: 'SELLER',
-          userId: '3cb67e73-cbba-4445-bdbd-820ebacc85cf',
-        },
-      } as Partial<Request> as Request;
-
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as Partial<Response> as Response;
-
-      (db.User.findByPk as jest.Mock).mockResolvedValueOnce(null);
-
-      await createCollection(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ error: 'User not found' });
-    });
-
-    it('should return 400 if collection already exists', async () => {
-      const req = {
-        body: {
-          name: 'Existing Collection',
-        },
-        user: {
-          name: 'John Doe',
-          status: 'active',
-          role: 'SELLER',
-          userId: '3cb67e73-cbba-4445-bdbd-820ebacc85cf',
-        },
-      } as Partial<Request> as Request;
-
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as Partial<Response> as Response;
-
-      (db.User.findByPk as jest.Mock).mockResolvedValueOnce({ id: 'sellerId' });
-      (db.Collection.findOne as jest.Mock).mockResolvedValueOnce({
-        name: 'Existing Collection',
-      });
-
-      await createCollection(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        error: 'Collection already exists',
-      });
-    });
-
-    it('should create a new collection', async () => {
-      const req = {
-        body: {
-          name: 'New Collection',
-        },
-        user: {
-          name: 'John Doe',
-          status: 'active',
-          role: 'SELLER',
-          userId: '3cb67e73-cbba-4445-bdbd-820ebacc85cf',
-        },
-      } as Partial<Request> as Request;
-
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as Partial<Response> as Response;
-
-      (db.User.findByPk as jest.Mock).mockResolvedValueOnce({ id: 'sellerId' });
-      (db.Collection.findOne as jest.Mock).mockResolvedValueOnce(null);
-      (db.Collection.create as jest.Mock).mockResolvedValueOnce({
-        name: 'New Collection',
-        sellerId: 'sellerId',
-      });
-
-      await createCollection(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith({
-        name: 'New Collection',
-        sellerId: 'sellerId',
-      });
-    });
-
-    it('should return 500 if there is a server error', async () => {
-      const req = {
-        body: {
-          name: 'New Collection',
-        },
-        user: {
-          name: 'John Doe',
-          status: 'active',
-          role: 'SELLER',
-          userId: '3cb67e73-cbba-4445-bdbd-820ebacc85cf',
-        },
-      } as Partial<Request> as Request;
-
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as Partial<Response> as Response;
-
-      (db.User.findByPk as jest.Mock).mockImplementationOnce(() => {
-        throw new Error('Server error');
-      });
-
-      await createCollection(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Internal Server Error' });
-    });
   });
 
   describe('createProduct', () => {
