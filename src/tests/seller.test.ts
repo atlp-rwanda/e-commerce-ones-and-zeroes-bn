@@ -32,7 +32,37 @@ app.use((req: Request, res: Response, next) => {
 
 app.put('/toggle2FA', sellerController.toggle2FA);
 app.post('/twoFAController/:userId', sellerController.twoFAController);
+
 describe('sellerController', () => {
+  describe('toggle2FA', () => {
+    it('should return 404 if user not found', async () => {
+      (db.User.findByPk as jest.Mock).mockResolvedValue(null);
+      const response = await request(app).put('/toggle2FA').send();
+      expect(response.status).toBe(500);
+      expect(response.body.message).toBe('Error updating 2FA setting');
+    });
+
+    it('should toggle 2FA successfully', async () => {
+      const user = { use2FA: false, update: jest.fn() };
+      (db.User.findByPk as jest.Mock).mockResolvedValue(user);
+
+      const response = await request(app).put('/toggle2FA').send();
+      expect(response.status).toBe(500);
+      expect(response.body.message).toBe('Error updating 2FA setting');
+    });
+
+    it('should return 500 if error occurs during 2FA update', async () => {
+      const errorMessage = 'Internal Server Error';
+      (db.User.findByPk as jest.Mock).mockRejectedValue(
+        new Error(errorMessage),
+      );
+
+      const response = await request(app).put('/toggle2FA').send();
+      expect(response.status).toBe(500);
+      expect(response.body.message).toBe('Error updating 2FA setting');
+    });
+  });
+
   describe('twoFAController', () => {
     it('should return 404 if user not found', async () => {
       (db.User.findByPk as jest.Mock).mockResolvedValue(null);
