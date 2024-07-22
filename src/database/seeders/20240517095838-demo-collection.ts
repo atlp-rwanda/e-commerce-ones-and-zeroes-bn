@@ -1,5 +1,11 @@
 'use strict';
 const { v4: uuid } = require('uuid');
+import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
+
+dotenv.config();
+const password: string = process.env.password || 'Password123@';
+const hashedPassword: string = bcrypt.hashSync(password, 10);
 
 module.exports = {
   async up(queryInterface: any, Sequelize: any) {
@@ -17,7 +23,7 @@ module.exports = {
           firstName: 'Christian',
           lastName: 'Ishimwe',
           email: userEmail,
-          password: 'yourPassword', // replace 'yourPassword' with the actual password
+          password: hashedPassword, // replace 'yourPassword' with the actual password
           isVerified: false,
           role: 'buyer',
           isActive: false,
