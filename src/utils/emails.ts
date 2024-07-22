@@ -87,13 +87,31 @@ const resetPasswordEmail = (token: string, username: string): string => `
 `;
 /* TWO FACTOR AUTHENTICATION MESSAGE TEMPLATE */
 
-const twoFAMessageTemplate = (token: string) => `
-Dear,
-You have requested to enable two factor authentication on your account. please use the token below to confirm your identity.
-${token}   
-Copy and paste the token above to the input field on the page.
-If you did not request for two factor authentication, please contact our support team.
-Thank you.  `;
+const twoFAMessageTemplate = (username: string, token: string) => `
+<body style="font-family: Arial, sans-serif; background-color: #f7f7f7; margin: 0; padding: 0;">
+    <div style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #ddd; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <div style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">
+            Two-Factor Authentication Request
+        </div>
+        <div style="font-size: 16px; line-height: 1.6;">
+            Dear ${username},
+            <br><br>
+            You have requested to enable two-factor authentication on your account. Please use the token below to confirm your identity:
+            <div style="display: block; margin: 20px 0; font-size: 20px; font-weight: bold; color: #FF6D18; text-align: center; background-color: #f0f0f0; padding: 10px; border-radius: 5px;">
+                ${token}
+            </div>
+            Copy and paste the token above into the input field on the page.
+            <br><br>
+            If you did not request two-factor authentication, please contact our support team immediately.
+            <br><br>
+            Thank you.
+        </div>
+        <div style="font-size: 14px; color: #888; margin-top: 20px;">
+            Best regards,<br>
+            One's and Zero's Support Team
+        </div>
+    </div>
+</body>`;
 
 /*  AvailableProduct  */
 const sendProductEndEmail = (firstName: string) => `

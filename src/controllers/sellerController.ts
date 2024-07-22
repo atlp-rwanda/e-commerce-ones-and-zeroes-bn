@@ -12,7 +12,6 @@ export default class SellerController {
     try {
       const user = req.user;
 
-      // Fetch user details from the database using user.id
       const fetchedUser = await db.User.findByPk(user.userId);
       if (!fetchedUser) {
         return res.status(404).json({ message: 'User not found' });
@@ -62,6 +61,8 @@ export default class SellerController {
 
         res.json({ verified: true, token: jwtToken });
       } else {
+        console.log(userId);
+        console.log(token);
         res.status(401).json({
           verified: false,
           message: 'You provided an incorrect token',

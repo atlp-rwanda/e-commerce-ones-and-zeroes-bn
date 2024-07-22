@@ -326,19 +326,21 @@ export default class UserController {
         });
 
         // Send the email with the token
-        const name = user.name;
+        const name = user.firstName;
         await nodeMail(
           email,
           '2FA Token for One and Zero E-commerce',
-          twoFAMessageTemplate(token),
+          twoFAMessageTemplate(name, token),
         );
 
         // Send response with message to check email for the 2FA token
         return res
           .status(200)
-          .json({ message: 'Check your email for the 2FA token', id: user.id });
+          .json({
+            message: 'Check your email for the 2FA token',
+            userId: user.userId,
+          });
       } else {
-        // Generate JWT token without 2FA
         const token = generateToken(
           user.userId,
           user.email,
