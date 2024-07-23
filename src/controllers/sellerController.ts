@@ -61,8 +61,6 @@ export default class SellerController {
 
         res.json({ verified: true, token: jwtToken });
       } else {
-        console.log(userId);
-        console.log(token);
         res.status(401).json({
           verified: false,
           message: 'You provided an incorrect token',

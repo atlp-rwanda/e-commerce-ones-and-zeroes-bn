@@ -56,7 +56,6 @@ export default class UserController {
         },
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ message: 'Failed to fetch users' });
     }
   }
@@ -118,7 +117,6 @@ export default class UserController {
         .status(200)
         .json({ message: 'Account created!', data: newUser, token });
     } catch (error: any) {
-      console.log(error);
       return res.status(500).json({ message: 'Failed to register user' });
     }
   }
@@ -334,12 +332,10 @@ export default class UserController {
         );
 
         // Send response with message to check email for the 2FA token
-        return res
-          .status(200)
-          .json({
-            message: 'Check your email for the 2FA token',
-            userId: user.userId,
-          });
+        return res.status(200).json({
+          message: 'Check your email for the 2FA token',
+          userId: user.userId,
+        });
       } else {
         const token = generateToken(
           user.userId,

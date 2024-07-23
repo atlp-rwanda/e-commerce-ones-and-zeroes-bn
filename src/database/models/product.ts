@@ -52,10 +52,7 @@ module.exports = (
         allowNull: false,
         type: DataTypes.DECIMAL(10, 2),
       },
-      category: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
+
       quantity: {
         allowNull: false,
         type: DataTypes.INTEGER,
@@ -64,7 +61,10 @@ module.exports = (
       expiryDate: {
         type: DataTypes.DATE,
       },
-      description: DataTypes.STRING,
+      description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       bonus: {
         type: DataTypes.STRING,
       },

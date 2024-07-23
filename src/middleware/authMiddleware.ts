@@ -35,7 +35,6 @@ export default class authMiddleware {
       (req as any).user = existingUser.dataValues;
       next();
     } catch (error: any) {
-      console.log(error);
       (req as any).user = null;
       return next();
     }

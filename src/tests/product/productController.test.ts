@@ -3,20 +3,13 @@ import {
   createCollection,
   createProduct,
   getProducts,
+  getUserCollections,
+  deleteCollection,
+  getProductsPerCollection,
 } from '../../controllers/productController';
 import { db } from '../../database/models';
 import cloudinary from '../../helps/cloudinaryConfig';
 import { CustomRequest } from '../../controllers/productController';
-// interface User {
-//   role: string;
-//   userId: string;
-// }
-
-// interface CustomRequest extends Request {
-//   user?: User;
-//   files?: any;
-// }
-
 jest.mock('../../database/models', () => ({
   db: {},
 }));
@@ -30,6 +23,7 @@ jest.mock('../../database/models', () => ({
       findOne: jest.fn(),
       create: jest.fn(),
       findByPk: jest.fn(),
+      findAll: jest.fn(),
     },
     Product: {
       findByPk: jest.fn(),
@@ -106,9 +100,9 @@ describe('Collection and Product Controllers', () => {
           name: 'New Product',
           price: 100,
           quantity: 1,
-          category: 'Electronics',
           expiryDate: '2024-12-31',
           bonus: 'Gift voucher',
+          description: 'Product description',
         },
 
         files: [
@@ -154,9 +148,9 @@ describe('Collection and Product Controllers', () => {
           name: 'Existing Product',
           price: 100,
           quantity: 1,
-          category: 'Electronics',
           expiryDate: '2024-12-31',
           bonus: 'Gift voucher',
+          description: 'Product description',
         },
         params: { collectionId: '3cb67e73-cbba-4445-bdbd-820ebacc85cf' },
       } as Partial<Request> as Request;
@@ -195,9 +189,9 @@ describe('Collection and Product Controllers', () => {
           name: 'Existing Product',
           price: 100,
           quantity: 1,
-          category: 'Electronics',
           expiryDate: '2024-12-31',
           bonus: 'Gift voucher',
+          description: 'Product description',
         },
         params: { collectionId: '3cb67e73-cbba-4445-bdbd-820ebacc85cf' },
       } as Partial<Request> as Request;
@@ -231,9 +225,9 @@ describe('Collection and Product Controllers', () => {
           name: 'New Product',
           price: 100,
           quantity: 1,
-          category: 'Electronics',
           expiryDate: '2024-12-31',
           bonus: 'Gift voucher',
+          description: 'Product description',
         },
         params: { collectionId: '3cb67e73-cbba-4445-bdbd-820ebacc85cf' },
       } as Partial<Request> as Request;
@@ -265,9 +259,9 @@ describe('Collection and Product Controllers', () => {
           name: 'New Product',
           price: 100,
           quantity: 1,
-          category: 'Electronics',
           expiryDate: '2024-12-31',
           bonus: 'Gift voucher',
+          description: 'Product description',
         },
         params: { collectionId: '3cb67e73-cbba-4445-bdbd-820ebacc85cf' },
       } as Partial<Request> as Request;
@@ -292,10 +286,10 @@ describe('Collection and Product Controllers', () => {
           name: 'New Product',
           price: 100,
           quantity: 1,
-          category: 'Electronics',
           expiryDate: '2024-12-31',
           bonus: 'Gift voucher',
           ec: 'Energy Class A',
+          description: 'Product description',
         },
         files: [
           { buffer: Buffer.from('image1'), mimetype: 'image/jpeg' },
@@ -319,12 +313,12 @@ describe('Collection and Product Controllers', () => {
       (db.Product.create as jest.Mock).mockResolvedValueOnce({
         name: 'New Product',
         price: 100,
-        category: 'Electronics',
         expiryDate: '2024-12-31',
         bonus: 'Gift voucher',
         ec: 'Energy Class A',
         images: ['image_url', 'image_url', 'image_url', 'image_url'],
         collectionId: 'collectionId',
+        description: 'Product description',
       });
 
       await createProduct(req, res);
@@ -335,12 +329,12 @@ describe('Collection and Product Controllers', () => {
         product: {
           name: 'New Product',
           price: 100,
-          category: 'Electronics',
           expiryDate: '2024-12-31',
           bonus: 'Gift voucher',
           ec: 'Energy Class A',
           images: ['image_url', 'image_url', 'image_url', 'image_url'],
           collectionId: 'collectionId',
+          description: 'Product description',
         },
       });
     });
@@ -351,10 +345,10 @@ describe('Collection and Product Controllers', () => {
           name: 'New Product',
           price: 100,
           quantity: 1,
-          category: 'Electronics',
           expiryDate: '2024-12-31',
           bonus: 'Gift voucher',
           ec: 'Energy Class A',
+          description: 'Product description',
         },
         files: [
           { buffer: Buffer.from('image1'), mimetype: 'image/jpeg' },
@@ -428,5 +422,354 @@ describe('Product Controller - getProducts', () => {
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(mockProducts);
+  });
+});
+
+describe('Product Controller - getUserCollections', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return 400 if sellerId is missing from the request', async () => {
+    const req = {
+      user: {},
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    await getUserCollections(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'sellerId is required',
+    });
+  });
+
+  it('should return 404 if the user is not found', async () => {
+    const req = {
+      user: { userId: 'non-existent-id' },
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    (db.User.findByPk as jest.Mock).mockResolvedValueOnce(null);
+
+    await getUserCollections(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'User not found',
+    });
+  });
+
+  it('should return 200 with an empty array if no collections are found', async () => {
+    const req = {
+      user: { userId: 'valid-user-id' },
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    (db.User.findByPk as jest.Mock).mockResolvedValueOnce({
+      id: 'valid-user-id',
+    });
+    (db.Collection.findAll as jest.Mock).mockResolvedValueOnce([]);
+
+    await getUserCollections(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith([]);
+  });
+
+  it('should return 200 with the list of collections if collections are found', async () => {
+    const req = {
+      user: { userId: 'valid-user-id' },
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    const mockCollections = [
+      { id: 1, name: 'Collection 1', sellerId: 'valid-user-id' },
+      { id: 2, name: 'Collection 2', sellerId: 'valid-user-id' },
+    ];
+
+    (db.User.findByPk as jest.Mock).mockResolvedValueOnce({
+      id: 'valid-user-id',
+    });
+    (db.Collection.findAll as jest.Mock).mockResolvedValueOnce(mockCollections);
+
+    await getUserCollections(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(mockCollections);
+  });
+
+  it('should return 500 if there is a server error', async () => {
+    const req = {
+      user: { userId: 'valid-user-id' },
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    (db.User.findByPk as jest.Mock).mockImplementationOnce(() => {
+      throw new Error('Server error');
+    });
+
+    await getUserCollections(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Internal Server Error',
+    });
+  });
+});
+describe('Collection Controller - deleteCollection', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return 400 if collectionId is missing from the request', async () => {
+    const req = {
+      params: {},
+      user: { userId: 'valid-user-id' },
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    await deleteCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'CollectionId is required',
+    });
+  });
+
+  it('should return 400 if sellerId is missing from the request', async () => {
+    const req = {
+      params: { collectionid: 'valid-collection-id' },
+      user: {},
+    } as unknown as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    await deleteCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: 'sellerId is required' });
+  });
+
+  it('should return 404 if the user is not found', async () => {
+    const req = {
+      params: { collectionid: 'valid-collection-id' },
+      user: { userId: 'non-existent-id' },
+    } as unknown as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    (db.User.findByPk as jest.Mock).mockResolvedValueOnce(null);
+
+    await deleteCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ error: 'User not found' });
+  });
+
+  it('should return 404 if the collection is not found', async () => {
+    const req = {
+      params: { collectionid: 'non-existent-collection-id' },
+      user: { userId: 'valid-user-id' },
+    } as unknown as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    (db.User.findByPk as jest.Mock).mockResolvedValueOnce({
+      id: 'valid-user-id',
+    });
+    (db.Collection.findOne as jest.Mock).mockResolvedValueOnce(null);
+
+    await deleteCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Collection not found' });
+  });
+
+  it('should return 200 and delete the collection successfully', async () => {
+    const req = {
+      params: { collectionid: 'valid-collection-id' },
+      user: { userId: 'valid-user-id' },
+    } as unknown as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    const mockCollection = {
+      id: 'valid-collection-id',
+      destroy: jest.fn(),
+    };
+
+    (db.User.findByPk as jest.Mock).mockResolvedValueOnce({
+      id: 'valid-user-id',
+    });
+    (db.Collection.findOne as jest.Mock).mockResolvedValueOnce(mockCollection);
+
+    await deleteCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'Collection deleted Successfully.',
+    });
+    expect(mockCollection.destroy).toHaveBeenCalled();
+  });
+
+  it('should return 500 if there is a server error', async () => {
+    const req = {
+      params: { collectionid: 'valid-collection-id' },
+      user: { userId: 'valid-user-id' },
+    } as unknown as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    (db.User.findByPk as jest.Mock).mockImplementationOnce(() => {
+      throw new Error('Server error');
+    });
+
+    await deleteCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'Internal Server Error',
+      error: new Error('Server error'),
+    });
+  });
+});
+
+describe('Collection Controller - getProductsPerCollection', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return 400 if collectionId is missing from the request', async () => {
+    const req = {
+      params: {},
+    } as Partial<CustomRequest> as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as Partial<Response> as Response;
+
+    await getProductsPerCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'collection id is required',
+    });
+  });
+
+  it('should return 200 with an empty array if no products are found', async () => {
+    const req = {
+      params: { collectionid: 'valid-collection-id' },
+    } as unknown as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    (db.Collection.findByPk as jest.Mock).mockResolvedValueOnce({
+      id: 'valid-collection-id',
+    });
+    (db.Product.findAll as jest.Mock).mockResolvedValueOnce([]);
+
+    await getProductsPerCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'collection is empty',
+      data: [],
+    });
+  });
+
+  it('should return 200 with the list of products if products are found', async () => {
+    const req = {
+      params: { collectionid: 'valid-collection-id' },
+    } as unknown as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    const mockProducts = [
+      { id: 1, name: 'Product 1', collectionId: 'valid-collection-id' },
+      { id: 2, name: 'Product 2', collectionId: 'valid-collection-id' },
+    ];
+
+    (db.Collection.findByPk as jest.Mock).mockResolvedValueOnce({
+      id: 'valid-collection-id',
+    });
+    (db.Product.findAll as jest.Mock).mockResolvedValueOnce(mockProducts);
+
+    await getProductsPerCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'Products retrieved successfully',
+      data: mockProducts,
+    });
+  });
+
+  it('should return 500 if there is a server error', async () => {
+    const req = {
+      params: { collectionid: 'valid-collection-id' },
+    } as unknown as CustomRequest;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    (db.Collection.findByPk as jest.Mock).mockImplementationOnce(() => {
+      throw new Error('Server error');
+    });
+
+    await getProductsPerCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'Internal Server Error',
+      error: 'Server error',
+    });
   });
 });
