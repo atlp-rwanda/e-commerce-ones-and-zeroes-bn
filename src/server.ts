@@ -10,6 +10,7 @@ import { Server } from 'socket.io';
 import specs from './docs';
 import startCronJob from './cronJob/password.cron.job';
 import { changePasswordIgnored } from './middleware/changePasswordIgnored';
+
 import passport from './config/google.auth';
 import { db, sequelize } from './database/models/index';
 import AuthRouters from './routes/Auth';
@@ -24,25 +25,28 @@ dotenv.config();
 productExpireTask.start();
 const app = express();
 const server = http.createServer(app);
-var morgan = require('morgan');
-
 const io = new Server(server, {
   cors: {
     origin:
       process.env.NODE_ENV === 'production'
         ? false
-        : ['http://localhost:5173', 'http://localhost:7000/api'],
+        : [
+            'http://localhost:5173',
+            'http://localhost:7000/api',
+            'http://localhost:8000',
+          ],
   },
 });
-// Register your middleware
-// app.use(changePasswordIgnored);
-app.use(cors());
-app.use(express.json());
-app.use(morgan('dev'));
+
 const port = process.env.PORT || 7000;
 const session = require('express-session');
 chats.chats(io);
-app.use(cors());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 app.use(

@@ -118,6 +118,81 @@ const productPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+
+  '/api/products/mine/{id}': {
+    get: {
+      summary: 'Get all products for a user',
+      tags: ['Products'],
+      description:
+        'This endpoint retrieves all products from the database for a specific user by user ID.',
+      parameters: [
+        {
+          in: 'path',
+          name: 'id',
+          required: true,
+          schema: {
+            type: 'string',
+          },
+          description: 'ID of the user to retrieve products for',
+        },
+      ],
+      responses: {
+        '200': {
+          description: 'Successful response',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    productId: { type: 'string' },
+                    name: { type: 'string' },
+                    description: { type: 'string' },
+                    price: { type: 'number' },
+                    quantity: { type: 'number' },
+                    images: { type: 'string' },
+                    discount: { type: 'number' },
+                    expiryDate: { type: 'string' },
+                    createdAt: { type: 'string' },
+                    updatedAt: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+        },
+        '404': {
+          description: 'No products found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        '500': {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                  error: { type: 'object' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   '/api/products': {
     post: {
       summary: 'Create a new collection',

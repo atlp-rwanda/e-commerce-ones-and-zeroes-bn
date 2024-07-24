@@ -231,7 +231,7 @@ describe('Update Product', () => {
       jest.clearAllMocks();
     });
 
-    it('should return 400 if the product is not found', async () => {
+    it('should return 404 if the product is not found', async () => {
       const req = {
         body: { productId: '1', images: 'image-url-to-remove.jpg' },
       } as Request;
@@ -247,12 +247,12 @@ describe('Update Product', () => {
 
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({
-        status: 'Internal Server Error',
-        error: 'Invalid image_url array in database',
+        status: 'Not Found',
+        error: 'Product not found',
       });
     });
 
-    it('should return 500 if image array is invalid', async () => {
+    it('should return 400 if image array is invalid', async () => {
       const req = {
         body: { productId: '1', images: 'image-url-to-remove.jpg' },
       } as Request;
@@ -270,7 +270,7 @@ describe('Update Product', () => {
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
-        status: 'fail',
+        status: 'Bad Request',
         error: 'Invalid image_url array in database',
       });
     });
@@ -321,7 +321,8 @@ describe('Update Product', () => {
       expect(product.save).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
-        status: 'Image removed successfully',
+        status: 'Success',
+        message: 'Image removed successfully',
         data: product,
       });
     });
