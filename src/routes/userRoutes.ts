@@ -13,7 +13,6 @@ import OrderController from '../controllers/orderController';
 
 const router: Router = express.Router();
 
-router.get('/', UserController.getUsers);
 router.post('/registerUser', UserController.registerUser);
 router.get('/isVerified/:token', UserController.isVerified);
 router.post('/login', UserController.login);
