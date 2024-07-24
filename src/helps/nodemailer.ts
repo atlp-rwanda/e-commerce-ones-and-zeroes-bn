@@ -33,8 +33,8 @@ async function sendEmail(
         <head>
         </head>
         <body style="background-color: #f4f4f4; padding: 20px;">
-        <h1 style="color: #333333; text-align: center;">OnesAndZeroes</h1>
-        <p style="color: #666666; text-align: left;">Dear ${firstName},</p>
+        <h1 style="color: #333333; text-align: center;"></h1>
+        <p style="color: #666666; text-align: left;"></p>
             ${html}
         </body>
         </html>      

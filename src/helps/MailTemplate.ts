@@ -1,18 +1,73 @@
 const millisecondsToDate = require('./datesConversion');
+import dotenv from 'dotenv';
+dotenv.config();
 
-export const sendChangePasswordNoficationMail = `
-        <div style="font-family: Arial, sans-serif; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);">
+export const sendChangePasswordNotificationMail = (
+  userToken: any,
+  userName: string,
+) => `
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      padding: 20px;
+    }
+    .email-container {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+      border: 1px solid #FF6D18 ;
+    }
+    .email-content p {
+      color: #666666;
+      text-align: justify;
+    }
+    .email-content a {
+      display: inline-block;
+      width: 200px;
+      margin: 20px auto;
+      text-align: center;
+      background-color: #0F1848;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .email-content a:hover {
+      background-color: #FF6D18;
+    }
+    .email-content p.center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="email-content">
+    
+        <p style="color: #666666; text-align: left;">Dear ${userName},</p>
+      <p>We are writing to inform you that it is necessary to update your password for security purposes.</p>
+      <p>Failure to update your password will result in the inability to perform any actions until the update is completed.</p>
+      <p>Please follow the link below to proceed with the password update:</p>
+      <p class="center">
+        <a href="${process.env.CLIENT_URL}/reset/new-password?q=${userToken}">Update Password</a>
+      </p>
+      <p class="center">Thank you for your prompt attention to this matter.</p>
+      <p class="center">Sincerely,</p>
+      <p class="center">OnesAndZeroes Support Team</p>
+    </div>
+  </div>
+</body>
+</html>
 
-                <p style="color: #666666; text-align: justify;">We are writing to inform you that it is necessary to update your password for security purposes.</p>
-                <p style="color: #666666; text-align: justify;">Failure to update your password within one day will result in the inability to perform any actions until the update is completed.</p>
-                <p style="color: #666666; text-align: justify;">Please follow the link below to proceed with the password update:</p>
-                <p style="text-align: center;">
-                    <a href="https://onesandzeroes/users/update" style="display: inline-block; width: 200px; margin: 20px auto; text-align: center; background-color: #007bff; color: #ffffff; text-decoration: none; padding: 10px; border-radius: 5px;">Update Password</a>
-                </p>
-                <p style="color: #666666; text-align: center;">Thank you for your prompt attention to this matter.</p>
-                <p style="color: #666666; text-align: center;">Sincerely,</p>
-                <p style="color: #666666; text-align: center;">OnesAndZeroes Support Team</p>
-            </div>
 `;
 export const sendExpiredEmail = (products: any[]) => {
   const productRows = products

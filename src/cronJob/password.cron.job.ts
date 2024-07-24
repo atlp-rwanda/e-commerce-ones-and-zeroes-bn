@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 import { db } from '../database/models/index';
 import sendPasswordUpdateNotification from '../utils/sendChangePasswordNofication';
+import { generateToken } from '../helps/generateToken';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -8,7 +9,7 @@ dotenv.config();
 const startCronJob = (): void => {
   const cronSchedule = process.env.CRON_SCHEDULE || '* * * * *';
   const passwordExpirationPeriodMinutes = parseInt(
-    process.env.PASSWORD_EXPIRATION_PERIOD_MINUTES || '131527',
+    process.env.PASSWORD_EXPIRATION_PERIOD_MINUTES || '261561.6',
     10,
   );
 
@@ -24,7 +25,16 @@ const startCronJob = (): void => {
         minutesSinceLastChange >= passwordExpirationPeriodMinutes &&
         minutesSinceLastChange < 2 * passwordExpirationPeriodMinutes
       ) {
-        sendPasswordUpdateNotification(user);
+        const token = generateToken(
+          user.userId,
+          user.email,
+          user.firstName,
+          user.lastName,
+          user.role,
+          user.passwordLastChanged,
+          user.isVerified,
+        );
+        sendPasswordUpdateNotification(user, token);
       }
     });
   });
