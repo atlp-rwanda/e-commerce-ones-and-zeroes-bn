@@ -4,7 +4,7 @@ import { db } from '../database/models';
 export interface User {
   role: string;
   userId: string;
-  firstName: string;
+  username: string;
 }
 
 export interface CustomRequest extends Request {
@@ -31,9 +31,8 @@ async function createRoom(room: string): Promise<IRoom> {
 async function getChats(room: string): Promise<IRoom | null> {
   let chats = await db.Chat.findOne({ where: { room } });
   if (!chats) {
-    await createRoom(room);
+    chats = await createRoom(room);
   }
-  chats = await db.Chat.findOne({ where: { room } });
   return chats;
 }
 
@@ -58,20 +57,15 @@ export async function addChat(
     const room = 'public';
     const message = req.body.message;
     const userId = req?.user?.userId;
-    const username = req?.user?.firstName;
-
+    const username = req?.user?.username;
+    console.log('our user', room, message, userId, username);
     if (!message || !userId || !username) {
       res.status(400).json({ message: 'Invalid chat data' });
       return;
     }
 
     const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const timestamp = `${year}-${month}-${day} ${hours}:${minutes}`;
+    const timestamp = now.toISOString();
 
     const chat: IChat = {
       message,

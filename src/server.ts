@@ -12,32 +12,28 @@ import startCronJob from './cronJob/password.cron.job';
 import { changePasswordIgnored } from './middleware/changePasswordIgnored';
 
 import passport from './config/google.auth';
-import { db, sequelize } from './database/models/index';
+import { sequelize } from './database/models/index';
 import AuthRouters from './routes/Auth';
 import routes from './routes';
 const { productExpireTask } = require('./cronJob/productsCron');
 import chats from './helps/chats';
-
+import authMiddleware from './middleware/authMiddleware';
+import { db } from './database/models';
 import { cartExpiryJob } from './cronJob/cartExpiry.job';
 import path from 'path';
+import { Server as SocketIOServer } from 'socket.io';
 
 dotenv.config();
 productExpireTask.start();
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin:
-      process.env.NODE_ENV === 'production'
-        ? false
-        : [
-            'http://localhost:5173',
-            'http://localhost:7000/api',
-            'http://localhost:8000',
-          ],
-  },
-});
+const io = new SocketIOServer(server, { cors: { origin: '*' } });
 
+var morgan = require('morgan');
+
+app.use(cors());
+app.use(express.json());
+app.use(morgan('dev'));
 const port = process.env.PORT || 7000;
 const session = require('express-session');
 chats.chats(io);
@@ -67,7 +63,7 @@ app.use('/api', routes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/auth', AuthRouters);
 
-app.listen(port, async () => {
+server.listen(port, async () => {
   try {
     await sequelize.authenticate();
     console.log('server started');
