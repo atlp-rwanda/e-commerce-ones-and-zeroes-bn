@@ -121,7 +121,6 @@ export default class UserController {
     }
   }
 
-  // get single profile/user controller
   static async getSingleUser(req: Request, res: Response) {
     try {
       const singleUser = await db.User.findOne({

@@ -22,6 +22,18 @@ router.get('/available', ProductController.getAvailableProduct);
 router.post('/recommend', productRecommend);
 router.get('/:id', ProductController.getSingleProduct);
 router.get('/:searchKeyword', SearchController.search, getProducts);
+router.get(
+  '/mine/:id',
+  isAuthenticated,
+  checkPermission('seller'),
+  ProductController.getAllFromMine,
+);
+router.post(
+  '/remove-image',
+  isAuthenticated,
+  checkPermission('seller'),
+  ProductController.removeProductImage,
+);
 router.post('/', isAuthenticated, checkPermission('seller'), createCollection);
 router.get(
   '/collections/list',
@@ -53,19 +65,12 @@ router.patch(
   ProductController.updateProduct,
 );
 router.post(
-  '/remove-image',
-  isAuthenticated,
-  checkPermission('seller'),
-  ProductController.removeProductImage,
-);
-router.post(
   '/:collectionId',
   isAuthenticated,
   checkPermission('seller'),
   upload.array('images'),
   createProduct,
 );
-
 router.delete('/:id', isAuthenticated, ProductController.deleteProduct);
 router.get(
   '/:collectionid/products',
