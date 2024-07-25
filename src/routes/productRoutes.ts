@@ -21,7 +21,7 @@ const router = express.Router();
 router.get('/available', ProductController.getAvailableProduct);
 router.post('/recommend', productRecommend);
 router.get('/:id', ProductController.getSingleProduct);
-router.get('/:searchKeyword', SearchController.search, getProducts);
+router.get('/search/:searchKeyword', SearchController.search, getProducts);
 router.get(
   '/mine/:id',
   isAuthenticated,
