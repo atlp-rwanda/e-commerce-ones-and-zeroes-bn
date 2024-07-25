@@ -363,7 +363,6 @@ export class ProductController {
     }
   }
 
-
   static async updateSingleProduct(req: CustomRequest, res: Response) {
     try {
       const { productId } = req.params;
