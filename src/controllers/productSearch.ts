@@ -29,7 +29,7 @@ export class SearchController {
       const searchConditions: any = {
         [Op.or]: [
           { name: { [Op.iLike]: `%${searchKeyword}%` } },
-          { category: { [Op.iLike]: `%${searchKeyword}%` } },
+          { description: { [Op.iLike]: `%${searchKeyword}%` } },
         ],
       };
 
