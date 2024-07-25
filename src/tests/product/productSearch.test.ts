@@ -37,7 +37,7 @@ describe('SearchController', () => {
 
   it('should return products matching the search keyword', async () => {
     db.Product.findAll.mockResolvedValue([
-      { name: 'Test Product', category: 'TestCategory', price: 100 },
+      { name: 'Test Product', description: 'TestCategory', price: 100 },
     ]);
 
     const response = await request(app)
@@ -46,13 +46,13 @@ describe('SearchController', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.data).toEqual([
-      { name: 'Test Product', category: 'TestCategory', price: 100 },
+      { name: 'Test Product', description: 'TestCategory', price: 100 },
     ]);
   });
 
   it('should return products within the price range', async () => {
     db.Product.findAll.mockResolvedValue([
-      { name: 'Test Product', category: 'TestCategory', price: 100 },
+      { name: 'Test Product', description: 'TestCategory', price: 100 },
     ]);
 
     const response = await request(app).get('/search').query({
@@ -63,7 +63,7 @@ describe('SearchController', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.data).toEqual([
-      { name: 'Test Product', category: 'TestCategory', price: 100 },
+      { name: 'Test Product', description: 'TestCategory', price: 100 },
     ]);
   });
 

@@ -4,7 +4,6 @@ bin-debug/
 bin-release/
 [Oo]bj/
 [Bb]in/
-.vscode/
 node_modules
 
 .env
@@ -38,3 +37,7 @@ coverage/sendgrid.env
 sendgrid.env
 .idea/
 
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
